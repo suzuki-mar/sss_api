@@ -1,4 +1,7 @@
 class SelfCare < ApplicationRecord
+  
+  belongs_to :self_care_classification
+
   validates :reason, presence: true
   validates :am_pm, presence: true
   validate :writeable_date?

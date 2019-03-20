@@ -8,6 +8,7 @@ describe SelfCare, :type => :model do
       example '現在の日付は許可する' do
         self_care.log_date = Date.today
         self_care.validate
+        pp self_care.errors.messages
         expect(self_care.errors.messages.count).to be 0
       end 
       example '過去の日付は許可する' do
@@ -72,5 +73,10 @@ describe SelfCare, :type => :model do
   describe 'Enum' do 
     it {should define_enum_for(:am_pm).with_values({am: 1, pm: 2})}
   end
+
+  describe 'Table Relation' do 
+    it { should belong_to(:self_care_classification ) }
+  end
+
 
 end

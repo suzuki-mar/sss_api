@@ -2,8 +2,7 @@ default: &default
   adapter: postgresql
   encoding: utf8
   pool: 5
-  # 以下、3行追加
-  username: user
+  username: masayukisuzuki
   host: localhost
 
 development:

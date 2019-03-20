@@ -18,6 +18,10 @@ gem 'puma', '~> 3.11'
 
 gem 'rake', '< 11.0'
 
+gem 'active_model_serializers'
+
+gem 'prmd'
+
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
@@ -45,6 +49,7 @@ end
 group :development, :test do
   gem 'rspec-rails'
   gem 'factory_bot_rails'
+  gem 'database_cleaner'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

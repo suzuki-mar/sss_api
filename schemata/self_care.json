@@ -1,0 +1,109 @@
+{
+  "$schema": "http://json-schema.org/draft-04/hyper-schema",
+  "title": "Self_care",
+  "stability": "prototype",
+  "strictProperties": true,
+  "type": [
+    "object"
+  ],
+  "definitions": {
+    "id": {
+      "description": "ID",
+      "format": "uuid",
+      "type": [
+        "string"
+      ]
+    },
+    "am_pm": {
+      "description": "午前か午後か",
+      "type": [
+        "string"
+      ]
+    },
+    "reason": {
+      "description": "理由",
+      "type": [
+        "string"
+      ]
+    },
+    "log_date": {
+      "description": "ログの日付",
+      "format": "date",
+      "type": [
+        "string"
+      ]
+    },
+    "point": {
+      "description": "体調のポイント 1~10 数字が大きいほど体調がいい",
+      "type": [
+        "integer"
+      ]
+    }
+  },
+  "links": [
+    {
+      "description": "Create a new self_care.",
+      "href": "/self_cares",
+      "method": "POST",
+      "rel": "create",
+      "schema": {
+        "properties": {
+        },
+        "type": [
+          "object"
+        ]
+      },
+      "title": "Create"
+    },
+    {
+      "description": "Delete an existing self_care.",
+      "href": "/self_cares/{(%2Fschemata%2Fself_care%23%2Fdefinitions%2Fidentity)}",
+      "method": "DELETE",
+      "rel": "destroy",
+      "title": "Delete"
+    },
+    {
+      "description": "Info for existing self_care.",
+      "href": "/self_cares/{(%2Fschemata%2Fself_care%23%2Fdefinitions%2Fidentity)}",
+      "method": "GET",
+      "rel": "self",
+      "title": "Info"
+    },
+    {
+      "description": "List existing self_cares.",
+      "href": "/self_cares",
+      "method": "GET",
+      "rel": "instances",
+      "title": "List"
+    },
+    {
+      "description": "Update an existing self_care.",
+      "href": "/self_cares/{(%2Fschemata%2Fself_care%23%2Fdefinitions%2Fidentity)}",
+      "method": "PATCH",
+      "rel": "update",
+      "schema": {
+        "properties": {
+        },
+        "type": [
+          "object"
+        ]
+      },
+      "title": "Update"
+    }
+  ],
+  "properties": {
+    "created_at": {
+      "$ref": "/schemata/self_care#/definitions/created_at"
+    },
+    "id": {
+      "$ref": "/schemata/self_care#/definitions/id"
+    },
+    "name": {
+      "$ref": "/schemata/self_care#/definitions/name"
+    },
+    "updated_at": {
+      "$ref": "/schemata/self_care#/definitions/updated_at"
+    }
+  },
+  "id": "schemata/self_care"
+}
