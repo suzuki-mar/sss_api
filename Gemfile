@@ -20,8 +20,6 @@ gem 'rake', '< 11.0'
 
 gem 'active_model_serializers'
 
-gem 'prmd'
-
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
