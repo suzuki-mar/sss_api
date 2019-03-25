@@ -1,5 +1,7 @@
 class SelfCare < ApplicationRecord
-  
+
+  include Swagger::SelfCareSchema
+
   belongs_to :self_care_classification
 
   validates :reason, presence: true

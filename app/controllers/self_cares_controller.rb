@@ -1,5 +1,7 @@
 class SelfCaresController < ApplicationController
 
+  include Swagger::SelfCaresApi
+
   def show
     self_care = SelfCare.find(params[:id])
     render json: self_care, status: 200

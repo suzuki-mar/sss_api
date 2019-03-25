@@ -20,6 +20,10 @@ gem 'rake', '< 11.0'
 
 gem 'active_model_serializers'
 
+gem 'rack-cors', require: 'rack/cors'
+
+gem 'swagger-blocks'
+
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
