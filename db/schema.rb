@@ -10,10 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_13_093507) do
+ActiveRecord::Schema.define(version: 2019_03_25_055845) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "reframings", force: :cascade do |t|
+    t.date "log_date"
+    t.text "problem_reason"
+    t.text "objective_facts"
+    t.string "feeling"
+    t.integer "before_point"
+    t.string "distortion_group"
+    t.string "integer"
+    t.text "reframing"
+    t.text "action_plan"
+    t.integer "after_point"
+    t.boolean "is_draft"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "self_care_classifications", force: :cascade do |t|
     t.integer "status_group", limit: 2, null: false
