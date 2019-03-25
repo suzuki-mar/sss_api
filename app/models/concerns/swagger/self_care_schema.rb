@@ -49,6 +49,20 @@ module Swagger::SelfCareSchema
 
     end
 
+    swagger_schema :SelfCareClassificationInput do
+      key :required, [:status_group_id, :classification_name]
+      property :status_group_id do
+        key :type, :integer
+        key :description, 'ステータスグループのID'
+      end
+      property :classification_name do
+        key :type, :string
+        key :description, '分類名'
+        key :example, '就職活動への意欲がある'
+      end
+
+    end
+
     swagger_schema :SelfCareInput do
       allOf do
         schema do
