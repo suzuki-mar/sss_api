@@ -10,26 +10,6 @@ module Swagger::ApiDoc
         key :title, 'SSS Self Social Skill'
       end
 
-        #     schema do
-        #       key :required, [:id]
-        #       property :id do
-        #         key :type, :integer
-        #         key :format, :int64
-        #       end
-        #     end
-        #   end
-        #
-        # end
-
-
-        # parameter :SelfCareInput do
-      #  schema do
-      #     key :'$ref', :SelfCare
-      #   end
-      #
-      #  key :required, true
-      # end
-
     end
 
   end

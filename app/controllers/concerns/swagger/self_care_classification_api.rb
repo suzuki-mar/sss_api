@@ -6,7 +6,7 @@ module Swagger::SelfCareClassificationApi
   included do
     include Swagger::ErrorSchema
 
-    swagger_path '/self_care_classification' do
+    swagger_path '/self_care_classifications' do
 
       operation :post do
         key :description, 'SelfCareClassificationを作成'

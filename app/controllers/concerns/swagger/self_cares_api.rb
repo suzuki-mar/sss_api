@@ -75,7 +75,7 @@ module Swagger::SelfCaresApi
 
     end
 
-    swagger_path '/self_care' do
+    swagger_path '/self_cares' do
 
       operation :post do
         key :description, 'SelfCareを作成'

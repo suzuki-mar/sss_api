@@ -1,126 +1,126 @@
-module Swagger::ReframingApi
+module Swagger::ProblemSolvingApi
 
   extend ActiveSupport::Concern
   include Swagger::Blocks
 
   included do
 
-    swagger_path '/reframings/{id}' do
+    swagger_path '/problem_solvings/{id}' do
 
       operation :get do
-        key :description, '該当IDのReframingを取得する'
-        key :operationId, :find_reframing_by_id
+        key :description, '該当IDのProblemSolvingを取得する'
+        key :operationId, :find_problem_solving_by_id
 
         parameter name: :id do
           key :in, :path
-          key :description, 'Reframing ID'
+          key :description, 'Problem Solving ID'
           key :required, true
           key :type, :integer
           key :format, :int64
         end
 
         response 200 do
-          key :description, 'Reframing'
+          key :description, 'ProblemSolvingを取得する'
           schema do
-            key :required, [:reframing]
+            key :required, [:problem_solving]
 
-            property :reframing do
-              key :'$ref', :ReframingOutput
+            property :problem_solving do
+              key :'$ref', :ProblemSolvingOutput
             end
 
           end
         end
 
-        Swagger::ErrorResponseHelper.define_not_found_response(self, 'id', 'Reframing')
+        Swagger::ErrorResponseHelper.define_not_found_response(self, 'id', 'ProblemSolving')
       end
 
       operation :put do
-        key :description, '指定したReframingをアップデートする'
-        key :operationId, :update_reframing_by_id
+        key :description, '指定したProblemSolvingをアップデートする'
+        key :operationId, :update_problem_solving_by_id
 
         parameter name: :id do
           key :in, :path
-          key :description, 'Reframing ID'
+          key :description, 'Problem Solving ID'
           key :required, true
           key :type, :integer
           key :format, :int64
         end
 
-        parameter name: :reframing do
+        parameter name: :problem_solving do
           key :in, :body
           key :required, true
           schema do
-            key :'$ref', 'ReframingInput'
+            key :'$ref', 'ProblemSolvingInput'
           end
 
         end
 
         response 200 do
-          key :description, 'Reframingの更新に成功した'
+          key :description, 'ProblemSolvingの更新に成功した'
           schema do
-            key :required, [:reframing]
+            key :required, [:problem_solving]
 
-            property :reframing do
-              key :'$ref', :ReframingOutput
+            property :problem_solving do
+              key :'$ref', :ProblemSolvingOutput
             end
 
           end
         end
 
-        Swagger::ErrorResponseHelper.define_validation_failure_response(self, 'Reframing')
-        Swagger::ErrorResponseHelper.define_not_found_response(self, 'id', 'Reframing')
+        Swagger::ErrorResponseHelper.define_validation_failure_response(self, 'ProblemSolving')
+        Swagger::ErrorResponseHelper.define_not_found_response(self, 'id', 'ProblemSolving')
 
       end
 
     end
 
-    swagger_path '/reframings' do
+    swagger_path '/problem_solvings' do
 
       operation :post do
-        key :description, 'Reframingを作成'
-        key :operationId, :create_reframing
+        key :description, 'ProblemSolvingを作成'
+        key :operationId, :create_problem_solving
 
-        parameter name: :self_care do
+        parameter name: :problem_solving do
           key :in, :body
           key :required, true
           schema do
-            key :'$ref', 'ReframingInput'
+            key :'$ref', 'ProblemSolvingInput'
           end
 
         end
 
         response 200 do
-          key :description, 'Reframingの作成に成功した'
+          key :description, 'ProblemSolvingの作成に成功した'
           schema do
-            key :required, [:self_care]
+            key :required, [:problem_solving]
 
-            property :self_care do
-              key :'$ref', :ReframingOutput
+            property :problem_solving do
+              key :'$ref', :ProblemSolvingOutput
             end
 
           end
         end
 
-        Swagger::ErrorResponseHelper.define_validation_failure_response(self, 'Reframing')
+        Swagger::ErrorResponseHelper.define_validation_failure_response(self, 'ProblemSolving')
       end
 
     end
 
-    swagger_path '/reframing/recent' do
+    swagger_path '/problem_solvings/recent' do
 
       operation :get do
-        key :description, '直近１週間のReframingリストを取得する'
-        key :operationId, :find_recently_reframing
+        key :description, '直近１週間のProblemSolvingリストを取得する'
+        key :operationId, :find_recently_problem_solvings
 
         response 200 do
-          key :description, '直近１週間のReframingリストを取得する'
+          key :description, '直近１週間のProblemSolvingリストを取得する'
           schema do
-            key :required, [:reframing, :start_date, :end_date]
+            key :required, [:problem_solvings, :start_date, :end_date]
 
-            property :reframings do
+            property :problem_solvings do
               key :type, :array
               items do
-                key :'$ref', :ReframingOutput
+                key :'$ref', :ProblemSolvingOutput
               end
             end
 
@@ -145,11 +145,11 @@ module Swagger::ReframingApi
 
     end
 
-    swagger_path '/reframing/month' do
+    swagger_path '/problem_solvings/month' do
 
       operation :get do
         key :description, '指定した月のデータ一覧を取得する'
-        key :operationId, :find_reframings_by_year_and_month
+        key :operationId, :find_problem_solvings_by_year_and_month
 
         parameter name: :year do
           key :in, :query
@@ -174,12 +174,12 @@ module Swagger::ReframingApi
         response 200 do
           key :description, '指定した年月のデータ一覧を取得する'
           schema do
-            key :required, [:reframings]
+            key :required, [:problem_solvings]
 
-            property :reframings do
+            property :problem_solvings do
               key :type, :array
               items do
-                key :'$ref', :ReframingOutput
+                key :'$ref', :ProblemSolvingOutput
               end
             end
 

@@ -5,8 +5,10 @@ class ApiDocsController < ApplicationController
   def index
 
     classes = [self.class,
+               ProblemSolving,
                SelfCare,
                Reframing,
+               ProblemSolvingsController,
                ReframingsController,
                SelfCaresController,
                SelfCareClassificationController].freeze
