@@ -4,5 +4,11 @@ FactoryBot.define do
     is_draft { false }
     problem_recognition { "MyText" }
     example_problem { "MyText" }
+    cause { "MyText" }
+    phenomenon { "MyText" }
+    neglect_phenomenon { "MyText" }
+    solution { "MyText" }
+    execution_method { "MyText" }
+    evaluation_method { "MyText" }
   end
 end

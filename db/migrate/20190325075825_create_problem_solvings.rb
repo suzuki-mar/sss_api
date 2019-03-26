@@ -5,6 +5,12 @@ class CreateProblemSolvings < ActiveRecord::Migration[5.2]
       t.boolean :is_draft
       t.text :problem_recognition
       t.text :example_problem
+      t.text :cause
+      t.text :phenomenon
+      t.text :neglect_phenomenon
+      t.text :solution
+      t.text :execution_method
+      t.text :evaluation_method
 
       t.timestamps
     end

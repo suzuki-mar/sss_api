@@ -20,6 +20,12 @@ ActiveRecord::Schema.define(version: 2019_03_25_075825) do
     t.boolean "is_draft"
     t.text "problem_recognition"
     t.text "example_problem"
+    t.text "cause"
+    t.text "phenomenon"
+    t.text "neglect_phenomenon"
+    t.text "solution"
+    t.text "execution_method"
+    t.text "evaluation_method"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -29,12 +35,11 @@ ActiveRecord::Schema.define(version: 2019_03_25_075825) do
     t.text "problem_reason"
     t.text "objective_facts"
     t.string "feeling"
-    t.integer "before_point"
-    t.string "distortion_group"
-    t.string "integer"
+    t.integer "before_point", limit: 2
+    t.integer "distortion_group", limit: 2
     t.text "reframing"
     t.text "action_plan"
-    t.integer "after_point"
+    t.integer "after_point", limit: 2
     t.boolean "is_draft"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

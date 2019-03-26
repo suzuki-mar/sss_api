@@ -4,56 +4,14 @@ describe SelfCare, :type => :model do
   
   describe 'Validation' do
     let(:self_care){build_stubbed(:self_care)}
-    describe 'log_date' do
-      example '現在の日付は許可する' do
-        self_care.log_date = Date.today
-        self_care.validate
-        pp self_care.errors.messages
-        expect(self_care.errors.messages.count).to be 0
-      end 
-      example '過去の日付は許可する' do
-        self_care.log_date = Date.yesterday
-        self_care.validate
-        expect(self_care.errors.messages.count).to be 0
-      end 
-      example '未来の日付は許可されない' do
-        self_care.log_date = Date.tomorrow
-        self_care.validate
-        expect(self_care.errors.messages).to have_key(:log_date)
-      end 
-      example 'nullは許可されない' do 
-        self_care.log_date = nil
-        self_care.validate
-        expect(self_care.errors.messages).to have_key(:log_date)
-      end
+
+    it_behaves_like 'log_dateのバリデーション' do
+      let(:model){self_care}
     end
 
-    describe 'point' do
-      example '0より大きい数で10までの場合は許可する' do
-        self_care.point = 0
-        self_care.validate
-        expect(self_care.errors.messages.count).to be 0
-      end 
-      example '0より大きい数で10までの場合は許可する' do
-        self_care.point = 10
-        self_care.validate
-        expect(self_care.errors.messages.count).to be 0
-      end 
-      example '10より大きい数は許可しない' do
-        self_care.point = 11
-        self_care.validate
-        expect(self_care.errors.messages).to have_key(:point)
-      end 
-      example '正数しか許可しない' do
-        self_care.point = -1
-        self_care.validate
-        expect(self_care.errors.messages).to have_key(:point)
-      end 
-      example 'nullは許可されない' do 
-        self_care.point = nil
-        self_care.validate
-        expect(self_care.errors.messages).to have_key(:point)
-      end
+    it_behaves_like 'pointのバリデーション' do
+      let(:model){build(:self_care)} #update_attributeを使っているのでstubbedは使えない
+      let(:attribute_name){:point}
     end
 
     describe 'reason' do

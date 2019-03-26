@@ -5,12 +5,11 @@ class CreateReframings < ActiveRecord::Migration[5.2]
       t.text :problem_reason
       t.text :objective_facts
       t.string :feeling
-      t.integer :before_point
-      t.string :distortion_group
-      t.string :integer
+      t.integer :before_point, limit: 1
+      t.integer :distortion_group, limit: 1
       t.text :reframing
       t.text :action_plan
-      t.integer :after_point
+      t.integer :after_point, limit: 1
       t.boolean :is_draft
 
       t.timestamps

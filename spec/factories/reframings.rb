@@ -5,8 +5,7 @@ FactoryBot.define do
     objective_facts { "MyText" }
     feeling { "MyString" }
     before_point { 1 }
-    distortion_group { "MyString" }
-    integer { "MyString" }
+    distortion_group { :black_and_white_thinking }
     reframing { "MyText" }
     action_plan { "MyText" }
     after_point { 1 }
