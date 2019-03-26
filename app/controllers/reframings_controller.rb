@@ -22,32 +22,13 @@ class ReframingsController < ApplicationController
 
   # POST /reframings
   def create
-    @reframing = Reframing.new(reframing_params)
-
-    if @reframing.save
-      render json: @reframing, status: :created, location: @reframing
-    else
-      render json: @reframing.errors, status: :unprocessable_entity
-    end
+    @reframing = Reframing.new
+    draftable_save_action
   end
 
   # PATCH/PUT /reframings/1
   def update
-    begin
-
-      if draft_save?
-        @reframing.save_draft!(reframing_params)
-      else
-        @reframing.save_complete!(reframing_params)
-      end
-
-      render_success_with(@reframing)
-    rescue => e
-      error_messages = {reframing: e.message}
-      error_response = ErrorResponse.create_validate_error(error_messages)
-      render_with_error_response(error_response)
-    end
-
+    draftable_save_action
   end
 
   private
@@ -75,6 +56,22 @@ class ReframingsController < ApplicationController
 
   def draft_save?
     params[:is_draft] == "true"
+  end
+
+  def draftable_save_action()
+    begin
+      if draft_save?
+        @reframing.save_draft!(reframing_params)
+      else
+        @reframing.save_complete!(reframing_params)
+      end
+
+      render_success_with(@reframing)
+    rescue => e
+      error_messages = {reframing: e.message}
+      error_response = ErrorResponse.create_validate_error(error_messages)
+      render_with_error_response(error_response)
+    end
   end
 
 end
