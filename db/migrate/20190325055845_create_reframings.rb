@@ -10,7 +10,7 @@ class CreateReframings < ActiveRecord::Migration[5.2]
       t.text :reframing
       t.text :action_plan
       t.integer :after_point, limit: 1
-      t.boolean :is_draft
+      t.boolean :is_draft, null: false
 
       t.timestamps
     end

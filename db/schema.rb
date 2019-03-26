@@ -17,7 +17,7 @@ ActiveRecord::Schema.define(version: 2019_03_25_075825) do
 
   create_table "problem_solvings", force: :cascade do |t|
     t.date "log_date"
-    t.boolean "is_draft"
+    t.boolean "is_draft", null: false
     t.text "problem_recognition"
     t.text "example_problem"
     t.text "cause"
@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(version: 2019_03_25_075825) do
     t.text "reframing"
     t.text "action_plan"
     t.integer "after_point", limit: 2
-    t.boolean "is_draft"
+    t.boolean "is_draft", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

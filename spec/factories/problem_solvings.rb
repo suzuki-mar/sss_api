@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :problem_solving do
     log_date { "2019-03-25" }
-    is_draft { false }
+    is_draft { true }
     problem_recognition { "MyText" }
     example_problem { "MyText" }
     cause { "MyText" }

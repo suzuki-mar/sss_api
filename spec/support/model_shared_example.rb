@@ -64,3 +64,21 @@ shared_examples 'pointのバリデーション' do
     expect(model.errors.messages).to have_key(attribute_name)
   end
 end
+
+# booleanはshoulda-matchers使えない
+shared_examples 'is_draftのバリデーション' do
+  it 'trueは許可される' do
+    model[:is_draft] = true
+    expect(model).to be_valid
+  end
+
+  it 'falseは許可される' do
+    model[:is_draft] = false
+    expect(model).to be_valid
+  end
+
+  it 'nullは許可されない' do
+    model[:is_draft] = nil
+    expect(model).not_to be_valid
+  end
+end

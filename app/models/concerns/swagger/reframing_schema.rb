@@ -70,7 +70,7 @@ module Swagger::ReframingSchema
         end
         schema do
           key :required, [
-              :distortion_group_text, :is_draft_text
+              :distortion_group_text, :is_draft_text, :feeling
           ]
 
           property :distortion_group_text do

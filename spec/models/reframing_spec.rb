@@ -61,6 +61,12 @@ RSpec.describe Reframing, type: :model do
       end
     end
 
+    describe 'is_draft' do
+      it_behaves_like "is_draftのバリデーション" do
+        let(:model){ reframing }
+      end
+    end
+
   end
 
   describe 'Enum' do
@@ -75,5 +81,60 @@ RSpec.describe Reframing, type: :model do
     end
   end
 
+  describe 'save_draft!' do
+
+    it 'ドラフト状態の保存ができる' do
+
+      reframing = create(:reframing, :completed)
+
+      reframing.save_draft!({problem_reason: nil})
+      expect(reframing.problem_reason).to be_nil
+      expect(reframing.is_draft).to be_truthy
+    end
+
+  end
+
+  describe 'save_complete!' do
+
+    it '完成状態の保存ができる' do
+
+      reframing = create(:reframing, :draft)
+      text = "reason #{rand}"
+
+      params = attributes_for(:reframing, :draft)
+      params[:problem_reason] = text
+      reframing.save_complete!(params)
+      expect(reframing.problem_reason).to eq(text)
+      expect(reframing.is_draft).to be_falsey
+    end
+
+    it 'パラメーターエラーの場合はエラーとなること' do
+      reframing = create(:reframing, :draft)
+      params = attributes_for(:reframing, :draft)
+      params[:problem_reason] = nil
+      params[:before_point] = nil
+      expect { reframing.save_complete!(params) }.to raise_error(RuntimeError)
+    end
+
+  end
+
+  describe 'validate_complete?' do
+
+    it 'バリデーションに成功した場合はtrueなこと' do
+      reframing = create(:reframing)
+      expect(reframing.valid_complete?).to be_truthy
+    end
+
+    it 'バリデーションに失敗した場合はfalseなこと' do
+      reframing = create(:reframing)
+      params = attributes_for(:reframing, :draft)
+      params[:problem_reason] = nil
+      params[:before_point] = nil
+      reframing.assign_attributes(params)
+
+      expect(reframing.valid_complete?).to be_falsey
+    end
+
+  end
 
 end

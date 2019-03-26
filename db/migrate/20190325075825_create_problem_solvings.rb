@@ -2,7 +2,7 @@ class CreateProblemSolvings < ActiveRecord::Migration[5.2]
   def change
     create_table :problem_solvings do |t|
       t.date :log_date
-      t.boolean :is_draft
+      t.boolean :is_draft, null: false
       t.text :problem_recognition
       t.text :example_problem
       t.text :cause

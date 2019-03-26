@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :reframing do
+
     log_date { "2019-03-25" }
     problem_reason { "MyText" }
     objective_facts { "MyText" }
@@ -10,5 +11,14 @@ FactoryBot.define do
     action_plan { "MyText" }
     after_point { 1 }
     is_draft { false }
+
+    trait :draft do
+      is_draft { true }
+    end
+
+    trait :completed do
+      is_draft { false }
+    end
+
   end
 end
