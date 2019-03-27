@@ -3,6 +3,13 @@ class ProblemSolvingsController < ApplicationController
 
   before_action :set_problem_solving, only: [:show, :update, :destroy]
 
+  protected
+  # 親クラスで必要となるメソッド
+  def target_model_name
+    'ProblemSolving'
+  end
+
+  public
   # GET /problem_solvings
   def index
     @problem_solvings = ProblemSolving.all
@@ -12,7 +19,7 @@ class ProblemSolvingsController < ApplicationController
 
   # GET /problem_solvings/1
   def show
-    render json: @problem_solving
+    render_success_with(@problem_solving)
   end
 
   # POST /problem_solvings
