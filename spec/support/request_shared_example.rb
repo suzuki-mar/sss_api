@@ -12,7 +12,7 @@ shared_examples "オブジェクトが存在しない場合" do
 
 end
 
-shared_examples 'スキーマ通りのオブジェクトを取得できること' do
+shared_examples 'スキーマ通りのオブジェクトを取得できてレスポンスが正しいことること' do
 
   it do
     subject
@@ -20,4 +20,22 @@ shared_examples 'スキーマ通りのオブジェクトを取得できること
     expect(json.keys).to match_array(expected_response_keys)
   end
 
+  it do
+    subject
+    expect(response.status).to eq 200
+  end
+
+end
+
+shared_examples 'バリデーションパラメーターのエラー制御ができる' do
+  it do
+    subject
+    expect(response.status).to eq 400
+  end
+
+  it 'エラーレスポンスを取得できること' do
+    subject
+    json = JSON.parse(response.body)
+    expect(json["message"]).to eq(error_message)
+  end
 end

@@ -13,7 +13,7 @@ class ErrorResponse
     object
   end
 
-  def self.create_validate_error(messages)
+  def self.create_validate_error_from_messages(messages)
     object = ErrorResponse.new
     object.status = 400
     object.message = ''

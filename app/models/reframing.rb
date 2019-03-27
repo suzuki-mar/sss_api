@@ -34,6 +34,9 @@ class Reframing < ApplicationRecord
       shift_responsibility: 11, pessimistic: 12
   }
 
+  scope :recent, -> { where(log_date: (1.week.ago)..(Date.today)) }
+  scope :by_month_date, -> (month_date) { where(log_date: month_date.start_date..month_date.end_date) }
+
   def save_draft!(params)
     params[:is_draft] = true
     self.assign_attributes(params)
