@@ -6,6 +6,7 @@ module Swagger::ProblemSolvingSchema
   included do
 
     swagger_schema :ProblemSolvingBase do
+
       key :required, [
           :log_date, :problem_recognition, :example_problem, :cause, :phenomenon, :neglect_phenomenon,
           :solution, :execution_method, :evaluation_method

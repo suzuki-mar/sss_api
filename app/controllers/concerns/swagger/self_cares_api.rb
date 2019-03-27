@@ -12,6 +12,11 @@ module Swagger::SelfCaresApi
         key :description, '該当IDのSelfCareを取得する'
         key :operationId, :find_self_care_by_id
 
+        key :tags, [
+            'self_care',
+            'ver1'
+        ]
+
         parameter name: :id do
           key :in, :path
           key :description, 'Self Care ID'
@@ -38,6 +43,11 @@ module Swagger::SelfCaresApi
       operation :put do
         key :description, '指定したSelfCareをアップデートする'
         key :operationId, :update_self_cares_by_id
+
+        key :tags, [
+            'self_care',
+            'ver1'
+        ]
 
         parameter name: :id do
           key :in, :path
@@ -81,6 +91,11 @@ module Swagger::SelfCaresApi
         key :description, 'SelfCareを作成'
         key :operationId, :create_self_cares
 
+        key :tags, [
+            'self_care',
+            'ver1'
+        ]
+
         parameter name: :self_care do
           key :in, :body
           key :required, true
@@ -112,6 +127,11 @@ module Swagger::SelfCaresApi
       operation :get do
         key :description, '直近１週間のSelfCareリストを取得する'
         key :operationId, :find_recently_self_cares
+
+        key :tags, [
+            'self_care',
+            'ver1'
+        ]
 
         response 200 do
           key :description, '直近１週間のSelfCareリストを取得する'
@@ -151,6 +171,11 @@ module Swagger::SelfCaresApi
       operation :get do
         key :description, '指定した月のSelfCare一覧を取得する'
         key :operationId, :find_self_cares_by_year_and_month
+
+        key :tags, [
+            'self_care',
+            'ver1'
+        ]
 
         parameter name: :year do
           key :in, :query

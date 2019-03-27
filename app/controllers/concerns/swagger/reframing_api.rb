@@ -10,6 +10,10 @@ module Swagger::ReframingApi
       operation :get do
         key :description, '該当IDのReframingを取得する'
         key :operationId, :find_reframing_by_id
+        key :tags, [
+            'reframing',
+            'ver1'
+        ]
 
         parameter name: :id do
           key :in, :path
@@ -37,6 +41,12 @@ module Swagger::ReframingApi
       operation :put do
         key :description, '指定したReframingをアップデートする'
         key :operationId, :update_reframing_by_id
+
+        key :tags, [
+            'reframing',
+            'ver1'
+        ]
+
 
         parameter name: :id do
           key :in, :path
@@ -80,6 +90,12 @@ module Swagger::ReframingApi
         key :description, 'Reframingを作成'
         key :operationId, :create_reframing
 
+        key :tags, [
+            'reframing',
+            'ver1'
+        ]
+
+
         parameter name: :self_care do
           key :in, :body
           key :required, true
@@ -111,6 +127,12 @@ module Swagger::ReframingApi
       operation :get do
         key :description, '直近１週間のReframingリストを取得する'
         key :operationId, :find_recently_reframing
+
+        key :tags, [
+            'reframing',
+            'ver1'
+        ]
+
 
         response 200 do
           key :description, '直近１週間のReframingリストを取得する'
@@ -150,6 +172,12 @@ module Swagger::ReframingApi
       operation :get do
         key :description, '指定した月のデータ一覧を取得する'
         key :operationId, :find_reframings_by_year_and_month
+
+        key :tags, [
+            'reframing',
+            'ver1'
+        ]
+
 
         parameter name: :year do
           key :in, :query

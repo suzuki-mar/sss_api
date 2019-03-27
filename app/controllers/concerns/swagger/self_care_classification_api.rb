@@ -12,6 +12,11 @@ module Swagger::SelfCareClassificationApi
         key :description, 'SelfCareClassificationを作成'
         key :operationId, :create_self_care_classification
 
+        key :tags, [
+            'self_care',
+            'ver1'
+        ]
+
         parameter name: :self_care_classification do
           key :in, :body
           key :required, true

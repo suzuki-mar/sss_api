@@ -10,6 +10,10 @@ module Swagger::ProblemSolvingApi
       operation :get do
         key :description, '該当IDのProblemSolvingを取得する'
         key :operationId, :find_problem_solving_by_id
+        key :tags, [
+            'problem_solving',
+            'ver1'
+        ]
 
         parameter name: :id do
           key :in, :path
@@ -37,6 +41,10 @@ module Swagger::ProblemSolvingApi
       operation :put do
         key :description, '指定したProblemSolvingをアップデートする'
         key :operationId, :update_problem_solving_by_id
+        key :tags, [
+            'problem_solving',
+            'ver1'
+        ]
 
         parameter name: :id do
           key :in, :path
@@ -79,6 +87,10 @@ module Swagger::ProblemSolvingApi
       operation :post do
         key :description, 'ProblemSolvingを作成'
         key :operationId, :create_problem_solving
+        key :tags, [
+            'problem_solving',
+            'ver1'
+        ]
 
         parameter name: :problem_solving do
           key :in, :body
@@ -111,6 +123,10 @@ module Swagger::ProblemSolvingApi
       operation :get do
         key :description, '直近１週間のProblemSolvingリストを取得する'
         key :operationId, :find_recently_problem_solvings
+        key :tags, [
+            'problem_solving',
+            'ver1'
+        ]
 
         response 200 do
           key :description, '直近１週間のProblemSolvingリストを取得する'
@@ -150,6 +166,10 @@ module Swagger::ProblemSolvingApi
       operation :get do
         key :description, '指定した月のデータ一覧を取得する'
         key :operationId, :find_problem_solvings_by_year_and_month
+        key :tags, [
+            'problem_solving',
+            'ver1'
+        ]
 
         parameter name: :year do
           key :in, :query
