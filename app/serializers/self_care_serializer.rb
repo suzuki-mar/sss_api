@@ -1,7 +1,13 @@
 class SelfCareSerializer < ActiveModel::Serializer
-  attributes :id, :am_pm, :log_date, :point, :reason
+  attributes :id, :am_pm, :log_date, :point, :reason, :status_group, :classification_name
 
-  has_one :self_care_classification
+  def classification_name
+    object.self_care_classification.name
+  end
+
+  def status_group
+    SelfCareClassificationSerializer.convert_status_group(object.self_care_classification)
+  end
 
   def am_pm
 

@@ -347,6 +347,4 @@ RSpec.describe "ProblemSolvings", type: :request do
 
   end
 
-
-
 end

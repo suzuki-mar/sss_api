@@ -1,4 +1,4 @@
-class SelfCareClassificationController < ApplicationController
+class SelfCareClassificationController < ApiControllerBase
 
   include Swagger::SelfCareClassificationApi
 

@@ -14,9 +14,13 @@ Rails.application.routes.draw do
     end
   end
 
-  get 'api_docs/index'
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-  resources :self_cares
+  resources :self_cares do
+    collection do
+      get :recent
+      get 'month/:year/:month' => 'self_cares#month'
+    end
+  end
 
+  get 'api_docs/index'
   get 'api-docs', to: 'api_docs#index'
 end

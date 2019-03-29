@@ -1,4 +1,4 @@
-class ReframingsController < ApplicationController
+class ReframingsController < ApiControllerBase
 
   include Swagger::ReframingApi
   include DraftableAction

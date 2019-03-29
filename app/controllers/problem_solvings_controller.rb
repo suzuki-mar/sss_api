@@ -1,4 +1,4 @@
-class ProblemSolvingsController < ApplicationController
+class ProblemSolvingsController < ApiControllerBase
   include Swagger::ProblemSolvingApi
   include DraftableAction
 
