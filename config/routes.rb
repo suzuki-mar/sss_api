@@ -21,6 +21,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :self_care_classifications, :only => [:update, :create]
+
   get 'api_docs/index'
   get 'api-docs', to: 'api_docs#index'
 end
