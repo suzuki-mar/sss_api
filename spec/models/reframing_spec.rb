@@ -113,26 +113,7 @@ RSpec.describe Reframing, type: :model do
       params = attributes_for(:reframing, :draft)
       params[:problem_reason] = nil
       params[:before_point] = nil
-      expect { reframing.save_complete!(params) }.to raise_error(RuntimeError)
-    end
-
-  end
-
-  describe 'validate_complete?' do
-
-    it 'バリデーションに成功した場合はtrueなこと' do
-      reframing = create(:reframing)
-      expect(reframing.valid_complete?).to be_truthy
-    end
-
-    it 'バリデーションに失敗した場合はfalseなこと' do
-      reframing = create(:reframing)
-      params = attributes_for(:reframing, :draft)
-      params[:problem_reason] = nil
-      params[:before_point] = nil
-      reframing.assign_attributes(params)
-
-      expect(reframing.valid_complete?).to be_falsey
+      expect { reframing.save_complete!(params) }.to raise_error(ActiveRecord::RecordInvalid)
     end
 
   end

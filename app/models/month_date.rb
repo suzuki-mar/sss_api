@@ -15,7 +15,7 @@ class MonthDate
     end
 
     if @year < 1
-      @error_messages[:year] = "年の指定がおかしいです:渡した年:#{@month}"
+      @error_messages[:year] = "年の指定がおかしいです:渡した年:#{@year}"
     end
 
     @error_messages.count < 1

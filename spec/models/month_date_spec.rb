@@ -59,16 +59,10 @@ RSpec.describe MonthDate, type: :model do
         context '1より小さい' do
           let(:year){0}
           it 'バリデーションに通らない' do
-            expect(subject[:month]).to eq("年の指定がおかしいです:渡した年:#{year}")
+            expect(subject[:year]).to eq("年の指定がおかしいです:渡した年:#{year}")
           end
         end
 
-        # context '12より多い' do
-        #   let(:month){13}
-        #   it 'バリデーションに通らない' do
-        #     expect(subject[:month]).to eq(error_message)
-        #   end
-        # end
       end
     end
   end
