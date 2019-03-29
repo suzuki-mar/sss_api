@@ -1,6 +1,8 @@
 class ProblemSolving < ApplicationRecord
 
   include Swagger::ProblemSolvingSchema
+  include DraftableModel
+  include SearchableFromLogDateModel
 
   validates :log_date, log_date_type: true
   validates :problem_recognition, presence: true, on: :completed

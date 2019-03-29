@@ -1,5 +1,7 @@
 class ProblemSolvingsController < ApplicationController
   include Swagger::ProblemSolvingApi
+  include DraftableAction
+
 
   before_action :set_problem_solving, only: [:show, :update, :destroy]
 
@@ -24,27 +26,36 @@ class ProblemSolvingsController < ApplicationController
 
   # POST /problem_solvings
   def create
-    @problem_solving = ProblemSolving.new(problem_solving_params)
-
-    if @problem_solving.save
-      render json: @problem_solving, status: :created, location: @problem_solving
-    else
-      render json: @problem_solving.errors, status: :unprocessable_entity
-    end
+    @problem_solving = ProblemSolving.new
+    draftable_save_action
   end
 
   # PATCH/PUT /problem_solvings/1
   def update
-    if @problem_solving.update(problem_solving_params)
-      render json: @problem_solving
-    else
-      render json: @problem_solving.errors, status: :unprocessable_entity
-    end
+    draftable_save_action
   end
 
   # DELETE /problem_solvings/1
   def destroy
     @problem_solving.destroy
+  end
+
+  def recent
+    problem_solvings = ProblemSolving.recent
+    render_success_with_list(problem_solvings)
+  end
+
+  def month
+    month_date = MonthDate.new(params["year"], params["month"])
+
+    unless month_date.valid
+      error_response = ErrorResponse.create_validate_error_from_messages(month_date.error_messages)
+      render_with_error_response(error_response)
+      return
+    end
+
+    problem_solvings = ProblemSolving.by_month_date(month_date)
+    render_success_with_list(problem_solvings)
   end
 
   private
@@ -55,6 +66,27 @@ class ProblemSolvingsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def problem_solving_params
-      params.require(:problem_solving).permit(:log_date, :is_draft, :problem_recognition, :example_problem)
+      params.require(:problem_solving).permit(:log_date, :is_draft, :problem_recognition, :example_problem, :cause, :phenomenon, :neglect_phenomenon, :solution, :execution_method, :evaluation_method)
     end
+
+  def draftable_save_action
+
+    if params[:is_draft].nil?
+      error_response = ErrorResponse.create_validate_error_from_messages({is_draft: "必須です"})
+      render_with_error_response(error_response)
+      return
+    end
+
+    save_params = problem_solving_params.to_hash
+    save_service = DraftableSaveService.new(draft_save?, @problem_solving, save_params)
+
+    if save_service.execute
+      render_success_with(@problem_solving)
+    else
+      error_response = ErrorResponse.create_validate_error_from_messages(save_service.error_messages)
+      render_with_error_response(error_response)
+    end
+
+  end
+
 end

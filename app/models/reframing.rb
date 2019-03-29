@@ -1,6 +1,8 @@
 class Reframing < ApplicationRecord
 
   include Swagger::ReframingSchema
+  include DraftableModel
+  include SearchableFromLogDateModel
   include ActiveModel::Validations
 
   validates :problem_reason, presence: true, on: :completed
@@ -33,20 +35,5 @@ class Reframing < ApplicationRecord
       underestimate: 7, emotional_decision: 8, perfectionism: 9, labeling: 10,
       shift_responsibility: 11, pessimistic: 12
   }
-
-  scope :recent, -> { where(log_date: (1.week.ago)..(Date.today)) }
-  scope :by_month_date, -> (month_date) { where(log_date: month_date.start_date..month_date.end_date) }
-
-  def save_draft!(params)
-    params[:is_draft] = true
-    self.assign_attributes(params)
-    self.save!(context: :draft)
-  end
-
-  def save_complete!(params)
-    params[:is_draft] = false
-    self.assign_attributes(params)
-    self.save!(context: :completed)
-  end
 
 end
