@@ -10,4 +10,4 @@ development:
   database: sss_development
 test:
   <<: *default
-  database: sss_test
+  database: sss_test<%= ENV['TEST_ENV_NUMBER'] %>
