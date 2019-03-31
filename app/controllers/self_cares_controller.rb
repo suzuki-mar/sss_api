@@ -1,6 +1,7 @@
 class SelfCaresController < ApiControllerBase
 
   include Swagger::SelfCaresApi
+  include ShowListFromLogDateAction
 
   before_action :set_self_care, only: [:show, :update]
 
@@ -25,8 +26,7 @@ class SelfCaresController < ApiControllerBase
   end
 
   def recent
-    self_cares = SelfCare.recent
-    render_success_with_list(self_cares)
+    recent_list_action(SelfCare)
   end
 
   def month

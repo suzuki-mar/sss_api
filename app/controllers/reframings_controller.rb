@@ -2,6 +2,7 @@ class ReframingsController < ApiControllerBase
 
   include Swagger::ReframingApi
   include DraftableAction
+  include ShowListFromLogDateAction
 
   before_action :set_reframing, only: [:show, :update, :destroy]
 
@@ -29,8 +30,7 @@ class ReframingsController < ApiControllerBase
   end
 
   def recent
-    reframings = Reframing.recent
-    render_success_with_list(reframings)
+    recent_list_action(Reframing)
   end
 
   def month

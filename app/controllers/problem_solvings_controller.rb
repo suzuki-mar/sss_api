@@ -1,7 +1,7 @@
 class ProblemSolvingsController < ApiControllerBase
   include Swagger::ProblemSolvingApi
   include DraftableAction
-
+  include ShowListFromLogDateAction
 
   before_action :set_problem_solving, only: [:show, :update, :destroy]
 
@@ -41,8 +41,7 @@ class ProblemSolvingsController < ApiControllerBase
   end
 
   def recent
-    problem_solvings = ProblemSolving.recent
-    render_success_with_list(problem_solvings)
+    recent_list_action(ProblemSolving)
   end
 
   def month
