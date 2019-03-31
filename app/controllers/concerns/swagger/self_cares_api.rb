@@ -31,7 +31,7 @@ module Swagger::SelfCaresApi
             key :required, [:self_care]
 
             property :self_care do
-              key :'$ref', :SelfCare
+              key :'$ref', :SelfCareOutput
             end
 
           end
@@ -107,6 +107,43 @@ module Swagger::SelfCaresApi
 
         response 200 do
           key :description, 'SelfCareの作成に成功した'
+          schema do
+            key :required, [:self_care]
+
+            property :self_care do
+              key :'$ref', :SelfCareOutput
+            end
+
+          end
+        end
+
+        Swagger::ErrorResponseHelper.define_validation_failure_response(self, 'SelfCare')
+      end
+
+    end
+
+    swagger_path '/self_cares/current' do
+
+      operation :post do
+        key :description, '現在の日付のSelfCareを作成'
+        key :operationId, :create_current_self_cares
+
+        key :tags, [
+            'self_care',
+            'ver2'
+        ]
+
+        parameter name: :self_care do
+          key :in, :body
+          key :required, true
+          schema do
+            key :'$ref', 'SelfCareCurrentInput'
+          end
+
+        end
+
+        response 200 do
+          key :description, '現在の時刻のSelfCareの作成に成功した'
           schema do
             key :required, [:self_care]
 
