@@ -66,6 +66,8 @@ module Swagger::ProblemSolvingSchema
         key :example, '毎日GitHubに草が生えている'
       end
 
+
+
     end
 
     swagger_schema :ProblemSolvingOutput do
@@ -76,7 +78,7 @@ module Swagger::ProblemSolvingSchema
         end
         schema do
           key :required, [
-              :is_draft_text
+              :is_draft_text, :doing_status_text
           ]
 
           property :is_draft_text do
@@ -86,16 +88,44 @@ module Swagger::ProblemSolvingSchema
                 '下書き', '記入済み'
             ]
           end
+
+          property :doing_status_text do
+            key :type, :string
+            key :description, '進行状態'
+            key :enum, [
+                '未着手', '進行中', '完了'
+            ]
+          end
         end
       end
 
+    end
+
+    swagger_schema :ProblemSolvingAutoSaveInput do
+
+      allOf do
+        schema do
+          key :'$ref', 'ProblemSolvingBase'
+        end
+
+        schema do
+          key :required, [
+              :doing_status
+          ]
+
+          property :doing_status do
+            key :type, :integer
+            key :description, '進行状態'
+          end
+        end
+      end
     end
 
     swagger_schema :ProblemSolvingInput do
 
       allOf do
         schema do
-          key :'$ref', 'ProblemSolvingBase'
+          key :'$ref', 'ProblemSolvingAutoSaveInput'
         end
         schema do
           key :required, [
