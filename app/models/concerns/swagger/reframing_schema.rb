@@ -94,11 +94,21 @@ module Swagger::ReframingSchema
 
     end
 
-    swagger_schema :ReframingInput do
+    swagger_schema :ReframingAutoSaveInput do
 
       allOf do
         schema do
           key :'$ref', 'ReframingBase'
+        end
+
+      end
+    end
+
+    swagger_schema :ReframingInput do
+
+      allOf do
+        schema do
+          key :'$ref', 'ReframingAutoSaveInput'
         end
         schema do
           key :required, [

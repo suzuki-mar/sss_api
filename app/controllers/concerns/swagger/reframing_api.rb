@@ -122,7 +122,78 @@ module Swagger::ReframingApi
 
     end
 
-    swagger_path '/reframing/recent' do
+    swagger_path '/reframings/initialize' do
+
+      operation :post do
+        key :description, 'Reframingのデータの初期データを作成:自動セーブ用'
+        key :operationId, :initialize_reframing
+        key :tags, [
+            'reframing',
+            'ver2'
+        ]
+
+        response 200 do
+          key :description, 'Reframingの初期データの作成に成功した'
+          schema do
+            key :required, [:reframing]
+
+            property :reframing do
+              key :'$ref', :ReframingOutput
+            end
+
+          end
+        end
+
+        Swagger::ErrorResponseHelper.define_validation_failure_response(self, 'Reframing')
+      end
+
+    end
+
+    swagger_path '/reframings/auto_save/{id}' do
+
+      operation :post do
+        key :description, 'Reframingを自動で保存する'
+        key :operationId, :auto_save_reframing
+        key :tags, [
+            'reframing',
+            'ver2'
+        ]
+
+        parameter name: :id do
+          key :in, :path
+          key :description, 'Reframing ID'
+          key :required, true
+          key :type, :integer
+          key :format, :int64
+        end
+
+        parameter name: :reframing do
+          key :in, :body
+          key :required, true
+          schema do
+            key :'$ref', 'ReframingAutoSaveInput'
+          end
+
+        end
+
+        response 200 do
+          key :description, 'Reframingを自動で保存する: is_draft等は不要'
+          schema do
+            key :required, [:reframing]
+
+            property :reframing do
+              key :'$ref', :ReframingOutput
+            end
+
+          end
+        end
+
+        Swagger::ErrorResponseHelper.define_validation_failure_response(self, 'Reframing')
+      end
+
+    end
+
+    swagger_path '/reframings/recent' do
 
       operation :get do
         key :description, '直近１週間のReframingリストを取得する'
@@ -167,7 +238,7 @@ module Swagger::ReframingApi
 
     end
 
-    swagger_path '/reframing/month' do
+    swagger_path '/reframings/month' do
 
       operation :get do
         key :description, '指定した月のデータ一覧を取得する'
@@ -177,7 +248,6 @@ module Swagger::ReframingApi
             'reframing',
             'ver1'
         ]
-
 
         parameter name: :year do
           key :in, :query

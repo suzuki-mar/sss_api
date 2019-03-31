@@ -309,7 +309,7 @@ module Swagger::ProblemSolvingApi
 
     end
 
-    swagger_path '/problem_solvings/auto_save' do
+    swagger_path '/problem_solvings/auto_save/{id}' do
 
       operation :post do
         key :description, 'ProblemSolvingを自動で保存する'
@@ -326,6 +326,14 @@ module Swagger::ProblemSolvingApi
             key :'$ref', 'ProblemSolvingAutoSaveInput'
           end
 
+        end
+
+        parameter name: :id do
+          key :in, :path
+          key :description, 'Problem Solving ID'
+          key :required, true
+          key :type, :integer
+          key :format, :int64
         end
 
         response 200 do
