@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       get :recent
       get 'month/:year/:month' => 'problem_solvings#month'
       post :init
+      put 'auto_save/:id' => 'problem_solvings#auto_save'
       put 'done/:id' => 'problem_solvings#done'
       put 'doing/:id' => 'problem_solvings#doing'
       get 'doings/:year/:month' => 'problem_solvings#doings'
@@ -17,6 +18,7 @@ Rails.application.routes.draw do
       get :recent
       get 'month/:year/:month' => 'reframings#month'
       post :init
+      put 'auto_save/:id' => 'reframings#auto_save'
     end
   end
 

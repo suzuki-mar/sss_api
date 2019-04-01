@@ -391,5 +391,84 @@ RSpec.describe "Reframings", type: :request do
 
   end
 
+  describe 'update' do
+    before :each do
+      create(:reframing, :draft)
+    end
+
+    subject do
+      params = {reframing: reframing_params}
+      put "/reframings/auto_save/#{id}", params: params
+    end
+
+    context 'オブジェクトが存在する場合' do
+      let(:id){1}
+      let(:change_text){"調子がいい#{rand}"}
+
+      context '正常に更新できる場合' do
+
+        let(:reframing_params) do
+          attributes_for(:reframing, feeling: change_text, distortion_group_number: 2)
+        end
+
+        it_behaves_like 'スキーマ通りのオブジェクトを取得できてレスポンスが正しいことること' do
+          let(:expected_response_keys){@expected_response_keys}
+        end
+
+        it '更新したオブジェクトをレスポンとして返されること' do
+          subject
+          json = JSON.parse(response.body)
+          expect(json['reframing']['feeling']).to eq(change_text)
+        end
+
+        it 'DBの値が更新されていること' do
+          subject
+          reframing = Reframing.find(id)
+          expect(reframing.feeling).to eq(change_text)
+          expect(reframing.is_draft).to eq(true)
+          expect(reframing.distortion_group).to eq('too_general')
+        end
+
+      end
+
+      context 'バリデーションエラーの場合' do
+        let(:reframing_params) do
+          attributes_for(:reframing, feeling: nil, log_date: nil, distortion_group_number: 2)
+        end
+
+        it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
+          let(:error_message){"reframing:\tValidation failed: Log date 日付の選択は必須です\n\n"}
+        end
+
+      end
+
+    end
+
+    context 'パラメーターが間違っている場合' do
+
+      context 'distortion_group_numberが存在しない値の場合' do
+        let(:change_draft) {true}
+        let(:id){1}
+
+        let(:reframing_params) do
+          attributes_for(:reframing, distortion_group_number: 99999999999)
+        end
+
+        it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
+          let(:error_message){"reframings:\t存在しないdistortion_group_numberを指定しました:99999999999\n\n"}
+        end
+      end
+
+    end
+
+    it_behaves_like 'オブジェクトが存在しない場合' do
+      let(:id){10000000}
+      let(:change_draft) {true}
+      let(:reframing_params) do
+        attributes_for(:reframing, feeling: '調子がいい')
+      end
+      let(:resource_name){'Reframing'}
+    end
+  end
 
 end

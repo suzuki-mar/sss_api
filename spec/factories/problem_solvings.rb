@@ -11,5 +11,22 @@ FactoryBot.define do
     execution_method { "MyText" }
     evaluation_method { "MyText" }
     progress_status {:doing}
+
+    trait :done do
+      progress_status { :done }
+    end
+
+    trait :doing do
+      progress_status { :doing }
+    end
+
+    trait :draft do
+      is_draft { true }
+    end
+
+    trait :completed do
+      is_draft { false }
+    end
+
   end
 end

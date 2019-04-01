@@ -505,7 +505,7 @@ RSpec.describe "ProblemSolvings", type: :request do
 
       dates.each do |date|
         create(:problem_solving, log_date: date, progress_status: :done)
-        create(:problem_solving, log_date: date, progress_status: :doing)
+        create(:problem_solving, log_date: date, progress_status: :not_started)
       end
 
     end
@@ -541,6 +541,68 @@ RSpec.describe "ProblemSolvings", type: :request do
 
     end
 
+  end
+
+  describe 'auto_save' do
+    before :each do
+      create(:problem_solving, :draft)
+    end
+
+    subject do
+      save_params[:example_problem] = change_text
+      params = {problem_solving: save_params}
+      put "/problem_solvings/auto_save/#{id}", params: params
+    end
+
+    context 'オブジェクトが存在する場合' do
+      let(:id){1}
+      let(:change_text){"問題例#{rand}"}
+
+      context '正常に更新できる場合' do
+
+        let(:save_params) do
+          attributes_for(:problem_solving, example_problem: change_text)
+        end
+
+        it_behaves_like 'スキーマ通りのオブジェクトを取得できてレスポンスが正しいことること' do
+          let(:expected_response_keys){@expected_response_keys}
+        end
+
+        it '更新したオブジェクトをレスポンとして返されること' do
+          subject
+          json = JSON.parse(response.body)
+          expect(json['problem_solving']['example_problem']).to eq(change_text)
+        end
+
+        it 'DBの値が更新されていること' do
+          subject
+          problem_solving = ProblemSolving.find(id)
+          expect(problem_solving.example_problem).to eq(change_text)
+          expect(problem_solving.is_draft).to eq(true)
+        end
+
+      end
+
+      context 'バリデーションエラーの場合' do
+        let(:save_params) do
+          attributes_for(:problem_solving, example_problem: nil, log_date: nil)
+        end
+
+        it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
+          let(:error_message){"problem_solving:\tValidation failed: Log date 日付の選択は必須です\n\n"}
+        end
+
+      end
+    end
+
+    it_behaves_like 'オブジェクトが存在しない場合' do
+      let(:id){10000000}
+      let(:change_text){"問題例#{rand}"}
+      let(:save_params) do
+        attributes_for(:problem_solving, example_problem: '問題例')
+      end
+      let(:resource_name){'ProblemSolving'}
+    end
   end
 
 end
