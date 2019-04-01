@@ -7,7 +7,9 @@ module DraftableAction
   end
 
   def init_action(model_class)
-    model = ProblemSolving.new
+    model = model_class.new
+    raise NotImplementedError.new("initialize!を実装してください") unless model.respond_to?(:initialize!)
+
     model.initialize!
     render_success_with(model)
   end

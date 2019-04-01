@@ -11,9 +11,9 @@ class Reframing < ApplicationRecord
   validates :reframing, presence: true, on: :completed
   validates :action_plan, presence: true, on: :completed
   validates :distortion_group, presence: true, on: :completed
-  validates :log_date, log_date_type: true
-  validates :before_point, point_type: true
-  validates :after_point, point_type: true
+  validates :log_date, log_date_type: {initailizeable_model: true }
+  validates :before_point, point_type: {initailizeable_model: true }
+  validates :after_point, point_type: {initailizeable_model: true }
   validates :is_draft, inclusion: {in: [true, false]}
 
   # 日本語：英語対応表
@@ -35,5 +35,10 @@ class Reframing < ApplicationRecord
       underestimate: 7, emotional_decision: 8, perfectionism: 9, labeling: 10,
       shift_responsibility: 11, pessimistic: 12
   }
+
+  protected
+  def initialize_params
+    {}
+  end
 
 end

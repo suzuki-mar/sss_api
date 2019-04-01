@@ -347,7 +347,7 @@ RSpec.describe "ProblemSolvings", type: :request do
 
   end
 
-  describe 'initialize' do
+  describe 'init' do
 
     subject do
       post "/problem_solvings/init"

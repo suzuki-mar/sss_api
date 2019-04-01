@@ -37,6 +37,10 @@ class ReframingsController < ApiControllerBase
     month_list_action(Reframing)
   end
 
+  def init
+    init_action(Reframing)
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_reframing

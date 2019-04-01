@@ -5,16 +5,16 @@ RSpec.describe Reframing, type: :model do
   describe 'Validation' do
 
     let(:reframing){build_stubbed(:reframing)}
-    it_behaves_like 'log_dateのバリデーション' do
+    it_behaves_like 'log_dateのバリデーション:initializable' do
       let(:model){reframing}
     end
 
-    it_behaves_like 'pointのバリデーション' do
+    it_behaves_like 'pointのバリデーション:initializable' do
       let(:model){build(:reframing)} #update_attributeを使っているのでstubbedは使えない
       let(:attribute_name){:before_point}
     end
 
-    it_behaves_like 'pointのバリデーション' do
+    it_behaves_like 'pointのバリデーション:initializable' do
       let(:model){build(:reframing)} #update_attributeを使っているのでstubbedは使えない
       let(:attribute_name){:after_point}
     end

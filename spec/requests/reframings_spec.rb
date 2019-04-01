@@ -362,4 +362,34 @@ RSpec.describe "Reframings", type: :request do
 
   end
 
+  describe 'init' do
+
+    subject do
+      post "/reframings/init"
+    end
+
+    context '正常に更新できる場合' do
+
+      it_behaves_like 'スキーマ通りのオブジェクトを取得できてレスポンスが正しいことること' do
+        let(:expected_response_keys){@expected_response_keys}
+      end
+
+      it '初期化したオブジェクトをレスポンスとして返されること' do
+        subject
+        json = JSON.parse(response.body)
+        expect(json['reframing']["is_draft_text"]).to eq("下書き")
+      end
+
+      it 'DBの値が更新されていること' do
+        subject
+        problem_solving = Reframing.last
+        expect(problem_solving).not_to be_nil
+        expect(problem_solving.is_draft).to be_truthy
+      end
+
+    end
+
+  end
+
+
 end

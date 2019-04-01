@@ -5,6 +5,11 @@ class PointTypeValidator < ActiveModel::EachValidator
       return
     end
 
+    is_initailizeable_model = options.has_key?(:initailizeable_model) && options[:initailizeable_model] == true
+    if is_initailizeable_model && record.initailize_mode?
+      return
+    end
+
     if value.nil?
       record.errors.add(attribute, 'ポイントの選択は必須です')
       return

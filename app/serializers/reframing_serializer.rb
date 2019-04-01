@@ -5,6 +5,8 @@ class ReframingSerializer < ActiveModel::Serializer
              :distortion_group_text, :reframing, :action_plan, :after_point, :is_draft_text
 
   def distortion_group_text
+    return nil if object.distortion_group.nil?
+
     values = {
       black_and_white_thinking: '白黒思考',
       too_general: '一般化のしすぎ',

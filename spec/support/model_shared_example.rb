@@ -77,6 +77,19 @@ shared_examples 'pointのバリデーション' do
   end
 end
 
+shared_examples 'pointのバリデーション:initializable' do
+  it_behaves_like 'pointのバリデーション' do
+  end
+
+  it '初期化状態の場合はバリデーションを確認しない' do
+    model.send(:execute_initailize_mode)
+
+    model[attribute_name] = -1
+    model.validate
+    expect(model).to be_valid
+  end
+end
+
 # booleanはshoulda-matchers使えない
 shared_examples 'is_draftのバリデーション' do
   it 'trueは許可される' do

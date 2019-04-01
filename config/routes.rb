@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     collection do
       get :recent
       get 'month/:year/:month' => 'reframings#month'
+      post :init
     end
   end
 
