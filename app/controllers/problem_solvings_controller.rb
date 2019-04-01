@@ -48,6 +48,10 @@ class ProblemSolvingsController < ApiControllerBase
     month_list_action(ProblemSolving)
   end
 
+  def init
+    init_action(ProblemSolving)
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_problem_solving

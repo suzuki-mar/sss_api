@@ -4,7 +4,7 @@ RSpec.describe ProblemSolving, type: :model do
   describe 'Validation' do
 
     let(:problem_solving){build_stubbed(:problem_solving)}
-    it_behaves_like 'log_dateのバリデーション' do
+    it_behaves_like 'log_dateのバリデーション:initializable' do
       let(:model){problem_solving}
     end
 

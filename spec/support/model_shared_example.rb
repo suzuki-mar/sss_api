@@ -33,6 +33,19 @@ shared_examples 'log_dateのバリデーション' do
   end
 end
 
+shared_examples 'log_dateのバリデーション:initializable' do
+  it_behaves_like 'log_dateのバリデーション' do
+  end
+
+  it '初期化状態の場合はバリデーションを確認しない' do
+    model.send(:execute_initailize_mode)
+
+    model.log_date = Date.tomorrow
+    model.validate
+    expect(model).to be_valid
+  end
+end
+
 shared_examples 'pointのバリデーション' do
 
   it '0より大きい数で10までの場合は許可する' do

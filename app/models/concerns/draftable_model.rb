@@ -13,4 +13,18 @@ module DraftableModel
     self.save!(context: :completed)
   end
 
+  def initailize_mode?
+    self.is_initailize
+  end
+
+  protected
+  attr_accessor :is_initailize
+
+  def execute_initailize_mode
+    self.is_initailize = true
+  end
+
+  def sef_default_values
+    self.is_initailize = false
+  end
 end
