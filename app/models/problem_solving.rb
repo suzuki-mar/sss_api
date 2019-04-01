@@ -20,6 +20,8 @@ class ProblemSolving < ApplicationRecord
 
   enum progress_status:{not_started: 1, doing: 2, done: 3}
 
+  scope :only_doing, -> { where(progress_status: :doing) }
+
   def done!
     self.progress_status = :done
     self.save!

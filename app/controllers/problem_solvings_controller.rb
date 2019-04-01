@@ -62,6 +62,19 @@ class ProblemSolvingsController < ApiControllerBase
     render_success_with(@problem_solving)
   end
 
+  def doings
+    month_date = MonthDate.new(params["year"], params["month"])
+
+    unless month_date.valid
+      error_response = ErrorResponse.create_validate_error_from_messages(month_date.error_messages)
+      render_with_error_response(error_response)
+      return
+    end
+
+    list = ProblemSolving.by_month_date(month_date).only_doing
+    render_success_with_list(list)
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_problem_solving

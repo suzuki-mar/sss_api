@@ -447,4 +447,52 @@ RSpec.describe "ProblemSolvings", type: :request do
     end
   end
 
+  describe 'doings' do
+    before :each do
+      dates = [
+          compare_date,
+          compare_date + 1.month,
+          compare_date - 1.month,
+      ]
+
+      dates.each do |date|
+        create(:problem_solving, log_date: date, progress_status: :done)
+        create(:problem_solving, log_date: date, progress_status: :doing)
+      end
+
+    end
+
+    let(:compare_date){Date.today - 1.month}
+
+    subject do
+      get "/problem_solvings/doings/#{param_year}/#{param_month}"
+    end
+
+    context 'パラメーターが正しい場合' do
+      let(:param_year){compare_date.year}
+      let(:param_month){compare_date.month}
+
+      it '直近一週間以内のデータしか取得していない' do
+        subject
+        json = JSON.parse(response.body)
+        expect(json['problem_solvings'].count).to eq(1)
+      end
+
+      it_behaves_like 'スキーマ通りのオブジェクトを取得できてレスポンスが正しいことること' do
+        let(:expected_response_keys){'problem_solvings'}
+      end
+    end
+
+    context 'パラメーターが間違っている場合' do
+      let(:param_year){1999}
+      let(:param_month){13}
+
+      it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
+        let(:error_message){"month:\t月の指定がおかしいです:渡した月:13\n" + "\n"}
+      end
+
+    end
+
+  end
+
 end
