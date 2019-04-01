@@ -30,7 +30,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :self_care_classifications, :only => [:update, :create]
+  resources :self_care_classifications, :only => [:update, :create, :index]
 
   get 'api_docs/index'
   get 'api-docs', to: 'api_docs#index'

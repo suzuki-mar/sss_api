@@ -155,4 +155,31 @@ describe "SelfCareClassification", type: :request do
     end
   end
 
+  describe 'index' do
+    before :each do
+      create(:self_care_classification, name: Faker::Color.color_name, status_group: :good)
+      create(:self_care_classification, name: Faker::Color.color_name, status_group: :bad)
+      create(:self_care_classification, name: Faker::Color.color_name, status_group: :normal)
+      create(:self_care_classification, name: Faker::Color.color_name, status_group: :good)
+    end
+
+    subject do
+      get "/self_care_classifications"
+    end
+
+    it 'ソートされたデータを取得できること' do
+      subject
+      json = JSON.parse(response.body)
+      expect(json['self_care_classifications'][0]['status_group']).to eq('良好')
+      expect(json['self_care_classifications'][1]['status_group']).to eq('良好')
+      expect(json['self_care_classifications'][2]['status_group']).to eq('注意')
+      expect(json['self_care_classifications'][3]['status_group']).to eq('悪化')
+    end
+
+    it_behaves_like 'スキーマ通りのオブジェクトを取得できてレスポンスが正しいことること' do
+      let(:expected_response_keys){'self_care_classifications'}
+    end
+
+  end
+
 end

@@ -20,6 +20,10 @@ class SelfCareClassificationsController < ApiControllerBase
     save_action
   end
 
+  def index
+    render_success_with_list(SelfCareClassification.for_selecting)
+  end
+
   private
   def save_action
     save_params = create_save_params

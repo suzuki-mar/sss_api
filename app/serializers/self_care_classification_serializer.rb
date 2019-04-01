@@ -1,5 +1,5 @@
 class SelfCareClassificationSerializer < ActiveModel::Serializer
-  attributes :status_group, :display_name
+  attributes :id, :status_group, :display_name
 
   def status_group
     case object.status_group
