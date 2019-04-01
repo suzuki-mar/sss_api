@@ -68,7 +68,7 @@ describe "SelfCares", type: :request do
           subject
           json = JSON.parse(response.body)
           expect(json['self_care']['reason']).to eq(change_text)
-          expect(json['self_care']['classification_name']).to eq(classification_name)
+          expect(json['self_care']['classification_name']).to eq("悪化:#{classification_name}")
         end
 
         it 'DBの値が更新されていること' do
@@ -145,7 +145,7 @@ describe "SelfCares", type: :request do
         subject
         json = JSON.parse(response.body)
         expect(json['self_care']['reason']).to eq(change_text)
-        expect(json['self_care']['classification_name']).to eq(classification_name)
+        expect(json['self_care']['classification_name']).to eq("悪化:#{classification_name}")
       end
 
       it 'DBの値が更新されていること' do
@@ -291,7 +291,7 @@ describe "SelfCares", type: :request do
         subject
         json = JSON.parse(response.body)
         expect(json['self_care']['reason']).to eq(change_text)
-        expect(json['self_care']['classification_name']).to eq(classification_name)
+        expect(json['self_care']['classification_name']).to eq("悪化:#{classification_name}")
       end
 
       it 'DBの値が更新されていること' do

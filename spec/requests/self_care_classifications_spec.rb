@@ -41,7 +41,7 @@ describe "SelfCareClassification", type: :request do
         it '更新したオブジェクトをレスポンとして返されること' do
           subject
           json = JSON.parse(response.body)
-          expect(json['self_care_classification']['name']).to eq(change_text)
+          expect(json['self_care_classification']['display_name']).to eq("良好:#{change_text}")
         end
 
         it 'DBの値が更新されていること' do
@@ -119,7 +119,7 @@ describe "SelfCareClassification", type: :request do
         it '更新したオブジェクトをレスポンとして返されること' do
           subject
           json = JSON.parse(response.body)
-          expect(json['self_care_classification']['name']).to eq(change_text)
+          expect(json['self_care_classification']['status_group']).to eq("良好")
         end
 
         it 'DBの値が更新されていること' do

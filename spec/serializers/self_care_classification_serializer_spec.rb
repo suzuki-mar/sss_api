@@ -6,7 +6,7 @@ describe SelfCareClassificationSerializer, :type => :serializer do
 
     self_care_classification = create(:self_care_classification)
     attributes = SelfCareClassificationSerializer.new(self_care_classification).attributes
-    expect(attributes.keys).to match_array([:status_group, :name])
+    expect(attributes.keys).to match_array([:status_group, :display_name])
   end
 
   describe 'status_group' do
@@ -28,6 +28,15 @@ describe SelfCareClassificationSerializer, :type => :serializer do
       self_care_classification = create(:self_care_classification)
       self_care_classification.status_group = :bad
       expect(SelfCareClassificationSerializer.new(self_care_classification).status_group).to eq '悪化'
+    end
+
+  end
+
+  describe 'name' do
+
+    it '分類名:nameを返すこと' do
+      self_care_classification = create(:self_care_classification)
+      expect(SelfCareClassificationSerializer.new(self_care_classification).display_name).to eq '悪化:name'
     end
 
   end

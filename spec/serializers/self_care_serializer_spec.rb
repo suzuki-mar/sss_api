@@ -19,11 +19,11 @@ describe SelfCareSerializer, :type => :serializer do
     end
   end
 
-  describe 'self_care_classification' do
+  describe 'classification_name' do
     it '値を取得できること' do
       self_care_classification = create(:self_care_classification, name: '分類名', status_group: 'good')
       self_care = create(:self_care, self_care_classification: self_care_classification)
-      expect(SelfCareSerializer.new(self_care).classification_name).to eq '分類名'
+      expect(SelfCareSerializer.new(self_care).classification_name).to eq '良好:分類名'
     end
   end
 
