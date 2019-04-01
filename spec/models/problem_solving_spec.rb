@@ -69,5 +69,17 @@ RSpec.describe ProblemSolving, type: :model do
         let(:model){ problem_solving }
       end
     end
+
+    describe 'progress_status' do
+      example 'nullは許可されない' do
+        should validate_presence_of(:progress_status)
+      end
+    end
+
+    describe 'Enum' do
+      it {should define_enum_for(:progress_status).with_values({not_started: 1, doing: 2, done: 3})}
+    end
+
+
   end
 end

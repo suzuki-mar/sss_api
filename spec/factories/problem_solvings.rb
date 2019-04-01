@@ -10,5 +10,6 @@ FactoryBot.define do
     solution { "MyText" }
     execution_method { "MyText" }
     evaluation_method { "MyText" }
+    progress_status {:doing}
   end
 end

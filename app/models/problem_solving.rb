@@ -14,5 +14,8 @@ class ProblemSolving < ApplicationRecord
   validates :execution_method, presence: true, on: :completed
   validates :evaluation_method, presence: true, on: :completed
   validates :is_draft, inclusion: {in: [true, false]}
+  validates :progress_status, presence: true
+
+  enum progress_status:{not_started: 1, doing: 2, done: 3}
 
 end

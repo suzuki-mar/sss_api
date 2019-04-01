@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_25_075825) do
+ActiveRecord::Schema.define(version: 2019_03_31_082826) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 2019_03_25_075825) do
     t.text "evaluation_method"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "progress_status", limit: 2, default: 1, null: false
   end
 
   create_table "reframings", force: :cascade do |t|

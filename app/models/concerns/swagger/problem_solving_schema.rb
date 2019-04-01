@@ -78,7 +78,7 @@ module Swagger::ProblemSolvingSchema
         end
         schema do
           key :required, [
-              :is_draft_text, :doing_status_text
+              :is_draft_text, :progress_status_text
           ]
 
           property :is_draft_text do
@@ -89,7 +89,7 @@ module Swagger::ProblemSolvingSchema
             ]
           end
 
-          property :doing_status_text do
+          property :progress_status_text do
             key :type, :string
             key :description, '進行状態'
             key :enum, [
@@ -110,10 +110,10 @@ module Swagger::ProblemSolvingSchema
 
         schema do
           key :required, [
-              :doing_status
+              :progress_status
           ]
 
-          property :doing_status do
+          property :progress_status do
             key :type, :integer
             key :description, '進行状態'
           end

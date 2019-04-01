@@ -1,4 +1,6 @@
 class ReframingSerializer < ActiveModel::Serializer
+  include Common::DraftSerializer
+
   attributes :id, :log_date, :problem_reason, :objective_facts, :feeling, :before_point,
              :distortion_group_text, :reframing, :action_plan, :after_point, :is_draft_text
 
@@ -19,10 +21,6 @@ class ReframingSerializer < ActiveModel::Serializer
     }
 
     values[object.distortion_group.to_sym]
-  end
-
-  def is_draft_text
-    object.is_draft ? '下書き' : '記入済み'
   end
 
 end
