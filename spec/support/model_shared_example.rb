@@ -36,7 +36,6 @@ end
 shared_examples 'pointのバリデーション' do
 
   it '0より大きい数で10までの場合は許可する' do
-    pp "#{attribute_name}のバリデーション"
     model[attribute_name] = 1
     expect(model).to be_valid
   end
