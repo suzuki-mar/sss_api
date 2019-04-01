@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       get 'month/:year/:month' => 'problem_solvings#month'
       post :init
       put 'done/:id' => 'problem_solvings#done'
+      put 'doing/:id' => 'problem_solvings#doing'
     end
   end
 

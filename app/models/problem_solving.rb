@@ -25,6 +25,12 @@ class ProblemSolving < ApplicationRecord
     self.save!
   end
 
+  def doing!
+    self.progress_status = :doing
+    self.save!
+  end
+
+
   protected
   def initialize_params
     {progress_status: :not_started}

@@ -3,7 +3,7 @@ class ProblemSolvingsController < ApiControllerBase
   include DraftableAction
   include ShowListFromLogDateAction
 
-  before_action :set_problem_solving, only: [:show, :update, :destroy, :done]
+  before_action :set_problem_solving, only: [:show, :update, :destroy, :done, :doing]
 
   protected
   # 親クラスで必要となるメソッド
@@ -54,6 +54,11 @@ class ProblemSolvingsController < ApiControllerBase
 
   def done
     @problem_solving.done!
+    render_success_with(@problem_solving)
+  end
+
+  def doing
+    @problem_solving.doing!
     render_success_with(@problem_solving)
   end
 

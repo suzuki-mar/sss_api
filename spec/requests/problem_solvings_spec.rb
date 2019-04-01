@@ -389,10 +389,6 @@ RSpec.describe "ProblemSolvings", type: :request do
     context 'オブジェクトが存在する場合' do
       let(:id){1}
 
-      let(:save_params) do
-        attributes_for(:problem_solving, )
-      end
-
       it_behaves_like 'スキーマ通りのオブジェクトを取得できてレスポンスが正しいことること' do
         let(:expected_response_keys){@expected_response_keys}
       end
@@ -407,6 +403,41 @@ RSpec.describe "ProblemSolvings", type: :request do
         subject
         problem_solving = ProblemSolving.find(id)
         expect(problem_solving.progress_status).to eq("done")
+      end
+    end
+
+    it_behaves_like 'オブジェクトが存在しない場合' do
+      let(:id){10000000}
+      let(:resource_name){'ProblemSolving'}
+    end
+  end
+
+  describe 'doing' do
+    before :each do
+      create(:problem_solving, progress_status: :not_started)
+    end
+
+    subject do
+      put "/problem_solvings/doing/#{id}"
+    end
+
+    context 'オブジェクトが存在する場合' do
+      let(:id){1}
+
+      it_behaves_like 'スキーマ通りのオブジェクトを取得できてレスポンスが正しいことること' do
+        let(:expected_response_keys){@expected_response_keys}
+      end
+
+      it '更新したオブジェクトをレスポンとして返されること' do
+        subject
+        json = JSON.parse(response.body)
+        expect(json['problem_solving']['progress_status_text']).to eq('進行中')
+      end
+
+      it 'DBの値が更新されていること' do
+        subject
+        problem_solving = ProblemSolving.find(id)
+        expect(problem_solving.progress_status).to eq("doing")
       end
     end
 
