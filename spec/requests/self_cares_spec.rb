@@ -253,4 +253,73 @@ describe "SelfCares", type: :request do
     end
 
   end
+
+  describe 'current_create' do
+    let(:classification_name){"新しく作成した分類名"}
+    let(:save_params) do
+      attributes_for(:self_care, reason: change_text, self_care_classification_id: self_care_classification_id)
+    end
+    let(:self_care_classification_id){@self_care_classification_id}
+    let(:change_text){"理由#{rand}"}
+
+    let(:option_params) do
+      {}
+    end
+
+    before :each do
+      create(:self_care)
+      self_care_classification = create(:self_care_classification, name: classification_name)
+      @self_care_classification_id = self_care_classification.id
+    end
+
+    subject do
+
+      params = {self_care: save_params}
+      params[:self_care].merge!(option_params)
+      params[:self_care].delete(:am_pm)
+      params[:self_care].delete(:log_date)
+      post "/self_cares/current", params: params
+    end
+
+    context '正常に更新できる場合' do
+
+      it_behaves_like 'スキーマ通りのオブジェクトを取得できてレスポンスが正しいことること' do
+        let(:expected_response_keys){@expected_response_keys}
+      end
+
+      it '更新したオブジェクトをレスポンとして返されること' do
+        subject
+        json = JSON.parse(response.body)
+        expect(json['self_care']['reason']).to eq(change_text)
+        expect(json['self_care']['classification_name']).to eq(classification_name)
+      end
+
+      it 'DBの値が更新されていること' do
+        subject
+        self_care = SelfCare.last
+        expect(self_care.reason).to eq(change_text)
+        expect(self_care.self_care_classification.name).to eq(classification_name)
+        expect(self_care.log_date == Date.today).to be_truthy
+      end
+
+    end
+
+    context 'バリデーションエラーの場合' do
+      let(:option_params) do
+        {point: nil}
+      end
+
+      it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
+        let(:error_message){"self_care:\tValidation failed: Point ポイントの選択は必須です\n\n"}
+      end
+    end
+
+    context 'パラメーターが間違っている場合' do
+      let(:self_care_classification_id){99999999999999}
+
+      it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
+        let(:error_message){"self_care_classification:\t存在しないIDを渡しました#{self_care_classification_id}\n" + "\n"}
+      end
+    end
+  end
 end

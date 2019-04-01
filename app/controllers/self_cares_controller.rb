@@ -17,12 +17,12 @@ class SelfCaresController < ApiControllerBase
   end
 
   def update
-    save_action
+    save_action(self_care_params)
   end
 
   def create
     @self_care = SelfCare.new
-    save_action
+    save_action(self_care_params)
   end
 
   def recent
@@ -33,15 +33,23 @@ class SelfCaresController < ApiControllerBase
     month_list_action(SelfCare)
   end
 
+  def current_create
+    @self_care = SelfCare.new
+
+    save_parms = self_care_params.to_h
+    save_parms.merge!(SelfCare.create_save_params_of_date(DateTime.now))
+    save_action(save_parms)
+  end
+
   private
-  def save_action
+  def save_action(save_params)
     classification_id_error_response = create_error_response_of_unexist_classificaton_id
     if classification_id_error_response
       render_with_error_response(classification_id_error_response)
       return
     end
 
-    @self_care.assign_attributes(self_care_params)
+    @self_care.assign_attributes(save_params)
 
     begin
       @self_care.save!

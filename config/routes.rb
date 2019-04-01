@@ -26,6 +26,7 @@ Rails.application.routes.draw do
     collection do
       get :recent
       get 'month/:year/:month' => 'self_cares#month'
+      post 'current' => 'self_cares#current_create'
     end
   end
 

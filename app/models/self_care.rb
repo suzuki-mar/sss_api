@@ -13,6 +13,14 @@ class SelfCare < ApplicationRecord
 
   enum am_pm:{am: 1, pm:2}
 
+  def self.create_save_params_of_date(date_time)
+
+    params = {}
+    params[:log_date] = Date.new(date_time.year, date_time.month, date_time.day)
+    params[:am_pm] = (date_time.hour < 13)? :am : :pm
+
+    params
+  end
 
 end
 
