@@ -63,16 +63,11 @@ class ProblemSolvingsController < ApiControllerBase
   end
 
   def doings
-    month_date = MonthDate.new(params["year"], params["month"])
+    progress_status_list_action(:doing)
+  end
 
-    unless month_date.valid
-      error_response = ErrorResponse.create_validate_error_from_messages(month_date.error_messages)
-      render_with_error_response(error_response)
-      return
-    end
-
-    list = ProblemSolving.by_month_date(month_date).only_doing
-    render_success_with_list(list)
+  def dones
+    progress_status_list_action(:done)
   end
 
   private
@@ -104,6 +99,19 @@ class ProblemSolvingsController < ApiControllerBase
       render_with_error_response(error_response)
     end
 
+  end
+
+  def progress_status_list_action(status)
+    month_date = MonthDate.new(params["year"], params["month"])
+
+    unless month_date.valid
+      error_response = ErrorResponse.create_validate_error_from_messages(month_date.error_messages)
+      render_with_error_response(error_response)
+      return
+    end
+
+    list = ProblemSolving.by_month_date(month_date).only_progress_status(status)
+    render_success_with_list(list)
   end
 
 end

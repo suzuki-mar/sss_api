@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       put 'done/:id' => 'problem_solvings#done'
       put 'doing/:id' => 'problem_solvings#doing'
       get 'doings/:year/:month' => 'problem_solvings#doings'
+      get 'dones/:year/:month' => 'problem_solvings#dones'
     end
   end
 
