@@ -20,6 +20,11 @@ class ProblemSolving < ApplicationRecord
 
   enum progress_status:{not_started: 1, doing: 2, done: 3}
 
+  def done!
+    self.progress_status = :done
+    self.save!
+  end
+
   protected
   def initialize_params
     {progress_status: :not_started}
