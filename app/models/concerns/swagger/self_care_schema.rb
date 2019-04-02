@@ -39,6 +39,42 @@ module Swagger::SelfCareSchema
 
     end
 
+    swagger_schema :SelfCareCurrentInput do
+      allOf do
+
+        schema do
+          key :required, [:reason, :point]
+
+          property :reason do
+            key :type, :string
+            key :description, '体調の理由'
+            key :example, 'ゲームの配信が決まってモチベーションが上がっている'
+          end
+
+          property :point do
+            key :type, :integer
+            key :description, '体調のポイント 数が多いほど良好'
+            key :minimum, 1
+            key :maximum, 12
+          end
+
+        end
+
+        schema do
+          key :required, [:classification_id]
+
+          property :classification_id do
+            key :type, :integer
+            key :description, '分類ID'
+          end
+        end
+
+      end
+
+    end
+
+
+
     swagger_schema :SelfCareInput do
       allOf do
 
@@ -157,8 +193,5 @@ module Swagger::SelfCareSchema
 
     end
 
-
-
   end
-
 end

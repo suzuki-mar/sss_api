@@ -159,41 +159,47 @@ module Swagger::SelfCaresApi
 
     end
 
-    swagger_path '/self_cares/recent' do
+    swagger_path '/self_cares/log_date_line_graph' do
 
       operation :get do
-        key :description, '直近１週間のSelfCareリストを取得する'
-        key :operationId, :find_recently_self_cares
+        key :description, '指定した期間を折れ線グラフで表示するための値を取得する'
+        key :operationId, :find_log_date_line_graph
 
         key :tags, [
             'self_care',
-            'ver1'
+            'ver3'
         ]
 
-        response 200 do
-          key :description, '直近１週間のSelfCareリストを取得する'
-          schema do
-            key :required, [:self_cares, :start_date, :end_date]
+        parameter name: :year do
+          key :in, :query
+          key :description, '取得する期間の年'
+          key :required, true
+          key :type, :integer
+          key :format, :int64
+        end
 
-            property :self_cares do
+        parameter name: :month do
+          key :in, :query
+          key :description, '取得する期間の月'
+          key :required, true
+          key :type, :integer
+          key :format, :int64
+          key :minimum, 1
+          key :exclusiveMinimum, false
+          key :maximum, 12
+          key :exclusiveMaximum, false
+        end
+
+        response 200 do
+          key :description, '指定した期間を折れ線グラフで表示するための値を取得する'
+          schema do
+            key :required, [:date_values]
+
+            property :date_values do
               key :type, :array
               items do
-                key :'$ref', :SelfCareOutput
+                key :'$ref', :DateValueLineGraphItem
               end
-            end
-
-            property :start_date do
-              key :type, :string
-              key :format, :date
-              key :description, 'self_carsの取得する期間の開始日'
-              key :example, '2019-03-01'
-            end
-
-            property :end_date do
-              key :type, :string
-              key :format, :date
-              key :description, 'self_carsの取得する期間の終了日'
-              key :example, '2019-03-31'
             end
 
           end

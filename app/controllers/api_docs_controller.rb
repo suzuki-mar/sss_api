@@ -5,6 +5,7 @@ class ApiDocsController < ApplicationController
   def index
 
     classes = [self.class,
+               ApplicationRecord,
                ProblemSolving,
                SelfCare,
                Reframing,
