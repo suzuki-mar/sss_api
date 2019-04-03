@@ -1,7 +1,7 @@
 class Reframing < ApplicationRecord
 
   include Swagger::ReframingSchema
-  include DraftableModel
+  include InitailzeableModel
   include SearchableFromLogDateModel
   include ActiveModel::Validations
 
@@ -37,6 +37,16 @@ class Reframing < ApplicationRecord
       underestimate: 7, emotional_decision: 8, perfectionism: 9, labeling: 10,
       shift_responsibility: 11, pessimistic: 12
   }
+
+  def save_draft!(params)
+    service = SaveServices::Draftable.new
+    service.save_draft!(self, params)
+  end
+
+  def save_complete!(params)
+    service = SaveServices::Draftable.new
+    service.save_complete!(self, params)
+  end
 
   protected
   def initialize_params

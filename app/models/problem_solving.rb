@@ -1,7 +1,7 @@
 class ProblemSolving < ApplicationRecord
 
   include Swagger::ProblemSolvingSchema
-  include DraftableModel
+  include InitailzeableModel
   include SearchableFromLogDateModel
 
   has_many :tag_associations, dependent: :nullify
@@ -33,6 +33,15 @@ class ProblemSolving < ApplicationRecord
     self.save!
   end
 
+  def save_draft!(params)
+    service = SaveServices::Draftable.new
+    service.save_draft!(self, params)
+  end
+
+  def save_complete!(params)
+    service = SaveServices::Draftable.new
+    service.save_complete!(self, params)
+  end
 
   protected
   def initialize_params

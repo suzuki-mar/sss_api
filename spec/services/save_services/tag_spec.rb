@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe SaveTagService, type: :service do
+RSpec.describe SaveServices::Tag, type: :service do
 
   describe 'execute' do
 
-    let(:service){SaveTagService.new(tag_names, target_model)}
-    subject{service.execute}
+    let(:service){SaveServices::Tag.new}
+    subject{service.execute(target_model, tag_names)}
 
     context 'タグが未登録の場合' do
       let(:target_model){@target_model}
