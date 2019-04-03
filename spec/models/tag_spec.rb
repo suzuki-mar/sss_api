@@ -19,4 +19,17 @@ RSpec.describe Tag, type: :model do
     it { should have_many(:tag_associations).dependent(:destroy) }
   end
 
+  describe 'create_from_name_list_if_unexists' do
+
+    before do
+      create(:tag, name: "存在するタグ")
+    end
+
+    it 'nameリストから存在しないインスタンスを作成できる' do
+      Tag.create_from_name_list_if_unexists!(['新しく作成するTag', '存在するタグ'])
+      expect(Tag.all.pluck(:name)).to eq(["存在するタグ", '新しく作成するTag'])
+    end
+  end
+
+
 end
