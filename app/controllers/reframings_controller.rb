@@ -12,6 +12,11 @@ class ReframingsController < ApiControllerBase
     'Reframing'
   end
 
+  def param_top_key
+    :reframing
+  end
+
+
   def create_save_params
     distortion_group_number = reframing_params["distortion_group_number"].to_i
     distortion_group = Reframing.distortion_groups.invert[distortion_group_number]

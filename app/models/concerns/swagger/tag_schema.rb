@@ -4,13 +4,18 @@ module Swagger::TagSchema
   include Swagger::Blocks
 
   included do
-    swagger_schema :Tag do
-      key :required, [:id, :name]
+    swagger_schema :TagInput do
+      key :required, [:names]
 
-      property :id do
-        key :type, :integer
-        key :description, 'ID'
+      property :names do
+        key :type, :string
+        key :description, 'タグ名を,区切りで入力する'
+        key :example, 'タグA,タグB'
       end
+    end
+
+    swagger_schema :TagOutput do
+      key :required, [:name, :id]
 
       property :name do
         key :type, :string
@@ -18,6 +23,10 @@ module Swagger::TagSchema
         key :example, 'タグA'
       end
 
+      property :id do
+        key :type, :integer
+        key :description, 'ID'
+      end
     end
   end
 end

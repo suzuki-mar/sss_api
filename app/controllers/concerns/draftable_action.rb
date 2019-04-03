@@ -35,7 +35,7 @@ module DraftableAction
 
   private
   def draft_save?(model)
-    auto_save_action? ? model.is_draft : (params[:is_draft] == "true")
+    auto_save_action? ? model.is_draft : is_draft_param == 'true'
   end
 
   def auto_save_action?
@@ -43,7 +43,7 @@ module DraftableAction
   end
 
   def create_error_response_of_invalid_draftable_save_action_params
-    if params[:is_draft].nil? && !auto_save_action?
+    if is_draft_param.nil? && !auto_save_action?
       return ErrorResponse.create_validate_error_from_messages({is_draft: "必須です"})
     end
 
@@ -62,6 +62,10 @@ module DraftableAction
     error_messages[top_key_name] = error.message
 
     error_response = ErrorResponse.create_validate_error_from_messages(error_messages)
+  end
+
+  def is_draft_param
+    params[param_top_key][:is_draft]
   end
 
 end

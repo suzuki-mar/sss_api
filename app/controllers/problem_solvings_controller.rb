@@ -11,6 +11,10 @@ class ProblemSolvingsController < ApiControllerBase
     'ProblemSolving'
   end
 
+  def param_top_key
+    :problem_solving
+  end
+
   def create_save_params
     problem_solving_params.to_hash
   end

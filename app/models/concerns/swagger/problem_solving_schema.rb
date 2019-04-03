@@ -66,13 +66,6 @@ module Swagger::ProblemSolvingSchema
         key :example, '毎日GitHubに草が生えている'
       end
 
-      property :tags do
-        key :type, :array
-        items do
-          key :'$ref', :Tag
-        end
-      end
-
     end
 
     swagger_schema :ProblemSolvingOutput do
@@ -83,7 +76,7 @@ module Swagger::ProblemSolvingSchema
         end
         schema do
           key :required, [
-              :is_draft_text, :progress_status_text
+              :is_draft_text, :progress_status_text, :tags
           ]
 
           property :is_draft_text do
@@ -101,6 +94,13 @@ module Swagger::ProblemSolvingSchema
                 '未着手', '進行中', '完了'
             ]
           end
+
+          property :tags do
+            key :type, :array
+            items do
+              key :'$ref', :TagOutput
+            end
+          end
         end
       end
 
@@ -115,13 +115,18 @@ module Swagger::ProblemSolvingSchema
 
         schema do
           key :required, [
-              :progress_status
+              :progress_status, :tag_text
           ]
 
           property :progress_status do
             key :type, :integer
             key :description, '進行状態'
           end
+
+          property :tag_text do
+            key :'$ref', :TagInput
+          end
+
         end
       end
     end

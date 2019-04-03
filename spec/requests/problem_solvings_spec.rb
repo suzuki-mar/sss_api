@@ -37,8 +37,9 @@ RSpec.describe "ProblemSolvings", type: :request do
     end
 
     subject do
-      params = {problem_solving: save_params, is_draft: change_draft}
-      put "/problem_solvings/#{id}", params: params
+      params = save_params
+      params[:is_draft] = change_draft
+      put "/problem_solvings/#{id}", params: {problem_solving: params}
     end
 
     context 'オブジェクトが存在する場合' do
@@ -153,8 +154,10 @@ RSpec.describe "ProblemSolvings", type: :request do
 
   describe 'create' do
     subject do
-      params = {problem_solving: problem_solving_params, is_draft: change_draft}
-      post "/problem_solvings/", params: params
+      params = problem_solving_params
+      params[:is_draft] = change_draft
+      # params = {problem_solving: , is_draft: change_draft}
+      post "/problem_solvings/", params: {problem_solving: params}
     end
 
     context 'オブジェクトが存在する場合' do

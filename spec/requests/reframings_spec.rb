@@ -36,8 +36,9 @@ RSpec.describe "Reframings", type: :request do
     end
 
     subject do
-      params = {reframing: reframing_params, is_draft: change_draft}
-      put "/reframings/#{id}", params: params
+      params = reframing_params
+      params[:is_draft] = change_draft
+      put "/reframings/#{id}", params: {reframing: params}
     end
 
     context 'オブジェクトが存在する場合' do
@@ -167,8 +168,9 @@ RSpec.describe "Reframings", type: :request do
 
   describe 'create' do
     subject do
-      params = {reframing: reframing_params, is_draft: change_draft}
-      post "/reframings/", params: params
+      params = reframing_params
+      params[:is_draft] = change_draft
+      post "/reframings/", params: {reframing: params}
     end
 
     context 'オブジェクトが存在する場合' do

@@ -60,13 +60,6 @@ module Swagger::ReframingSchema
         key :maximum, 10
       end
 
-      property :tags do
-        key :type, :array
-        items do
-          key :'$ref', :Tag
-        end
-      end
-
     end
 
     swagger_schema :ReframingOutput do
@@ -77,7 +70,7 @@ module Swagger::ReframingSchema
         end
         schema do
           key :required, [
-              :distortion_group_text, :is_draft_text, :feeling
+              :distortion_group_text, :is_draft_text, :feeling, :tags
           ]
 
           property :distortion_group_text do
@@ -96,6 +89,14 @@ module Swagger::ReframingSchema
                 '下書き', '記入済み'
             ]
           end
+
+          property :tags do
+            key :type, :array
+            items do
+              key :'$ref', :TagOutput
+            end
+          end
+
         end
       end
 
@@ -119,7 +120,7 @@ module Swagger::ReframingSchema
         end
         schema do
           key :required, [
-              :distortion_group_id, :is_draft
+              :distortion_group_id, :is_draft, :tag_text
           ]
 
           property :distortion_group_id do
@@ -131,6 +132,11 @@ module Swagger::ReframingSchema
             key :type, :boolean
             key :description, '下書きかどうか'
           end
+
+          property :tag_text do
+            key :'$ref', :TagInput
+          end
+
         end
       end
     end
