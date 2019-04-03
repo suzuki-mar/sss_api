@@ -12,6 +12,13 @@ FactoryBot.define do
     evaluation_method { "MyText" }
     progress_status {:doing}
 
+    trait :has_tag do
+      after(:create) do |problem_solving|
+        tag = create(:tag)
+        create(:tag_association, tag:tag, problem_solving:problem_solving)
+      end
+    end
+
     trait :done do
       progress_status { :done }
     end

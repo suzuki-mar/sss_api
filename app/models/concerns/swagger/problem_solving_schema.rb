@@ -9,7 +9,7 @@ module Swagger::ProblemSolvingSchema
 
       key :required, [
           :log_date, :problem_recognition, :example_problem, :cause, :phenomenon, :neglect_phenomenon,
-          :solution, :execution_method, :evaluation_method
+          :solution, :execution_method, :evaluation_method, :tags
       ]
       property :log_date do
         key :type, :string
@@ -66,7 +66,12 @@ module Swagger::ProblemSolvingSchema
         key :example, '毎日GitHubに草が生えている'
       end
 
-
+      property :tags do
+        key :type, :array
+        items do
+          key :'$ref', :Tag
+        end
+      end
 
     end
 

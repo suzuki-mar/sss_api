@@ -1,6 +1,6 @@
 class SelfCareClassification < ApplicationRecord
 
-  has_many :self_cares, dependent: :destroy
+  has_many :self_cares, dependent: :nullify
 
   validates :name, presence: true
   validates :status_group, presence: true

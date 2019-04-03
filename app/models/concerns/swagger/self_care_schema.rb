@@ -73,8 +73,6 @@ module Swagger::SelfCareSchema
 
     end
 
-
-
     swagger_schema :SelfCareInput do
       allOf do
 

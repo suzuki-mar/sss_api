@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :tags
   resources :problem_solvings do
     collection do
       get :recent

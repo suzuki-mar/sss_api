@@ -4,6 +4,8 @@ class ProblemSolving < ApplicationRecord
   include DraftableModel
   include SearchableFromLogDateModel
 
+  has_many :tag_associations, dependent: :nullify
+
   after_initialize :sef_default_values
 
   validates :log_date, log_date_type: {initailizeable_model: true }

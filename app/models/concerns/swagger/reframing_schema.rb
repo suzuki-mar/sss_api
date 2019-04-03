@@ -7,7 +7,7 @@ module Swagger::ReframingSchema
     swagger_schema :ReframingBase do
       key :required, [
           :log_date, :problem_reason, :objective_facts, :feeling, :before_point, :distortion_group, :reframing,
-          :action_plan, :after_point
+          :action_plan, :after_point, :tags
       ]
       property :log_date do
         key :type, :string
@@ -58,6 +58,13 @@ module Swagger::ReframingSchema
         key :description, 'リフレーミング後のポイント 数が多いほど良好'
         key :minimum, 1
         key :maximum, 10
+      end
+
+      property :tags do
+        key :type, :array
+        items do
+          key :'$ref', :Tag
+        end
       end
 
     end

@@ -5,6 +5,8 @@ class Reframing < ApplicationRecord
   include SearchableFromLogDateModel
   include ActiveModel::Validations
 
+  has_many :tag_associations, dependent: :nullify
+
   validates :problem_reason, presence: true, on: :completed
   validates :objective_facts, presence: true, on: :completed
   validates :feeling, presence: true, on: :completed

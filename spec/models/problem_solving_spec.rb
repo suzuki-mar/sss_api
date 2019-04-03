@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe ProblemSolving, type: :model do
+
+  describe 'Table Relation' do
+    it { should have_many(:tag_associations).dependent(:nullify) }
+  end
+
   describe 'Validation' do
 
     let(:problem_solving){build_stubbed(:problem_solving)}

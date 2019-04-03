@@ -12,6 +12,13 @@ FactoryBot.define do
     after_point { 1 }
     is_draft { false }
 
+    trait :has_tag do
+      after(:create) do |reframing|
+        tag = create(:tag)
+        create(:tag_association, tag:tag, reframing:reframing)
+      end
+    end
+
     trait :draft do
       is_draft { true }
     end

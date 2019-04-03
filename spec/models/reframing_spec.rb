@@ -2,6 +2,11 @@ require 'rails_helper'
 
 RSpec.describe Reframing, type: :model do
 
+  describe 'Table Relation' do
+    it { should have_many(:tag_associations).dependent(:nullify) }
+  end
+
+
   describe 'Validation' do
 
     let(:reframing){build_stubbed(:reframing)}

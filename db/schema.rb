@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_31_082826) do
+ActiveRecord::Schema.define(version: 2019_04_02_060714) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,5 +64,25 @@ ActiveRecord::Schema.define(version: 2019_03_31_082826) do
     t.index ["self_care_classification_id"], name: "index_self_cares_on_self_care_classification_id"
   end
 
+  create_table "tag_associations", force: :cascade do |t|
+    t.bigint "tag_id"
+    t.bigint "problem_solving_id"
+    t.bigint "reframing_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["problem_solving_id"], name: "index_tag_associations_on_problem_solving_id"
+    t.index ["reframing_id"], name: "index_tag_associations_on_reframing_id"
+    t.index ["tag_id"], name: "index_tag_associations_on_tag_id"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   add_foreign_key "self_cares", "self_care_classifications"
+  add_foreign_key "tag_associations", "problem_solvings"
+  add_foreign_key "tag_associations", "reframings"
+  add_foreign_key "tag_associations", "tags"
 end

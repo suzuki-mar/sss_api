@@ -54,6 +54,7 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'parallel_tests'
   gem 'faker'
+  gem 'rails-erd'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

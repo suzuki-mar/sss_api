@@ -20,6 +20,6 @@ describe SelfCareClassification, type: :model do
   end
   
   describe 'Table Relation' do 
-    it { should have_many(:self_cares).dependent(:destroy) }
+    it { should have_many(:self_cares).dependent(:nullify) }
   end  
 end

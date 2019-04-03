@@ -163,7 +163,7 @@ module Swagger::SelfCaresApi
 
       operation :get do
         key :description, '指定した期間を折れ線グラフで表示するための値を取得する'
-        key :operationId, :find_log_date_line_graph
+        key :operationId, :fetch_log_date_line_graph_values
 
         key :tags, [
             'self_care',
@@ -205,9 +205,64 @@ module Swagger::SelfCaresApi
           end
         end
 
+        Swagger::ErrorResponseHelper.define_bad_request_response(self, 'year')
+        Swagger::ErrorResponseHelper.define_bad_request_response(self, 'month')
       end
 
     end
+
+    swagger_path '/self_cares/point_pie_chart' do
+
+      operation :get do
+        key :description, '指定した期間の分類の種類を表す円グラフを表示するための値を取得する'
+        key :operationId, :fetch_point_pie_chart_values
+
+        key :tags, [
+            'self_care',
+            'ver3'
+        ]
+
+        parameter name: :year do
+          key :in, :query
+          key :description, '取得する期間の年'
+          key :required, true
+          key :type, :integer
+          key :format, :int64
+        end
+
+        parameter name: :month do
+          key :in, :query
+          key :description, '取得する期間の月'
+          key :required, true
+          key :type, :integer
+          key :format, :int64
+          key :minimum, 1
+          key :exclusiveMinimum, false
+          key :maximum, 12
+          key :exclusiveMaximum, false
+        end
+
+        response 200 do
+          key :description, '指定した期間の分類の種類を表す円グラフを表示するための値を取得する'
+          schema do
+            key :required, [:items]
+
+            property :date_values do
+              key :type, :array
+              items do
+                key :'$ref', :PieChartItem
+              end
+            end
+
+          end
+        end
+
+        Swagger::ErrorResponseHelper.define_bad_request_response(self, 'year')
+        Swagger::ErrorResponseHelper.define_bad_request_response(self, 'month')
+      end
+
+    end
+
 
     swagger_path '/self_cares/month' do
 
@@ -256,13 +311,12 @@ module Swagger::SelfCaresApi
         end
 
         Swagger::ErrorResponseHelper.define_bad_request_response(self, 'year')
+        Swagger::ErrorResponseHelper.define_bad_request_response(self, 'month')
 
       end
 
     end
 
   end
-
-
 
 end

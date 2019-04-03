@@ -9,6 +9,7 @@ class ApiDocsController < ApplicationController
                ProblemSolving,
                SelfCare,
                Reframing,
+               Tag,
                ProblemSolvingsController,
                ReframingsController,
                SelfCaresController,
