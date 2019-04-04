@@ -39,12 +39,12 @@ class ProblemSolvingsController < ApiControllerBase
   # POST /problem_solvings
   def create
     @problem_solving = ProblemSolving.new
-    draftable_save_action(@problem_solving)
+    draftable_save_action_enable_db_transaction(@problem_solving)
   end
 
   # PATCH/PUT /problem_solvings/1
   def update
-    draftable_save_action(@problem_solving)
+    draftable_save_action_enable_db_transaction(@problem_solving)
   end
 
   # DELETE /problem_solvings/1
@@ -65,7 +65,7 @@ class ProblemSolvingsController < ApiControllerBase
   end
 
   def auto_save
-    draftable_save_action(@problem_solving)
+    draftable_save_action_enable_db_transaction(@problem_solving)
   end
 
   def done
@@ -94,7 +94,9 @@ class ProblemSolvingsController < ApiControllerBase
 
   # Only allow a trusted parameter "white list" through.
   def problem_solving_params
-    params.require(:problem_solving).permit(:log_date, :is_draft, :problem_recognition, :example_problem, :cause, :phenomenon, :neglect_phenomenon, :solution, :execution_method, :evaluation_method)
+    params.require(:problem_solving).permit(
+        :log_date, :is_draft, :problem_recognition, :example_problem, :cause, :phenomenon, :neglect_phenomenon,
+        :solution, :execution_method, :evaluation_method, :tag, :progress_status)
   end
 
   def progress_status_list_action(status)

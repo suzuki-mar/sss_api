@@ -4,6 +4,8 @@ class Reframing < ApplicationRecord
   include InitailzeableModel
   include SearchableFromLogDateModel
   include ActiveModel::Validations
+  include DraftableModel
+  include HasTagModel
 
   has_many :tag_associations, dependent: :nullify
 
@@ -39,13 +41,21 @@ class Reframing < ApplicationRecord
   }
 
   def save_draft!(params)
-    service = SaveServices::Draftable.new
-    service.save_draft!(self, params)
+
+    after_save_block = Proc.new do
+      save_tags!(params)
+    end
+
+    save_draft_with_after_save_block!(params, after_save_block)
   end
 
   def save_complete!(params)
-    service = SaveServices::Draftable.new
-    service.save_complete!(self, params)
+
+    after_save_block = Proc.new do
+      save_tags!(params)
+    end
+
+    save_complete_with_after_save_block!(params, after_save_block)
   end
 
   protected

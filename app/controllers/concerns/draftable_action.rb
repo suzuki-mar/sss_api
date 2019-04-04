@@ -10,27 +10,28 @@ module DraftableAction
     render_success_with(model)
   end
 
-  def draftable_save_action(model)
-    error_response = create_error_response_of_invalid_draftable_save_action_params
-    if error_response.present?
-      render_with_error_response(error_response)
-      return
-    end
+  def draftable_save_action_enable_db_transaction(model)
+    ActiveRecord::Base.transaction do
+      error_response = create_error_response_of_invalid_draftable_save_action_params
+      if error_response.present?
+        raise ErrorResponseException.create_from_error_response(error_response)
+        return
+      end
 
-    raise NotImplementedError.new("create_save_paramsを実装してください") unless self.respond_to?(:create_save_params, true)
-    begin
+      raise NotImplementedError.new("create_save_paramsを実装してください") unless self.respond_to?(:create_save_params, true)
+
       if draft_save?(model)
         model.save_draft!(create_save_params)
       else
         model.save_complete!(create_save_params)
       end
-    rescue => e
-      error_response = create_error_response_of_save_failer(e, model)
-      render_with_error_response(error_response)
-      return
     end
-
     render_success_with(model)
+  rescue ErrorResponseException => e
+    render_with_error_response(e.error_response)
+  rescue => e
+    error_response = create_error_response_of_save_failer(e, model)
+    render_with_error_response(error_response)
   end
 
   private
@@ -61,7 +62,7 @@ module DraftableAction
     error_messages = {}
     error_messages[top_key_name] = error.message
 
-    error_response = ErrorResponse.create_validate_error_from_messages(error_messages)
+    return ErrorResponse.create_validate_error_from_messages(error_messages)
   end
 
   def is_draft_param

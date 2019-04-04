@@ -33,7 +33,6 @@ class ApiControllerBase < ActionController::API
   end
 
   def render_with_error_response(error_response)
-
     render json: error_response.to_hash, status: error_response.status
   end
 

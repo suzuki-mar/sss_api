@@ -19,8 +19,23 @@ class ErrorResponse
     object.message = ''
 
     messages.each do |key, message|
-      object.message += "#{key}:\t#{message}\n\n"
+
+      object.message += "#{key}:\t"
+
+      msgs = if message.instance_of?(Array)
+               message
+             else
+               [message]
+             end
+      msgs.each do |msg|
+        object.message += "#{msg}\t"
+      end
+      object.message.chop!
+
+      object.message += "\n\n"
     end
+
+
 
     object
   end

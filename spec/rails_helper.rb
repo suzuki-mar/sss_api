@@ -56,6 +56,7 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   config.include FactoryBot::Syntax::Methods
+  # ActiveRecord::Base.logger = Logger.new(STDOUT) SQLを出力する
 end
 
 Shoulda::Matchers.configure do |config|

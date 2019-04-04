@@ -38,6 +38,7 @@ RSpec.describe "Reframings", type: :request do
     subject do
       params = reframing_params
       params[:is_draft] = change_draft
+      params[:tag_names] = 'タグA,タグB'
       put "/reframings/#{id}", params: {reframing: params}
     end
 
@@ -63,6 +64,7 @@ RSpec.describe "Reframings", type: :request do
             subject
             json = JSON.parse(response.body)
             expect(json['reframing']['feeling']).to eq(change_text)
+            expect(json['reframing']['tags'].count).to eq(2)
           end
 
           it 'DBの値が更新されていること' do
@@ -71,6 +73,14 @@ RSpec.describe "Reframings", type: :request do
             expect(reframing.feeling).to eq(change_text)
             expect(reframing.is_draft).to eq(false)
             expect(reframing.distortion_group).to eq('too_general')
+          end
+
+          it 'タグが生成されていること' do
+            expect{ subject }.to change(Tag, :count).from(0).to(2)
+          end
+
+          it 'タグ関連付けが生成されていること' do
+            expect{ subject }.to change(TagAssociation, :count).from(0).to(2)
           end
 
         end
@@ -123,6 +133,23 @@ RSpec.describe "Reframings", type: :request do
             let(:error_message){"reframing:\tValidation failed: Before point 0から10までしか選択できない\n\n"}
           end
 
+        end
+      end
+
+      context '保存途中でエラーになった場合' do
+        let(:change_draft) {false}
+        let(:tag_names){'タグA,タグB'}
+        let(:change_text){"調子がいい#{rand}"}
+        let(:reframing_params) do
+          attributes_for(:reframing, feeling: change_text, distortion_group_number: 2)
+        end
+
+        it 'トランザクション処理のロールバックがかかっていること' do
+          allow_any_instance_of(Reframing).to receive(:save_tags!).and_raise(StandardError)
+
+          subject
+          reframing = Reframing.find(id)
+          expect(reframing.feeling).not_to eq(change_text)
         end
       end
     end
@@ -170,6 +197,7 @@ RSpec.describe "Reframings", type: :request do
     subject do
       params = reframing_params
       params[:is_draft] = change_draft
+      params[:tag_names] = tag_names
       post "/reframings/", params: {reframing: params}
     end
 
@@ -178,6 +206,7 @@ RSpec.describe "Reframings", type: :request do
 
       context '完成版の場合' do
         let(:change_draft) {false}
+        let(:tag_names){'タグA,タグB'}
 
         context '正常に更新できる場合' do
           let(:change_text){"調子がいい#{rand}"}
@@ -209,6 +238,21 @@ RSpec.describe "Reframings", type: :request do
 
         end
 
+        context '保存途中でエラーになった場合' do
+          let(:change_draft) {false}
+          let(:tag_names){'タグA,タグB'}
+          let(:change_text){"調子がいい#{rand}"}
+          let(:reframing_params) do
+            attributes_for(:reframing, feeling: change_text, distortion_group_number: 2)
+          end
+
+          it 'トランザクション処理のロールバックがかかっていること' do
+            allow_any_instance_of(Reframing).to receive(:save_tags!).and_raise(ArgumentError)
+
+            expect{subject}.not_to change{Reframing.count}
+          end
+        end
+
         context 'バリデーションエラーの場合' do
           let(:reframing_params) do
             attributes_for(:reframing, feeling: nil, log_date: nil, distortion_group_number: 2)
@@ -227,6 +271,7 @@ RSpec.describe "Reframings", type: :request do
 
       context 'ドラフトの場合' do
         let(:change_draft) {true}
+        let(:tag_names){'タグA,タグB'}
 
         context '正常に更新できる場合' do
           let(:reframing_params) do
@@ -273,18 +318,31 @@ RSpec.describe "Reframings", type: :request do
       end
     end
 
-    context 'パラメーターがない場合' do
-      let(:change_draft) {nil}
-
+    context 'パラメーターがおかしい場合' do
+      let(:tag_names){'タグA,タグB'}
       let(:reframing_params) do
-        attributes_for(:reframing)
+        attributes_for(:reframing, distortion_group_number: 2)
+      end
+      let(:change_draft) {true}
+
+      context 'is_draftがnilの場合' do
+        let(:change_draft) {nil}
+
+        it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
+          let(:error_message){"is_draft:\t必須です\n" + "\n"}
+        end
+
       end
 
-      it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
-        let(:error_message){"is_draft:\t必須です\n" + "\n"}
-      end
+      context 'tag_namesがnilの場合' do
+        let(:tag_names){nil}
+        it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
+          let(:error_message){"reframings:\ttag_namesが入力されていません\n\n"}
+        end
 
+      end
     end
+
   end
 
   describe 'recent' do
@@ -393,14 +451,16 @@ RSpec.describe "Reframings", type: :request do
 
   end
 
-  describe 'update' do
+  describe 'auto_save' do
     before :each do
       create(:reframing, :draft)
     end
 
     subject do
-      params = {reframing: reframing_params}
-      put "/reframings/auto_save/#{id}", params: params
+
+      params = reframing_params
+      params[:tag_names] = 'タグA,タグB'
+      put "/reframings/auto_save/#{id}", params: {reframing: params}
     end
 
     context 'オブジェクトが存在する場合' do
@@ -461,6 +521,22 @@ RSpec.describe "Reframings", type: :request do
         end
       end
 
+    end
+
+    context '保存途中で失敗した場合' do
+      let(:id){1}
+      let(:change_draft) {true}
+      let(:reframing_params) do
+        attributes_for(:reframing, feeling: '変更するテキスト', distortion_group_number: 2)
+      end
+
+      it 'トランザクション処理のロールバックがかかっていること' do
+        allow_any_instance_of(Reframing).to receive(:save_tags!).and_raise(StandardError)
+
+        subject
+        reframing = Reframing.find(id)
+        expect(reframing.feeling).not_to eq('変更するテキスト')
+      end
     end
 
     it_behaves_like 'オブジェクトが存在しない場合' do

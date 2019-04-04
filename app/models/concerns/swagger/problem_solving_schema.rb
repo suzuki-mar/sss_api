@@ -9,7 +9,7 @@ module Swagger::ProblemSolvingSchema
 
       key :required, [
           :log_date, :problem_recognition, :example_problem, :cause, :phenomenon, :neglect_phenomenon,
-          :solution, :execution_method, :evaluation_method, :tags
+          :solution, :execution_method, :evaluation_method
       ]
       property :log_date do
         key :type, :string
@@ -123,7 +123,7 @@ module Swagger::ProblemSolvingSchema
             key :description, '進行状態'
           end
 
-          property :tag_text do
+          property :tag do
             key :'$ref', :TagInput
           end
 

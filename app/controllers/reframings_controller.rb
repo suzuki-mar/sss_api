@@ -31,8 +31,18 @@ class ReframingsController < ApiControllerBase
   def create_error_response_of_params_if_needed
     distortion_group_number = reframing_params["distortion_group_number"].to_i
     distortion_group = Reframing.distortion_groups.invert[distortion_group_number]
+
+    error_messages = []
     if distortion_group.nil?
-      return ErrorResponse.create_validate_error_from_messages({reframings: "存在しないdistortion_group_numberを指定しました:#{distortion_group_number}"})
+      error_messages << "存在しないdistortion_group_numberを指定しました:#{distortion_group_number}"
+    end
+
+    if reframing_params['tag_names'].nil?
+      error_messages << "tag_namesが入力されていません"
+    end
+
+    if error_messages.present?
+      return ErrorResponse.create_validate_error_from_messages({reframings: error_messages})
     end
 
     nil
@@ -46,11 +56,11 @@ class ReframingsController < ApiControllerBase
 
   def create
     @reframing = Reframing.new
-    draftable_save_action(@reframing)
+    draftable_save_action_enable_db_transaction(@reframing)
   end
 
   def update
-    draftable_save_action(@reframing)
+    draftable_save_action_enable_db_transaction(@reframing)
   end
 
   def recent
@@ -66,7 +76,7 @@ class ReframingsController < ApiControllerBase
   end
 
   def auto_save
-    draftable_save_action(@reframing)
+    draftable_save_action_enable_db_transaction(@reframing)
   end
 
   private
@@ -77,7 +87,9 @@ class ReframingsController < ApiControllerBase
 
     # Only allow a trusted parameter "white list" through.
     def reframing_params
-      params.require(:reframing).permit(:log_date, :problem_reason, :objective_facts, :feeling, :before_point, :distortion_group_number, :integer, :reframing, :action_plan, :after_point)
+      params.require(:reframing).permit(
+          :log_date, :problem_reason, :objective_facts, :feeling, :before_point, :distortion_group_number,
+          :reframing, :action_plan, :after_point, :tag_names)
     end
 
 end

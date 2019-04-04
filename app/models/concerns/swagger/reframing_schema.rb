@@ -133,7 +133,7 @@ module Swagger::ReframingSchema
             key :description, '下書きかどうか'
           end
 
-          property :tag_text do
+          property :tag do
             key :'$ref', :TagInput
           end
 

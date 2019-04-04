@@ -8,7 +8,7 @@ describe ReframingSerializer, :type => :serializer do
     attributes = ReframingSerializer.new(reframing).attributes
 
     expected_keys = [:id, :log_date, :problem_reason, :objective_facts, :feeling, :before_point, :distortion_group_text,
-                     :reframing, :action_plan, :after_point, :is_draft_text]
+                     :reframing, :action_plan, :after_point, :is_draft_text, :tags]
     expect(attributes.keys).to match_array(expected_keys)
   end
 
@@ -47,6 +47,16 @@ describe ReframingSerializer, :type => :serializer do
         expect(ReframingSerializer.new(reframing).distortion_group_text).to eq text
       end
     end
+  end
+
+  describe 'tags' do
+
+    it 'タグを取得できること' do
+      reframing = create(:reframing, :has_tag)
+     expect(ReframingSerializer.new(reframing).tags[0][:name]).to eq(Tag.first.name)
+    end
+
+
   end
 
 end
