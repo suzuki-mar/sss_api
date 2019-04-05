@@ -4,6 +4,7 @@ class ProblemSolving < ApplicationRecord
   include InitailzeableModel
   include SearchableFromLogDateModel
   include DraftableModel
+  include HasTagModel
 
   has_many :tag_associations, dependent: :nullify
 
@@ -34,19 +35,14 @@ class ProblemSolving < ApplicationRecord
     self.save!
   end
 
-  def save_draft!(params)
-
-    after_save_block = Proc.new do
-    end
-
-    save_draft_with_after_save_block!(params, after_save_block)
+  def draftable_save_of_draft!(params)
+    save_draft!(params)
+    save_tags!(params)
   end
 
-  def save_complete!(params)
-    after_save_block = Proc.new do
-    end
-
-    save_complete_with_after_save_block!(params, after_save_block)
+  def draftable_save_of_complete!(params)
+    save_complete!(params)
+    save_tags!(params)
   end
 
   protected

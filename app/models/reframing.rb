@@ -40,22 +40,14 @@ class Reframing < ApplicationRecord
       shift_responsibility: 11, pessimistic: 12
   }
 
-  def save_draft!(params)
-
-    after_save_block = Proc.new do
-      save_tags!(params)
-    end
-
-    save_draft_with_after_save_block!(params, after_save_block)
+  def draftable_save_of_draft!(params)
+    save_draft!(params)
+    save_tags!(params)
   end
 
-  def save_complete!(params)
-
-    after_save_block = Proc.new do
-      save_tags!(params)
-    end
-
-    save_complete_with_after_save_block!(params, after_save_block)
+  def draftable_save_of_complete!(params)
+    save_complete!(params)
+    save_tags!(params)
   end
 
   protected

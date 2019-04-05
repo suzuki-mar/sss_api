@@ -21,10 +21,11 @@ module DraftableAction
       raise NotImplementedError.new("create_save_paramsを実装してください") unless self.respond_to?(:create_save_params, true)
 
       if draft_save?(model)
-        model.save_draft!(create_save_params)
+        model.draftable_save_of_draft!(create_save_params)
       else
-        model.save_complete!(create_save_params)
+        model.draftable_save_of_complete!(create_save_params)
       end
+
     end
     render_success_with(model)
   rescue ErrorResponseException => e

@@ -96,7 +96,7 @@ class ProblemSolvingsController < ApiControllerBase
   def problem_solving_params
     params.require(:problem_solving).permit(
         :log_date, :is_draft, :problem_recognition, :example_problem, :cause, :phenomenon, :neglect_phenomenon,
-        :solution, :execution_method, :evaluation_method, :tag, :progress_status)
+        :solution, :execution_method, :evaluation_method, :tag_names_text, :progress_status)
   end
 
   def progress_status_list_action(status)

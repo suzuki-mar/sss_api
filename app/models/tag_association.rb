@@ -7,8 +7,8 @@ class TagAssociation < ApplicationRecord
   validate :validate_document_id
 
   class << self
-    def create_from_tag_names_and_document_model_if_unexists!(tag_names, document_model)
-      tags = Tag.where(name: tag_names)
+    def create_from_tag_names_text_and_document_model_if_unexists!(tag_names_text, document_model)
+      tags = Tag.where(name: tag_names_text)
 
       exsits_tags = Tag.only_associated(document_model)
 
@@ -23,9 +23,9 @@ class TagAssociation < ApplicationRecord
       end
     end
 
-    def delete_from_tag_names(tag_names)
+    def delete_from_tag_names_text(tag_names_text)
 
-      delete_tag_ids = TagAssociation.joins(:tag).where('tags.name': tag_names)
+      delete_tag_ids = TagAssociation.joins(:tag).where('tags.name': tag_names_text)
       TagAssociation.where(id: delete_tag_ids).destroy_all
     end
 

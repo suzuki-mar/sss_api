@@ -38,7 +38,7 @@ RSpec.describe "Reframings", type: :request do
     subject do
       params = reframing_params
       params[:is_draft] = change_draft
-      params[:tag_names] = 'タグA,タグB'
+      params[:tag_names_text] = 'タグA,タグB'
       put "/reframings/#{id}", params: {reframing: params}
     end
 
@@ -138,7 +138,7 @@ RSpec.describe "Reframings", type: :request do
 
       context '保存途中でエラーになった場合' do
         let(:change_draft) {false}
-        let(:tag_names){'タグA,タグB'}
+        let(:tag_names_text){'タグA,タグB'}
         let(:change_text){"調子がいい#{rand}"}
         let(:reframing_params) do
           attributes_for(:reframing, feeling: change_text, distortion_group_number: 2)
@@ -197,7 +197,7 @@ RSpec.describe "Reframings", type: :request do
     subject do
       params = reframing_params
       params[:is_draft] = change_draft
-      params[:tag_names] = tag_names
+      params[:tag_names_text] = tag_names_text
       post "/reframings/", params: {reframing: params}
     end
 
@@ -206,7 +206,7 @@ RSpec.describe "Reframings", type: :request do
 
       context '完成版の場合' do
         let(:change_draft) {false}
-        let(:tag_names){'タグA,タグB'}
+        let(:tag_names_text){'タグA,タグB'}
 
         context '正常に更新できる場合' do
           let(:change_text){"調子がいい#{rand}"}
@@ -240,7 +240,7 @@ RSpec.describe "Reframings", type: :request do
 
         context '保存途中でエラーになった場合' do
           let(:change_draft) {false}
-          let(:tag_names){'タグA,タグB'}
+          let(:tag_names_text){'タグA,タグB'}
           let(:change_text){"調子がいい#{rand}"}
           let(:reframing_params) do
             attributes_for(:reframing, feeling: change_text, distortion_group_number: 2)
@@ -271,7 +271,7 @@ RSpec.describe "Reframings", type: :request do
 
       context 'ドラフトの場合' do
         let(:change_draft) {true}
-        let(:tag_names){'タグA,タグB'}
+        let(:tag_names_text){'タグA,タグB'}
 
         context '正常に更新できる場合' do
           let(:reframing_params) do
@@ -319,7 +319,7 @@ RSpec.describe "Reframings", type: :request do
     end
 
     context 'パラメーターがおかしい場合' do
-      let(:tag_names){'タグA,タグB'}
+      let(:tag_names_text){'タグA,タグB'}
       let(:reframing_params) do
         attributes_for(:reframing, distortion_group_number: 2)
       end
@@ -334,10 +334,10 @@ RSpec.describe "Reframings", type: :request do
 
       end
 
-      context 'tag_namesがnilの場合' do
-        let(:tag_names){nil}
+      context 'tag_names_textがnilの場合' do
+        let(:tag_names_text){nil}
         it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
-          let(:error_message){"reframings:\ttag_namesが入力されていません\n\n"}
+          let(:error_message){"reframings:\ttag_names_textが入力されていません\n\n"}
         end
 
       end
@@ -459,7 +459,7 @@ RSpec.describe "Reframings", type: :request do
     subject do
 
       params = reframing_params
-      params[:tag_names] = 'タグA,タグB'
+      params[:tag_names_text] = 'タグA,タグB'
       put "/reframings/auto_save/#{id}", params: {reframing: params}
     end
 

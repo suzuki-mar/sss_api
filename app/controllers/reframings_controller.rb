@@ -37,8 +37,8 @@ class ReframingsController < ApiControllerBase
       error_messages << "存在しないdistortion_group_numberを指定しました:#{distortion_group_number}"
     end
 
-    if reframing_params['tag_names'].nil?
-      error_messages << "tag_namesが入力されていません"
+    if reframing_params['tag_names_text'].nil?
+      error_messages << "tag_names_textが入力されていません"
     end
 
     if error_messages.present?
@@ -89,7 +89,7 @@ class ReframingsController < ApiControllerBase
     def reframing_params
       params.require(:reframing).permit(
           :log_date, :problem_reason, :objective_facts, :feeling, :before_point, :distortion_group_number,
-          :reframing, :action_plan, :after_point, :tag_names)
+          :reframing, :action_plan, :after_point, :tag_names_text)
     end
 
 end
