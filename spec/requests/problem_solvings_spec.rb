@@ -8,7 +8,7 @@ RSpec.describe "ProblemSolvings", type: :request do
 
   describe 'show' do
     before :each do
-      create(:problem_solving)
+      create(:problem_solving, :has_tag, tag_count: 3)
     end
 
     subject do
@@ -71,14 +71,6 @@ RSpec.describe "ProblemSolvings", type: :request do
             problem_solving = ProblemSolving.find(id)
             expect(problem_solving.example_problem).to eq(change_text)
             expect(problem_solving.is_draft).to eq(false)
-          end
-
-          it 'タグが生成されていること' do
-            expect{ subject }.to change(Tag, :count).from(0).to(2)
-          end
-
-          it 'タグ関連付けが生成されていること' do
-            expect{ subject }.to change(TagAssociation, :count).from(0).to(2)
           end
 
           it 'タグが生成されていること' do
@@ -336,7 +328,7 @@ RSpec.describe "ProblemSolvings", type: :request do
       ]
 
       dates.each do |date|
-        create(:problem_solving, log_date: date)
+        create(:problem_solving, :has_tag, log_date: date, tag_count: 3)
       end
 
     end
@@ -366,7 +358,7 @@ RSpec.describe "ProblemSolvings", type: :request do
       ]
 
       dates.each do |date|
-        create(:problem_solving, log_date: date)
+        create(:problem_solving,  :has_tag, log_date: date, tag_count: 3)
       end
 
     end
@@ -513,8 +505,8 @@ RSpec.describe "ProblemSolvings", type: :request do
       ]
 
       dates.each do |date|
-        create(:problem_solving, log_date: date, progress_status: :done)
-        create(:problem_solving, log_date: date, progress_status: :doing)
+        create(:problem_solving, :has_tag, log_date: date, progress_status: :done, tag_count: 3)
+        create(:problem_solving, :has_tag, log_date: date, progress_status: :doing, tag_count: 3)
       end
 
     end
@@ -561,8 +553,8 @@ RSpec.describe "ProblemSolvings", type: :request do
       ]
 
       dates.each do |date|
-        create(:problem_solving, log_date: date, progress_status: :done)
-        create(:problem_solving, log_date: date, progress_status: :not_started)
+        create(:problem_solving, :has_tag, log_date: date, progress_status: :done, tag_count: 3)
+        create(:problem_solving, :has_tag, log_date: date, progress_status: :not_started, tag_count: 3)
       end
 
     end

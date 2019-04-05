@@ -20,6 +20,8 @@ gem 'rake', '< 11.0'
 
 gem 'active_model_serializers'
 
+gem 'activerecord-import'
+
 gem 'rack-cors', require: 'rack/cors'
 
 gem 'swagger-blocks'
@@ -55,6 +57,7 @@ group :development, :test do
   gem 'parallel_tests'
   gem 'faker'
   gem 'rails-erd'
+  gem 'bullet'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

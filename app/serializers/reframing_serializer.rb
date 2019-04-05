@@ -1,5 +1,6 @@
 class ReframingSerializer < ActiveModel::Serializer
   include Common::DraftSerializer
+  include Common::HasTagSerializer
 
   attributes :id, :log_date, :problem_reason, :objective_facts, :feeling, :before_point,
              :distortion_group_text, :reframing, :action_plan, :after_point, :is_draft_text, :tags
@@ -23,13 +24,6 @@ class ReframingSerializer < ActiveModel::Serializer
     }
 
     values[object.distortion_group.to_sym]
-  end
-
-  def tags
-    object.tag_associations.map do |ta|
-      tag = ta.tag
-      TagSerializer.new(tag).attributes
-    end
   end
 
 end

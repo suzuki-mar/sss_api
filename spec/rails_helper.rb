@@ -26,10 +26,16 @@ RSpec.configure do |config|
 
   config.before(:each) do
     DatabaseCleaner.start
+    Bullet.start_request if Bullet.enable?
   end
 
   config.after(:each) do
     DatabaseCleaner.clean
+
+    if Bullet.enable?
+      Bullet.perform_out_of_channel_notifications if Bullet.notification?
+      Bullet.end_request
+    end
   end
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
@@ -56,7 +62,7 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   config.include FactoryBot::Syntax::Methods
-  # ActiveRecord::Base.logger = Logger.new(STDOUT) SQLを出力する
+  # ActiveRecord::Base.logger = Logger.new(STDOUT) #SQLを出力する
 end
 
 Shoulda::Matchers.configure do |config|

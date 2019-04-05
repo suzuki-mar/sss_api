@@ -27,6 +27,7 @@ module DraftableAction
       end
 
     end
+
     render_success_with(model)
   rescue ErrorResponseException => e
     render_with_error_response(e.error_response)
@@ -36,14 +37,6 @@ module DraftableAction
   end
 
   private
-  def draft_save?(model)
-    auto_save_action? ? model.is_draft : is_draft_param == 'true'
-  end
-
-  def auto_save_action?
-    (params[:action] == 'auto_save')
-  end
-
   def create_error_response_of_invalid_draftable_save_action_params
     if is_draft_param.nil? && !auto_save_action?
       return ErrorResponse.create_validate_error_from_messages({is_draft: "必須です"})

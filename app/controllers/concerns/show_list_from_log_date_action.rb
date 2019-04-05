@@ -4,12 +4,17 @@ module ShowListFromLogDateAction
 
   protected
 
-  def recent_list_action(model_class)
+  def recent_list_action(model_class, has_tag: false)
     list = model_class.recent
+
+    if has_tag
+      list = list.with_tags
+    end
+
     render_success_with_list(list)
   end
 
-  def month_list_action(model_class)
+  def month_list_action(model_class, has_tag: false)
     month_date = MonthDate.new(params["year"], params["month"])
 
     unless month_date.valid
@@ -19,6 +24,11 @@ module ShowListFromLogDateAction
     end
 
     list = model_class.by_month_date(month_date)
+
+    if has_tag
+      list = list.with_tags
+    end
+
     render_success_with_list(list)
   end
 end

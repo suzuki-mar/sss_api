@@ -7,7 +7,7 @@ RSpec.describe "Reframings", type: :request do
 
   describe 'show' do
     before :each do
-      create(:reframing)
+      create(:reframing, :has_tag, tag_count:3)
     end
 
     subject do
@@ -354,7 +354,7 @@ RSpec.describe "Reframings", type: :request do
       ]
 
       dates.each do |date|
-        create(:reframing, log_date: date)
+        create(:reframing, :has_tag, log_date: date, tag_count:3)
       end
 
     end
@@ -378,13 +378,13 @@ RSpec.describe "Reframings", type: :request do
   describe 'month' do
     before :each do
       dates = [
-          compare_date,
           compare_date + 1.month,
+          compare_date,
           compare_date - 1.month,
       ]
 
       dates.each do |date|
-        create(:reframing, log_date: date)
+        create(:reframing, :has_tag, tag_count:3, log_date: date)
       end
 
     end

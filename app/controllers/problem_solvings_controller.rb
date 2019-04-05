@@ -1,9 +1,10 @@
 class ProblemSolvingsController < ApiControllerBase
   include Swagger::ProblemSolvingApi
   include DraftableAction
+  include AutoSaveableAction
   include ShowListFromLogDateAction
 
-  before_action :set_problem_solving, only: [:show, :update, :destroy, :done, :doing, :auto_save]
+  before_action :set_problem_solving, only: [:update, :destroy, :done, :doing, :auto_save]
 
   protected
   # 親クラスで必要となるメソッド
@@ -23,6 +24,11 @@ class ProblemSolvingsController < ApiControllerBase
     nil
   end
 
+  def draft_save?(model)
+    auto_save_action? ? model.is_draft : is_draft_param == 'true'
+  end
+
+
   public
   # GET /problem_solvings
   def index
@@ -33,6 +39,12 @@ class ProblemSolvingsController < ApiControllerBase
 
   # GET /problem_solvings/1
   def show
+    @problem_solving = ProblemSolving.where(id: params[:id]).with_tags.first
+
+    if @problem_solving.nil?
+      raise ActiveRecord::RecordNotFound.new("#{params[:id]}は存在しません")
+    end
+
     render_success_with(@problem_solving)
   end
 
@@ -53,11 +65,11 @@ class ProblemSolvingsController < ApiControllerBase
   end
 
   def recent
-    recent_list_action(ProblemSolving)
+    recent_list_action(ProblemSolving, has_tag: true)
   end
 
   def month
-    month_list_action(ProblemSolving)
+    month_list_action(ProblemSolving, has_tag: true)
   end
 
   def init
@@ -108,7 +120,7 @@ class ProblemSolvingsController < ApiControllerBase
       return
     end
 
-    list = ProblemSolving.by_month_date(month_date).only_progress_status(status)
+    list = ProblemSolving.by_month_date(month_date).only_progress_status(status).with_tags
     render_success_with_list(list)
   end
 

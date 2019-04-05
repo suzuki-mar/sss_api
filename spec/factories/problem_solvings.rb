@@ -13,10 +13,18 @@ FactoryBot.define do
     progress_status {:doing}
 
     trait :has_tag do
-      after(:create) do |problem_solving|
-        tag = create(:tag)
-        create(:tag_association, tag:tag, problem_solving:problem_solving)
+      transient do
+        tag_count {1}
       end
+
+      after(:create) do |problem_solving, evaluator|
+        evaluator.tag_count.times do
+          tag = create(:tag)
+          create(:tag_association, tag:tag, problem_solving:problem_solving)
+        end
+
+      end
+
     end
 
     trait :done do

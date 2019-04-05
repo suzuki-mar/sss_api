@@ -2,9 +2,10 @@ class ReframingsController < ApiControllerBase
 
   include Swagger::ReframingApi
   include DraftableAction
+  include AutoSaveableAction
   include ShowListFromLogDateAction
 
-  before_action :set_reframing, only: [:show, :update, :destroy, :auto_save]
+  before_action :set_reframing, only: [:update, :destroy, :auto_save]
 
   protected
   # 親クラスで必要となるメソッド
@@ -15,7 +16,6 @@ class ReframingsController < ApiControllerBase
   def param_top_key
     :reframing
   end
-
 
   def create_save_params
     distortion_group_number = reframing_params["distortion_group_number"].to_i
@@ -48,9 +48,18 @@ class ReframingsController < ApiControllerBase
     nil
   end
 
+  def draft_save?(model)
+    auto_save_action? ? model.is_draft : is_draft_param == 'true'
+  end
 
   public
   def show
+    @reframing = Reframing.where(id: params[:id]).with_tags.first
+
+    if @reframing.nil?
+      raise ActiveRecord::RecordNotFound.new("#{params[:id]}は存在しません")
+    end
+
     render_success_with(@reframing)
   end
 
@@ -64,11 +73,11 @@ class ReframingsController < ApiControllerBase
   end
 
   def recent
-    recent_list_action(Reframing)
+    recent_list_action(Reframing, has_tag: true)
   end
 
   def month
-    month_list_action(Reframing)
+    month_list_action(Reframing, has_tag: true)
   end
 
   def init
@@ -82,7 +91,11 @@ class ReframingsController < ApiControllerBase
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_reframing
-      @reframing = Reframing.find(params[:id])
+      id = params[:id]
+      @reframing = Reframing.where(id: id).first
+      if @reframing.nil?
+        raise ActiveRecord::RecordNotFound.new("#{id}は存在しません")
+      end
     end
 
     # Only allow a trusted parameter "white list" through.

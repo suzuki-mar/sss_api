@@ -13,9 +13,17 @@ FactoryBot.define do
     is_draft { false }
 
     trait :has_tag do
-      after(:create) do |reframing|
-        tag = create(:tag)
-        create(:tag_association, tag:tag, reframing:reframing)
+
+      transient do
+        tag_count {1}
+      end
+
+      after(:create) do |reframing, evaluator|
+        evaluator.tag_count.times do
+          tag = create(:tag)
+          create(:tag_association, tag:tag, reframing:reframing)
+        end
+
       end
     end
 
