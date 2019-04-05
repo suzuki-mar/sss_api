@@ -3,16 +3,31 @@ require 'rails_helper'
 describe SelfCareClassification, type: :model do
   describe 'Validation' do 
     describe 'name' do
-      example 'nullは許可されない' do
-        should validate_presence_of(:name)
-      end 
-    end 
+      it {should validate_presence_of(:name)}
+      describe '同じ分類で同じ名前は登録できない' do
+
+        before do
+          create(:self_care_classification, status_group: :bad, name:'同じ名前')
+        end
+
+        it '同じ名前で同じグループは登録できない' do
+          self_care_classification = build(:self_care_classification, status_group: :bad, name:'同じ名前')
+          expect(self_care_classification).not_to be_valid
+        end
+
+        it '同じ名前だが違うグループは登録できる' do
+          self_care_classification = build(:self_care_classification, status_group: :good, name:'同じ名前')
+          expect(self_care_classification).to be_valid
+        end
+
+      end
+
+    end
 
     describe 'status_group' do
-      example 'nullは許可されない' do
-        should validate_presence_of(:status_group)
-      end
+      it {should validate_presence_of(:status_group)}
     end
+
   end
 
   describe 'Enum' do 

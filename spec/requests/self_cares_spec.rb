@@ -124,7 +124,6 @@ describe "SelfCares", type: :request do
     end
 
     before :each do
-      create(:self_care)
       self_care_classification = create(:self_care_classification, name: classification_name)
       @self_care_classification_id = self_care_classification.id
     end
@@ -185,8 +184,10 @@ describe "SelfCares", type: :request do
           Date.today - 8.day,
       ]
 
+      self_care_classification = create(:self_care_classification)
+
       dates.each do |date|
-        create(:self_care, log_date: date)
+        create(:self_care, log_date: date, self_care_classification: self_care_classification)
       end
 
     end
@@ -215,8 +216,10 @@ describe "SelfCares", type: :request do
           compare_date - 1.month,
       ]
 
+      self_care_classification = create(:self_care_classification)
+
       dates.each do |date|
-        create(:self_care, log_date: date)
+        create(:self_care, log_date: date, self_care_classification:self_care_classification)
       end
 
     end
@@ -267,7 +270,6 @@ describe "SelfCares", type: :request do
     end
 
     before :each do
-      create(:self_care)
       self_care_classification = create(:self_care_classification, name: classification_name)
       @self_care_classification_id = self_care_classification.id
     end

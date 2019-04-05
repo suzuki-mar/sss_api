@@ -26,6 +26,23 @@ describe SelfCare, :type => :model do
       end
     end
 
+    describe '日付と時刻の組み合わせバリデーション' do
+
+      before do
+        create(:self_care, log_date: Date.today, am_pm: :am)
+      end
+
+      it '同じ日付と時刻の組み合わせはバリデーションに失敗する' do
+        self_care = build(:self_care, log_date: Date.today, am_pm: :am)
+        expect(self_care).not_to be_valid
+      end
+
+      it '同じ日付だが違う時刻の場合はバリデーションに成功する' do
+        self_care = build(:self_care, log_date: Date.today, am_pm: :pm)
+        expect(self_care).to be_valid
+      end
+    end
+
   end
 
   describe 'Enum' do 
