@@ -6,7 +6,31 @@ class TagAssociation < ApplicationRecord
 
   validate :validate_document_id
 
+  DOCUMNET_ID_KEYS = [:problem_solving_id, :reframing_id].freeze
+
   class << self
+
+    def find_grouped_document_ids_by_tag_name(tag_name)
+      associations = self.includes(:tag).where('tags.name' => tag_name)
+
+      grouped_ids = {}
+      DOCUMNET_ID_KEYS.each do |key|
+        grouped_ids[key] = []
+      end
+
+      associations.each do |association|
+
+       DOCUMNET_ID_KEYS.each do |search_key|
+          if association[search_key].present?
+            grouped_ids[search_key] << association[search_key]
+          end
+        end
+
+      end
+
+      grouped_ids
+    end
+
     def create_from_tag_names_text_and_document_model_if_unexists!(tag_names_text, document_model)
       tags = Tag.where(name: tag_names_text)
 
@@ -36,9 +60,7 @@ class TagAssociation < ApplicationRecord
   private
   def validate_document_id
 
-    document_id_keys = [:problem_solving_id, :reframing_id]
-
-    association_keys = document_id_keys.select do |key|
+    association_keys = DOCUMNET_ID_KEYS.select do |key|
       self[key].present?
     end
 

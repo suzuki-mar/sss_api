@@ -2,7 +2,7 @@ class ProblemSolving < ApplicationRecord
 
   include Swagger::ProblemSolvingSchema
   include InitailzeableModel
-  include SearchableFromLogDateModel
+  include HasLogDateModel
   include DraftableModel
   include HasTagModel
 

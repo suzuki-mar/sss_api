@@ -2,7 +2,7 @@ class SelfCare < ApplicationRecord
 
   include Swagger::SelfCareSchema
   include ActiveModel::Validations
-  include SearchableFromLogDateModel
+  include HasLogDateModel
 
   belongs_to :self_care_classification
 

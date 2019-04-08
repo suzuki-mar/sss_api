@@ -2,7 +2,7 @@ class Reframing < ApplicationRecord
 
   include Swagger::ReframingSchema
   include InitailzeableModel
-  include SearchableFromLogDateModel
+  include HasLogDateModel
   include ActiveModel::Validations
   include DraftableModel
   include HasTagModel

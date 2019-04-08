@@ -1,4 +1,4 @@
-module SearchableFromLogDateModel
+module HasLogDateModel
   extend ActiveSupport::Concern
 
   included do

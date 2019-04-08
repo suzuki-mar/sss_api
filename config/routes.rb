@@ -34,6 +34,8 @@ Rails.application.routes.draw do
 
   resources :self_care_classifications, :only => [:update, :create, :index]
 
+  get 'documents/search'
+
   get 'api_docs/index'
   get 'api-docs', to: 'api_docs#index'
 end
