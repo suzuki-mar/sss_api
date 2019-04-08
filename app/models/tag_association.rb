@@ -10,6 +10,12 @@ class TagAssociation < ApplicationRecord
 
   class << self
 
+    def find_grouped_document_ids_by_tag_name_and_target_type(tag_name, target_type)
+
+      document_id_key = "#{target_type}_id"
+      find_grouped_document_ids_by_tag_name_and_document_id_keys(tag_name, [document_id_key])
+    end
+
     def find_grouped_document_ids_by_tag_name(tag_name)
       associations = self.includes(:tag).where('tags.name' => tag_name)
 
@@ -51,6 +57,29 @@ class TagAssociation < ApplicationRecord
 
       delete_tag_ids = TagAssociation.joins(:tag).where('tags.name': tag_names_text)
       TagAssociation.where(id: delete_tag_ids).destroy_all
+    end
+
+
+    private
+    def find_grouped_document_ids_by_tag_name_and_document_id_keys(tag_name, document_id_keys)
+      associations = self.includes(:tag).where('tags.name' => tag_name)
+
+      grouped_ids = {}
+      document_id_keys.each do |key|
+        grouped_ids[key] = []
+      end
+
+      associations.each do |association|
+
+        document_id_keys.each do |search_key|
+          if association[search_key].present?
+            grouped_ids[search_key] << association[search_key]
+          end
+        end
+
+      end
+
+      grouped_ids
     end
 
   end

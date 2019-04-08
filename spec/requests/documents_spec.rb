@@ -44,6 +44,29 @@ RSpec.describe "Documents", type: :request do
 
     end
 
+    context 'タグで一つのタイプを検索する場合' do
+
+      before :each do
+        create(:problem_solving, :has_tag, tag_count: 3, log_date: Date.yesterday)
+        @search_tag = Tag.first
+        create(:reframing, :set_tag, target_tag:@search_tag, log_date: Date.yesterday)
+        create(:reframing, :set_tag, target_tag:@search_tag, log_date: Date.today)
+      end
+
+      let(:params) do
+        {tag_name: @search_tag.name, search_type: :tag, target_type: :problem_solving}
+      end
+
+      it '指定したタグ名を検索で取得する取得する' do
+        subject
+        json = JSON.parse(response.body)
+        elements_json = json['documents_list']['elements']
+
+        expect(elements_json.count).to eq(1)
+      end
+
+    end
+
     context 'パラメーターが間違っている場合' do
 
       context 'search_typeの指定がない' do
@@ -64,6 +87,17 @@ RSpec.describe "Documents", type: :request do
 
         it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
           let(:error_message){"search_type:\t不正なsearch_typeが渡されました:invalid\n\n"}
+        end
+
+      end
+
+      context 'target_typeが定義されていないものの場合' do
+        let(:params) do
+          {search_type: 'tag', target_type: 'invalid'}
+        end
+
+        it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
+          let(:error_message){"target_type:\t不正なtarget_typeが渡されました:invalid\n\n"}
         end
 
       end
