@@ -6,8 +6,6 @@ class TagAssociation < ApplicationRecord
 
   validate :validate_document_id
 
-  DOCUMNET_ID_KEYS = [:problem_solving_id, :reframing_id].freeze
-
   class << self
 
     def find_grouped_document_ids_by_tag_name_and_target_type(tag_name, target_type)
@@ -20,13 +18,13 @@ class TagAssociation < ApplicationRecord
       associations = self.includes(:tag).where('tags.name' => tag_name)
 
       grouped_ids = {}
-      DOCUMNET_ID_KEYS.each do |key|
+      document_id_keys.each do |key|
         grouped_ids[key] = []
       end
 
       associations.each do |association|
 
-       DOCUMNET_ID_KEYS.each do |search_key|
+        document_id_keys.each do |search_key|
           if association[search_key].present?
             grouped_ids[search_key] << association[search_key]
           end
@@ -59,6 +57,13 @@ class TagAssociation < ApplicationRecord
       TagAssociation.where(id: delete_tag_ids).destroy_all
     end
 
+    # 動的に生成できるようにするため
+    def document_id_keys
+      instance = self.new
+
+      keys = instance.attributes.keys
+      keys - ['id', 'tag_id', "created_at", "updated_at"]
+    end
 
     private
     def find_grouped_document_ids_by_tag_name_and_document_id_keys(tag_name, document_id_keys)
@@ -88,8 +93,7 @@ class TagAssociation < ApplicationRecord
 
   private
   def validate_document_id
-
-    association_keys = DOCUMNET_ID_KEYS.select do |key|
+    association_keys = self.class.document_id_keys.select do |key|
       self[key].present?
     end
 
