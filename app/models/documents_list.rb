@@ -24,6 +24,7 @@ class DocumentsList
         Documents.create_log_date_and_params(log_date, params)
       end
 
+      document_list.sort_by_log_date!
       document_list
     end
 

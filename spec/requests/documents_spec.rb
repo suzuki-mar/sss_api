@@ -13,6 +13,9 @@ RSpec.describe "Documents", type: :request do
     end
 
     context 'タグで検索する場合' do
+      let(:params) do
+        {tag_name: tag_name, search_type: :tag}
+      end
 
       before :each do
         create(:problem_solving, :has_tag, tag_count: 3, log_date: Date.yesterday)
@@ -24,22 +27,37 @@ RSpec.describe "Documents", type: :request do
         create(:reframing, :set_tag, target_tag:@search_tag, log_date: Date.today - 2.day)
       end
 
-      let(:params) do
-        {tag_name: @search_tag.name, search_type: :tag}
+      context 'タグが存在する場合' do
+        let(:tag_name) {@search_tag.name}
+
+        it '指定したタグ名を検索で取得する取得する' do
+          subject
+          json = JSON.parse(response.body)
+          elements_json = json['documents_list']['elements']
+
+          expect(elements_json[0]["log_date"]).to eq(Date.today.to_s)
+          expect(elements_json[0].keys).to eq(["log_date", "problem_solvings", "reframings"])
+          expect(elements_json[1]['reframings'].count).to eq(2)
+        end
+
+        it_behaves_like 'スキーマ通りのオブジェクトを取得できてレスポンスが正しいことること' do
+          let(:expected_response_keys){@expected_response_keys}
+        end
       end
 
-      it '指定したタグ名を検索で取得する取得する' do
-        subject
-        json = JSON.parse(response.body)
-        elements_json = json['documents_list']['elements']
+      context 'タグが存在しない場合' do
+        let(:tag_name) {'not_exists'}
 
-        expect(elements_json[0]["log_date"]).to eq(Date.today.to_s)
-        expect(elements_json[0].keys).to eq(["log_date", "problem_solvings", "reframings"])
-        expect(elements_json[1]['reframings'].count).to eq(2)
-      end
+        it '指定したタグ名を検索で取得する取得する' do
+          subject
+          json = JSON.parse(response.body)
+          elements_json = json['documents_list']['elements']
+          expect(elements_json).to eq([])
+        end
 
-      it_behaves_like 'スキーマ通りのオブジェクトを取得できてレスポンスが正しいことること' do
-        let(:expected_response_keys){@expected_response_keys}
+        it_behaves_like 'スキーマ通りのオブジェクトを取得できてレスポンスが正しいことること' do
+          let(:expected_response_keys){@expected_response_keys}
+        end
       end
 
     end
