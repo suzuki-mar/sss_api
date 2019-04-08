@@ -12,23 +12,17 @@ class ApiControllerBase < ActionController::API
     render json: model, status: 200
   end
 
+  def render_success_with_list_and_date_range(models, date_range)
+    response_json = create_respnose_json_of_render_list(models)
+    response_json['start_date'] = date_range.start_date
+    response_json['end_date'] = date_range.end_date
+
+    self.render json: response_json, status: 200
+  end
+
+
   def render_success_with_list(models)
-
-    model_class_name = models.first.class.to_s
-    serailzer_class = "#{model_class_name}Serializer".constantize
-
-    top_key_name = model_class_name.underscore.pluralize.to_sym
-
-    # json化してハッシュ化しないと２重にjson化することになるので正常にrenderできない
-    body = ActiveModel::Serializer::CollectionSerializer.new(
-        models,
-        each_serializer: serailzer_class
-    ).to_json
-    parsed_body = JSON.parse(body)
-
-    response_json = {}
-    response_json[top_key_name] = parsed_body
-
+    response_json = create_respnose_json_of_render_list(models)
     self.render json: response_json, status: 200
   end
 
@@ -37,6 +31,26 @@ class ApiControllerBase < ActionController::API
   end
 
   private
+  def create_respnose_json_of_render_list(models)
+    model_class_name = models.first.class.to_s
+    serailzer_class = "#{model_class_name}Serializer".constantize
+
+    top_key_name = model_class_name.underscore.pluralize.to_sym
+
+    # json化してハッシュ化しないと２重にjson化することになるので正常にrenderできない
+    collection_searialzer = ActiveModel::Serializer::CollectionSerializer.new(
+        models,
+        each_serializer: serailzer_class
+    )
+
+    body = collection_searialzer.to_json
+    parsed_body = JSON.parse(body)
+
+    response_json = {}
+    response_json[top_key_name] = parsed_body
+    response_json
+  end
+
   def confirm_need_method_defined?
 
     unless self.respond_to?(:target_model_name, true)

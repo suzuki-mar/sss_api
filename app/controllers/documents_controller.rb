@@ -2,7 +2,7 @@ class DocumentsController < ApiControllerBase
 
   include Swagger::DocumentsApi
 
-  protected
+    protected
   def target_model_name
     'Documents'
   end

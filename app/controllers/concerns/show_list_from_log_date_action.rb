@@ -11,7 +11,8 @@ module ShowListFromLogDateAction
       list = list.with_tags
     end
 
-    render_success_with_list(list)
+    recent = Recent.new
+    render_success_with_list_and_date_range(list, recent)
   end
 
   def month_list_action(model_class, has_tag: false)

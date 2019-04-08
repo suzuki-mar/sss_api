@@ -341,10 +341,14 @@ RSpec.describe "ProblemSolvings", type: :request do
       subject
       json = JSON.parse(response.body)
       expect(json['problem_solvings'].count).to eq(1)
+      start_date = (Date.today - 7.day).to_s(:db)
+      expect(json['start_date']).to eq(start_date)
+      expect(json['end_date']).to eq(Date.today.to_s(:db))
+
     end
 
     it_behaves_like 'スキーマ通りのオブジェクトを取得できてレスポンスが正しいことること' do
-      let(:expected_response_keys){'problem_solvings'}
+      let(:expected_response_keys){['problem_solvings', 'start_date', 'end_date']}
     end
 
   end

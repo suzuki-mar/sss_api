@@ -203,7 +203,7 @@ describe "SelfCares", type: :request do
     end
 
     it_behaves_like 'スキーマ通りのオブジェクトを取得できてレスポンスが正しいことること' do
-      let(:expected_response_keys){'self_cares'}
+      let(:expected_response_keys){['self_cares', 'start_date', 'end_date']}
     end
 
   end

@@ -370,7 +370,7 @@ RSpec.describe "Reframings", type: :request do
     end
 
     it_behaves_like 'スキーマ通りのオブジェクトを取得できてレスポンスが正しいことること' do
-      let(:expected_response_keys){'reframings'}
+      let(:expected_response_keys){['reframings', 'start_date', 'end_date']}
     end
 
   end
