@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  get 'documents/tags'
   resources :tags
   resources :problem_solvings do
     collection do

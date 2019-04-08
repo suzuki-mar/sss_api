@@ -1,0 +1,2 @@
+class DocumentsList
+end
