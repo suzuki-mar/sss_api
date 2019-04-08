@@ -30,13 +30,10 @@ module Swagger::DocumentsApi
               ]
             end
 
-            property :problem_recognition do
+            property :tag_name do
               key :type, :string
               key :description, 'search_typeがtagの場合に必須'
-              items do
-                key :type, :string
-                key :description, 'タグ名'
-              end
+              key :example, 'タグA'
             end
 
           end
@@ -48,11 +45,8 @@ module Swagger::DocumentsApi
           schema do
             key :required, [:documents]
 
-            property :documents do
-              key :type, :array
-              items do
-                key :'$ref', :Documents
-              end
+            property :documents_list do
+              key :'$ref', :DocumentsList
             end
 
           end

@@ -16,16 +16,37 @@ module Swagger::DocumentsSchema
         key :example, '2019-03-03'
       end
 
-      property :self_care do
-        key :'$ref', 'SelfCareOutput'
+      property :self_cares do
+        key :type, :array
+        items do
+          key :'$ref', :SelfCareOutput
+        end
       end
 
-      property :problem_solving do
-        key :'$ref', 'ProblemSolvingOutput'
+      property :problem_solvings do
+        key :type, :array
+        items do
+          key :'$ref', :ProblemSolvingOutput
+        end
       end
 
-      property :reframing do
-        key :'$ref', 'ReframingOutput'
+      property :reframings do
+        key :type, :array
+        items do
+          key :'$ref', :ReframingOutput
+        end
+      end
+
+    end
+
+    swagger_schema :DocumentsList do
+      key :required, [:elements]
+
+      property :elements do
+        key :type, :array
+        items do
+          key :'$ref', :Documents
+        end
       end
 
     end
