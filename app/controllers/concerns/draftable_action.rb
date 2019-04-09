@@ -2,14 +2,6 @@ module DraftableAction
 
   extend ActiveSupport::Concern
 
-  def init_action(model_class)
-    model = model_class.new
-    raise NotImplementedError.new("initialize!を実装してください") unless model.respond_to?(:initialize!)
-
-    model.initialize!
-    render_success_with(model)
-  end
-
   def draftable_save_action_enable_db_transaction(model)
     ActiveRecord::Base.transaction do
       error_response = create_error_response_of_invalid_draftable_save_action_params
