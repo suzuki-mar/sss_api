@@ -254,16 +254,18 @@ RSpec.describe "Reframings", type: :request do
         end
 
         context 'バリデーションエラーの場合' do
-          let(:reframing_params) do
-            attributes_for(:reframing, feeling: nil, log_date: nil, distortion_group_number: 2)
-          end
+          context '基本的なパラメーターにnilのパラメーターがある' do
+            let(:reframing_params) do
+              attributes_for(:reframing, feeling: nil, log_date: nil, distortion_group_number: 2)
+            end
 
-          it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
-            let(:error_message){"reframing:\tValidation failed: Feeling can't be blank, Log date 日付の選択は必須です\n\n"}
-          end
+            it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
+              let(:error_message){"reframing:\tValidation failed: Feeling can't be blank, Log date 日付の選択は必須です\n\n"}
+            end
 
-          it '新しくレコードが作成されない' do
-            expect{ subject }.to change(Reframing, :count).by(0)
+            it '新しくレコードが作成されない' do
+              expect{ subject }.to change(Reframing, :count).by(0)
+            end
           end
 
         end
@@ -337,7 +339,7 @@ RSpec.describe "Reframings", type: :request do
       context 'tag_names_textがnilの場合' do
         let(:tag_names_text){nil}
         it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
-          let(:error_message){"reframings:\ttag_names_textが入力されていません\n\n"}
+          let(:error_message){"tag_names_text:	tag_names_textが入力されていません\n\n"}
         end
 
       end

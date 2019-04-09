@@ -13,6 +13,12 @@ class ErrorResponse
     object
   end
 
+  def self.create_validate_error_from_message_and_model_name(message, model_name)
+    messages = {}
+    messages[model_name] = message
+    ErrorResponse.create_validate_error_from_messages(messages)
+  end
+
   def self.create_validate_error_from_messages(messages)
     object = ErrorResponse.new
     object.status = 400
@@ -35,9 +41,14 @@ class ErrorResponse
       object.message += "\n\n"
     end
 
-
-
     object
+  end
+
+  def self.create_from_exception(error)
+    error_messages = {}
+    error_messages['error'] = error.message
+
+    return self.create_validate_error_from_messages(error_messages)
   end
 
   def to_hash

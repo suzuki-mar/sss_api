@@ -3,8 +3,10 @@ class SelfCare < ApplicationRecord
   include Swagger::SelfCareSchema
   include ActiveModel::Validations
   include HasLogDateModel
+  include HasTagModel
 
   belongs_to :self_care_classification
+  has_many :tag_associations, dependent: :nullify
 
   validates :reason, presence: true
   validates :am_pm, presence: true, uniqueness: { scope: :log_date }
@@ -21,6 +23,15 @@ class SelfCare < ApplicationRecord
     params[:am_pm] = (date_time.hour < 13)? :am : :pm
 
     params
+  end
+
+  def save_with_params(params)
+    base_params = params.deep_dup
+    base_params.delete('tag_names_text')
+
+    self.assign_attributes(base_params)
+    self.save!
+    self.save_tags!(params)
   end
 
   def log_date_time

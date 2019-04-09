@@ -7,7 +7,7 @@ describe SelfCareSerializer, :type => :serializer do
     self_care = create(:self_care)
     attributes = SelfCareSerializer.new(self_care).attributes
 
-    expected_keys = [:id, :log_date, :am_pm, :point, :reason, :status_group, :classification_name]
+    expected_keys = [:id, :log_date, :am_pm, :point, :reason, :status_group, :classification_name, :tags]
     expect(attributes.keys).to match_array(expected_keys)
   end
 

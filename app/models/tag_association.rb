@@ -3,6 +3,7 @@ class TagAssociation < ApplicationRecord
   belongs_to :tag
   belongs_to :problem_solving, optional: true
   belongs_to :reframing, optional: true
+  belongs_to :self_care, optional: true
 
   validate :validate_document_id
 

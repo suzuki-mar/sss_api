@@ -34,7 +34,9 @@ describe "SelfCares", type: :request do
   describe 'update' do
     let(:classification_name){"新しく作成した分類名"}
     let(:save_params) do
-      attributes_for(:self_care, reason: change_text, self_care_classification_id: self_care_classification_id)
+      params = attributes_for(:self_care, reason: change_text, self_care_classification_id: self_care_classification_id)
+      params.merge!(option_params)
+      params
     end
     let(:self_care_classification_id){@self_care_classification_id}
     let(:change_text){"理由#{rand}"}
@@ -52,11 +54,16 @@ describe "SelfCares", type: :request do
     subject do
       params = {self_care: save_params}
       params[:self_care].merge!(option_params)
+
       put "/self_cares/#{id}", params: params
     end
 
     context 'オブジェクトが存在する場合' do
       let(:id){1}
+
+      let(:option_params) do
+        {tag_names_text: 'タグA,タグB'}
+      end
 
       context '正常に更新できる場合' do
 
@@ -78,11 +85,18 @@ describe "SelfCares", type: :request do
           expect(self_care.self_care_classification.name).to eq(classification_name)
         end
 
+        it 'タグが生成されていること' do
+          expect{ subject }.to change(Tag, :count).from(0).to(2)
+        end
+
+        it 'タグ関連付けが生成されていること' do
+          expect{ subject }.to change(TagAssociation, :count).from(0).to(2)
+        end
       end
 
       context 'バリデーションエラーの場合' do
         let(:option_params) do
-          {log_date: nil}
+          {log_date: nil, tag_names_text: 'タグA,タグB'}
         end
 
         it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
@@ -95,6 +109,9 @@ describe "SelfCares", type: :request do
     context 'パラメーターが間違っている場合' do
       let(:id){1}
       let(:self_care_classification_id){99999999999999}
+      let(:option_params) do
+        {tag_names_text: 'タグA,タグB'}
+      end
 
       it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
         let(:error_message){"self_care_classification:\t存在しないIDを渡しました#{self_care_classification_id}\n" + "\n"}
@@ -103,7 +120,9 @@ describe "SelfCares", type: :request do
 
     it_behaves_like 'オブジェクトが存在しない場合' do
       let(:id){10000000}
-      let(:change_draft) {true}
+      let(:option_params) do
+        {tag_names_text: 'タグA,タグB'}
+      end
       let(:save_params) do
         attributes_for(:problem_solving, example_problem: '問題例')
       end
@@ -114,7 +133,9 @@ describe "SelfCares", type: :request do
   describe 'create' do
     let(:classification_name){"新しく作成した分類名"}
     let(:save_params) do
-      attributes_for(:self_care, reason: change_text, self_care_classification_id: self_care_classification_id)
+      attributes_for(:self_care, reason: change_text,
+                     self_care_classification_id: self_care_classification_id,
+                     tag_names_text: 'タグA,タグB')
     end
     let(:self_care_classification_id){@self_care_classification_id}
     let(:change_text){"理由#{rand}"}
@@ -145,6 +166,7 @@ describe "SelfCares", type: :request do
         json = JSON.parse(response.body)
         expect(json['self_care']['reason']).to eq(change_text)
         expect(json['self_care']['classification_name']).to eq("悪化:#{classification_name}")
+        expect(json['self_care']['tags'].count).to eq(2)
       end
 
       it 'DBの値が更新されていること' do
@@ -154,26 +176,52 @@ describe "SelfCares", type: :request do
         expect(self_care.self_care_classification.name).to eq(classification_name)
       end
 
+      it 'タグが生成されていること' do
+        expect{ subject }.to change(Tag, :count).from(0).to(2)
+      end
+
+      it 'タグ関連付けが生成されていること' do
+        expect{ subject }.to change(TagAssociation, :count).from(0).to(2)
+      end
+
     end
 
     context 'バリデーションエラーの場合' do
-      let(:option_params) do
-        {log_date: nil}
+      context '記録日がnilの場合' do
+        let(:option_params) do
+          {log_date: nil}
+        end
+
+        it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
+          let(:error_message){"self_care:\tValidation failed: Log date 日付の選択は必須です\n\n"}
+        end
       end
 
-      it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
-        let(:error_message){"self_care:\tValidation failed: Log date 日付の選択は必須です\n\n"}
-      end
     end
 
     context 'パラメーターが間違っている場合' do
       let(:id){1}
-      let(:self_care_classification_id){99999999999999}
 
-      it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
-        let(:error_message){"self_care_classification:\t存在しないIDを渡しました#{self_care_classification_id}\n" + "\n"}
+      context '存在しない分類IDを渡した' do
+
+        let(:self_care_classification_id){99999999999999}
+
+        it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
+          let(:error_message){"self_care_classification:\t存在しないIDを渡しました#{self_care_classification_id}\n" + "\n"}
+        end
+      end
+
+      context 'tag_names_textがnilの場合' do
+        let(:option_params) do
+          {tag_names_text: nil}
+        end
+
+        it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
+          let(:error_message){"tag_names_text:	tag_names_textが入力されていません\n\n"}
+        end
       end
     end
+
   end
 
   describe 'recent' do
@@ -260,10 +308,13 @@ describe "SelfCares", type: :request do
   describe 'current_create' do
     let(:classification_name){"新しく作成した分類名"}
     let(:save_params) do
-      attributes_for(:self_care, reason: change_text, self_care_classification_id: self_care_classification_id)
+      params = attributes_for(:self_care, reason: change_text, self_care_classification_id: self_care_classification_id)
+      params[:tag_names_text] = tag_names_text
+      params
     end
     let(:self_care_classification_id){@self_care_classification_id}
     let(:change_text){"理由#{rand}"}
+    let(:tag_names_text){"タグA,タグB"}
 
     let(:option_params) do
       {}
@@ -294,6 +345,7 @@ describe "SelfCares", type: :request do
         json = JSON.parse(response.body)
         expect(json['self_care']['reason']).to eq(change_text)
         expect(json['self_care']['classification_name']).to eq("悪化:#{classification_name}")
+        expect(json['self_care']['tags'].count).to eq(2)
       end
 
       it 'DBの値が更新されていること' do
@@ -307,6 +359,7 @@ describe "SelfCares", type: :request do
     end
 
     context 'バリデーションエラーの場合' do
+
       let(:option_params) do
         {point: nil}
       end

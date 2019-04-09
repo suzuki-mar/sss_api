@@ -1,7 +1,9 @@
 module Common
   module HasTagSerializer
-    def self.included(base)
-      base.attributes :tags
+    extend ActiveSupport::Concern
+
+    included do
+      self.attributes :tags
     end
 
     def tags

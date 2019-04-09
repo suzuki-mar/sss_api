@@ -32,6 +32,7 @@ RSpec.describe TagAssociation, type: :model do
     it { should belong_to(:tag ) }
     it { should belong_to(:problem_solving ).optional }
     it { should belong_to(:reframing ).optional }
+    it { should belong_to(:self_care ).optional }
 
   end
 

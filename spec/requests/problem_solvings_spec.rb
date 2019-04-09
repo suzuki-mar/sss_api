@@ -39,13 +39,14 @@ RSpec.describe "ProblemSolvings", type: :request do
     subject do
       params = save_params
       params[:is_draft] = change_draft
-      params[:tag_names_text] = 'タグA,タグB'
+      params[:tag_names_text] = save_tags_names_text
       put "/problem_solvings/#{id}", params: {problem_solving: params}
     end
 
     context 'オブジェクトが存在する場合' do
       let(:id){1}
       let(:change_text){"問題例#{rand}"}
+      let(:save_tags_names_text){"タグA,タグB"}
 
       context '完成版の場合' do
         let(:change_draft) {false}
@@ -121,23 +122,13 @@ RSpec.describe "ProblemSolvings", type: :request do
           end
 
         end
-
-        context 'バリデーションエラーの場合' do
-          let(:save_params) do
-            attributes_for(:problem_solving, log_date: 1000)
-          end
-
-          it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
-            let(:error_message){"problem_solving:\tValidation failed: Log date 日付の選択は必須です\n\n"}
-          end
-
-        end
       end
     end
 
     context '保存途中でエラーになった場合' do
       let(:id){1}
       let(:change_draft) {true}
+      let(:save_tags_names_text){"タグA,タグB"}
       let(:save_params) do
         attributes_for(:problem_solving, example_problem: '問題例')
       end
@@ -156,7 +147,7 @@ RSpec.describe "ProblemSolvings", type: :request do
       context 'is_draftがnilの場合' do
         let(:change_draft) {nil}
         let(:id){1}
-
+        let(:save_tags_names_text){"タグA,タグB"}
         let(:save_params) do
           attributes_for(:problem_solving)
         end
@@ -164,6 +155,21 @@ RSpec.describe "ProblemSolvings", type: :request do
         it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
           let(:error_message){"is_draft:\t必須です\n" + "\n"}
         end
+
+      end
+
+      context 'save_tags_names_textがnilの場合' do
+        let(:change_draft) {"hoge"}
+        let(:id){1}
+        let(:save_tags_names_text){nil}
+        let(:save_params) do
+          attributes_for(:problem_solving)
+        end
+
+        it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
+          let(:error_message){"tag_names_text:	tag_names_textが入力されていません\n\n"}
+        end
+
       end
 
     end
@@ -171,6 +177,7 @@ RSpec.describe "ProblemSolvings", type: :request do
     it_behaves_like 'オブジェクトが存在しない場合' do
       let(:id){10000000}
       let(:change_draft) {true}
+      let(:save_tags_names_text){"タグA,タグB"}
       let(:save_params) do
         attributes_for(:problem_solving, example_problem: '問題例')
       end

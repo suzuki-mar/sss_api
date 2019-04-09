@@ -1,4 +1,6 @@
 class SelfCareSerializer < ActiveModel::Serializer
+  include Common::HasTagSerializer
+
   attributes :id, :am_pm, :log_date, :point, :reason, :status_group, :classification_name
 
   def initialize(object, options = {})

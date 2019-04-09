@@ -68,6 +68,7 @@ describe SelfCare, :type => :model do
 
   describe 'Table Relation' do 
     it { should belong_to(:self_care_classification ) }
+    it { should have_many(:tag_associations).dependent(:nullify) }
   end
 
   describe 'create_save_params_of_date' do
