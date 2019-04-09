@@ -34,7 +34,7 @@ describe SelfCareClassificationSerializer, :type => :serializer do
   describe 'name' do
 
     it '分類名:nameを返すこと' do
-      self_care_classification = create(:self_care_classification)
+      self_care_classification = create(:self_care_classification, name: 'name', status_group: 'bad')
       expect(SelfCareClassificationSerializer.new(self_care_classification).display_name).to eq '悪化:name'
     end
 

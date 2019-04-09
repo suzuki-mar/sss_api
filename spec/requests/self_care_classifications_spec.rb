@@ -157,10 +157,10 @@ describe "SelfCareClassification", type: :request do
 
   describe 'index' do
     before :each do
-      create(:self_care_classification, name: Faker::Color.color_name, status_group: :good)
-      create(:self_care_classification, name: Faker::Color.color_name, status_group: :bad)
-      create(:self_care_classification, name: Faker::Color.color_name, status_group: :normal)
-      create(:self_care_classification, name: Faker::Color.color_name, status_group: :good)
+      create(:self_care_classification, status_group: :good)
+      create(:self_care_classification, status_group: :bad)
+      create(:self_care_classification, status_group: :normal)
+      create(:self_care_classification, status_group: :good)
     end
 
     subject do
