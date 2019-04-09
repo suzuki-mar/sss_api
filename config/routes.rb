@@ -29,8 +29,8 @@ Rails.application.routes.draw do
       get :recent
       get 'month/:year/:month' => 'self_cares#month'
       post 'current' => 'self_cares#current_create'
-      get 'log_date_line_graph/:year/:month' => 'self_cares#log_date_line_graph'
-      get 'point_pie_chart/:year/:month' => 'self_cares#point_pie_chart'
+      get 'log_date_line_graph/:year/:month' => 'self_care_charts#log_date_line_graph'
+      get 'point_pie_chart/:year/:month' => 'self_care_charts#point_pie_chart'
     end
   end
 
