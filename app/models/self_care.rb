@@ -15,11 +15,13 @@ class SelfCare < ApplicationRecord
   validates :point, point_type: true
   validates :am_pm, uniqueness: { scope: :log_date, message: "同じ日付と時期の組み合わせは登録できません" }
 
+  scope :with_classification, -> { includes(:self_care_classification) }
+
   enum am_pm:{am: 1, pm:2}
 
   # DocumentElementModel用の実装
   def self.includes_related_items
-    with_tags.includes(:self_care_classification)
+    with_tags.with_classification
   end
 
   # DocumentElementModel用の実装終わり

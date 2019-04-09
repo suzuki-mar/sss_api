@@ -1,8 +1,8 @@
 class SelfCareClassificationSerializer < ActiveModel::Serializer
   attributes :id, :status_group, :display_name
 
-  def status_group
-    case object.status_group
+  def self.convert_status_group_text(status_group)
+    case status_group
     when "good"
       "良好"
     when "normal"
@@ -10,7 +10,10 @@ class SelfCareClassificationSerializer < ActiveModel::Serializer
     when "bad"
       "悪化"
     end
+  end
 
+  def status_group
+    self.class.convert_status_group_text(object.status_group)
   end
 
   def display_name

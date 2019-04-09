@@ -9,4 +9,18 @@ class SelfCareClassification < ApplicationRecord
 
   scope :for_selecting, -> { order(:status_group) }
 
+
+  def self.convert_for_grouped_by_status_group(target)
+    self_cares_grouped_by_status_group = {}
+    self.status_groups.keys.each do |key|
+      self_cares_grouped_by_status_group[key] = []
+    end
+
+    target.each do |sc|
+      status_group = sc.self_care_classification.status_group
+      self_cares_grouped_by_status_group[status_group] << sc
+    end
+
+    self_cares_grouped_by_status_group
+  end
 end
