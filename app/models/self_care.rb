@@ -23,5 +23,10 @@ class SelfCare < ApplicationRecord
     params
   end
 
+  def log_date_time
+    hours = am? ? 0 : 13
+    Time.zone.local(log_date.year, log_date.month, log_date.day, hours, 0, 0)
+  end
+
 end
 

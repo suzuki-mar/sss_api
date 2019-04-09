@@ -1,7 +1,24 @@
 require 'rails_helper'
 
 describe SelfCare, :type => :model do
-  
+
+  describe 'log_date_time' do
+
+    it 'amなら0時' do
+      self_care = build(:self_care, log_date:Date.today, am_pm: :am)
+      expected_date_time = DateTime.now.change(hour: 0)
+      expect(self_care.log_date_time).to eq(expected_date_time)
+    end
+
+    it 'pmなら13時' do
+      self_care = build(:self_care, log_date:Date.today, am_pm: :pm)
+      expected_date_time = DateTime.now.change(hour: 13)
+      expect(self_care.log_date_time).to eq(expected_date_time)
+    end
+
+
+  end
+
   describe 'Validation' do
     let(:self_care){build_stubbed(:self_care)}
 

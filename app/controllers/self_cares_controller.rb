@@ -41,6 +41,24 @@ class SelfCaresController < ApiControllerBase
     save_action(save_parms)
   end
 
+  def log_date_line_graph
+    month_date = MonthDate.new(params["year"], params["month"])
+
+    unless month_date.valid
+      error_response = ErrorResponse.create_validate_error_from_messages(month_date.error_messages)
+      render_with_error_response(error_response)
+      return
+    end
+
+    list = SelfCare.by_month_date(month_date)
+    items = list.map do |model|
+      DateValueLineGraphItem.new(model.log_date_time, model.point)
+    end
+
+    items.sort_by!{|item| item.date}
+    render_success_with_list_and_date_range(items, month_date)
+  end
+
   private
   def save_action(save_params)
     classification_id_error_response = create_error_response_of_unexist_classificaton_id

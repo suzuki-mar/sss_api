@@ -29,6 +29,7 @@ Rails.application.routes.draw do
       get :recent
       get 'month/:year/:month' => 'self_cares#month'
       post 'current' => 'self_cares#current_create'
+      get 'log_date_line_graph/:year/:month' => 'self_cares#log_date_line_graph'
     end
   end
 
