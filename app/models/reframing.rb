@@ -6,6 +6,7 @@ class Reframing < ApplicationRecord
   include ActiveModel::Validations
   include DraftableModel
   include HasTagModel
+  include DocumentElementModel
 
   has_many :tag_associations, dependent: :nullify
 
@@ -39,6 +40,13 @@ class Reframing < ApplicationRecord
       underestimate: 7, emotional_decision: 8, perfectionism: 9, labeling: 10,
       shift_responsibility: 11, pessimistic: 12
   }
+
+  # DocumentElementModel用の実装
+  def self.includes_related_items
+    with_tags
+  end
+
+  # DocumentElementModel用の実装終わり
 
   def draftable_save_of_draft!(params)
     save_draft!(params)

@@ -27,6 +27,19 @@ FactoryBot.define do
 
     end
 
+    trait :set_tag do
+
+      transient do
+        target_tag {nil}
+      end
+
+      after(:create) do |problem_solving, evaluator|
+        raise ArgumentError.new('target_tagを引数で渡してください') if evaluator.target_tag.nil?
+        create(:tag_association, tag:evaluator.target_tag, problem_solving:problem_solving)
+      end
+
+    end
+
     trait :done do
       progress_status { :done }
     end

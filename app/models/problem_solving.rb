@@ -5,6 +5,7 @@ class ProblemSolving < ApplicationRecord
   include HasLogDateModel
   include DraftableModel
   include HasTagModel
+  include DocumentElementModel
 
   has_many :tag_associations, dependent: :nullify
 
@@ -24,6 +25,13 @@ class ProblemSolving < ApplicationRecord
 
   enum progress_status:{not_started: 1, doing: 2, done: 3}
   scope :only_progress_status, -> (progress_status) { where(progress_status: progress_status) }
+
+  # DocumentElementModel用の実装
+  def self.includes_related_items
+    with_tags
+  end
+
+  # DocumentElementModel用の実装終わり
 
   def done!
     self.progress_status = :done

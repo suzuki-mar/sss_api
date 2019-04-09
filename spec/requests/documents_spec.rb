@@ -19,12 +19,16 @@ RSpec.describe "Documents", type: :request do
 
       before :each do
         create(:problem_solving, :has_tag, tag_count: 3, log_date: Date.yesterday)
+
         @search_tag = Tag.first
         create(:reframing, :set_tag, target_tag:@search_tag, log_date: Date.yesterday)
         create(:reframing, :set_tag, target_tag:@search_tag, log_date: Date.yesterday)
         create(:reframing, :set_tag, target_tag:@search_tag, log_date: Date.today)
         create(:reframing, :set_tag, target_tag:Tag.second, log_date: Date.today)
         create(:reframing, :set_tag, target_tag:@search_tag, log_date: Date.today - 2.day)
+
+        create(:self_care, :set_tag, target_tag:@search_tag, log_date: Date.yesterday, am_pm: :pm)
+
       end
 
       context 'タグが存在する場合' do
@@ -34,9 +38,8 @@ RSpec.describe "Documents", type: :request do
           subject
           json = JSON.parse(response.body)
           elements_json = json['documents_list']['elements']
-
           expect(elements_json[0]["log_date"]).to eq(Date.today.to_s)
-          expect(elements_json[0].keys).to eq(["log_date", "problem_solvings", "reframings"])
+          expect(elements_json[0].keys).to eq(["log_date", "problem_solvings", "reframings", "self_cares"])
           expect(elements_json[1]['reframings'].count).to eq(2)
         end
 
@@ -68,19 +71,48 @@ RSpec.describe "Documents", type: :request do
         create(:problem_solving, :has_tag, tag_count: 3, log_date: Date.yesterday)
         @search_tag = Tag.first
         create(:reframing, :set_tag, target_tag:@search_tag, log_date: Date.yesterday)
-        create(:reframing, :set_tag, target_tag:@search_tag, log_date: Date.today)
+        create(:self_care, :set_tag, target_tag:@search_tag, log_date: Date.yesterday, am_pm: :am)
       end
 
       let(:params) do
-        {tag_name: @search_tag.name, search_type: :tag, target_type: :problem_solving}
+        {tag_name: @search_tag.name, search_type: :tag, target_type: target_type}
       end
 
-      it '指定したタグ名を検索で取得する取得する' do
-        subject
-        json = JSON.parse(response.body)
-        elements_json = json['documents_list']['elements']
+      context '問題解決をターゲットにする場合' do
+        let(:target_type){:problem_solving}
 
-        expect(elements_json.count).to eq(1)
+        it '指定したタグ名を検索で取得する取得する' do
+          subject
+          json = JSON.parse(response.body)
+          elements_json = json['documents_list']['elements']
+          expect(elements_json[0]['problem_solvings'].count).to eq(1)
+          expect(elements_json[0]['reframings'].count).to eq(0)
+        end
+      end
+
+      context 'リフレーミングをターゲットにする場合' do
+        let(:target_type){:reframing}
+
+        it '指定したタグ名を検索で取得する取得する' do
+          subject
+          json = JSON.parse(response.body)
+          elements_json = json['documents_list']['elements']
+
+          expect(elements_json[0]['reframings'].count).to eq(1)
+          expect(elements_json[0]['problem_solvings'].count).to eq(0)
+        end
+      end
+
+      context 'セルフケアをターゲットにする場合' do
+        let(:target_type){:self_care}
+
+        it '指定したタグ名を検索で取得する取得する' do
+          subject
+          json = JSON.parse(response.body)
+          elements_json = json['documents_list']['elements']
+          expect(elements_json[0]['self_cares'].count).to eq(1)
+          expect(elements_json[0]['problem_solvings'].count).to eq(0)
+        end
       end
 
     end

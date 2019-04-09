@@ -34,7 +34,9 @@ class DocumentsList
       grouped_document_ids.each do |key, ids|
         model_name = key.to_s.gsub(/(.*)(_id)/, '\1').camelize
         model_class = model_name.constantize
-        grouped_documents[model_name] = model_class.where(id: ids).with_tags
+        raise RuntimeError.new ("DocumentElementのクラスはDocumentElementModelをインクルードしている必要があります") unless model_class.include?(DocumentElementModel)
+
+        grouped_documents[model_name] = model_class.where(id: ids).includes_related_items
       end
 
       grouped_documents

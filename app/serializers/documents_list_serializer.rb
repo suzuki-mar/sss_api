@@ -7,11 +7,4 @@ class DocumentsListSerializer < ActiveModel::Serializer
     end
   end
 
-  def reframings
-    return [] if object.reframings.nil?
-    object.reframings.map do |r|
-      ReframingSerializer.new(r).attributes
-    end
-  end
-
 end

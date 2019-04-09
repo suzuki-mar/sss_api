@@ -2,7 +2,7 @@ class DocumentSearchParameter
 
   private
   SEARCH_TYPES = ['tag'].freeze
-  TARGET_TYPES = ['problem_solving', 'reframing'].freeze
+  TARGET_TYPES = ['problem_solving', 'reframing', 'self_care'].freeze
 
   public
   attr_reader :target_type, :search_type, :tag_name, :error_messages
