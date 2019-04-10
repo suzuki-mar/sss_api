@@ -11,6 +11,7 @@ class ApiDocsController < ApplicationController
                Reframing,
                Tag,
                Documents,
+               Action,
                ProblemSolvingsController,
                ReframingsController,
                SelfCaresController,

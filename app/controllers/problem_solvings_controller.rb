@@ -17,7 +17,20 @@ class ProblemSolvingsController < ApiControllerBase
   end
 
   def create_save_params
-    problem_solving_params.to_hash
+    save_params = problem_solving_params.to_hash
+
+    action_param_keys = [:progress_status, :evaluation_method, :execution_method, :due_date, :id]
+    action_params = params.require(:problem_solving).require(:actions).map do |action_params|
+      action_params.permit(action_param_keys).to_hash
+    end
+
+    action_params.each do |action_param|
+      progress_status_number = action_param["progress_status"].to_i
+      action_param['progress_status'] = Action.progress_statuses.invert[progress_status_number]
+    end
+    save_params['actions'] = action_params
+
+    save_params
   end
 
   def create_error_response_of_params_if_needed
@@ -28,12 +41,10 @@ class ProblemSolvingsController < ApiControllerBase
     auto_save_action? ? model.is_draft : is_draft_param == 'true'
   end
 
-
   public
   # GET /problem_solvings
   def index
     @problem_solvings = ProblemSolving.all
-
     render json: @problem_solvings
   end
 

@@ -1,12 +1,11 @@
 class Action < ApplicationRecord
 
-  include HasLogDateModel
+  include Swagger::ActionSchema
 
-  validates :is_draft, inclusion: {in: [true, false]}
   validates :progress_status, presence: true
-  validates :due_date, presence: true, on: :completed
-  validates :description, presence: true, on: :completed
-  validates :log_date, log_date_type: {initailizeable_model: false }
+  validates :due_date, presence: true
+  validates :evaluation_method, presence: true
+  validates :execution_method, presence: true
 
   enum progress_status:{not_started: 1, doing: 2, done: 3}
 

@@ -9,6 +9,10 @@ FactoryBot.define do
     neglect_phenomenon { "MyText" }
     progress_status {:doing}
 
+    after(:create) do |problem_solving|
+      create_list(:action, 1, problem_solving: problem_solving)
+    end
+
     trait :has_tag do
       transient do
         tag_count {1}

@@ -17,10 +17,9 @@ ActiveRecord::Schema.define(version: 2019_04_10_060714) do
 
   create_table "actions", force: :cascade do |t|
     t.integer "progress_status", null: false
-    t.text "description"
-    t.date "due_date"
-    t.date "log_date"
-    t.boolean "is_draft", null: false
+    t.text "evaluation_method", null: false
+    t.text "execution_method", null: false
+    t.date "due_date", null: false
     t.bigint "problem_solving_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

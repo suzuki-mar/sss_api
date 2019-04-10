@@ -9,12 +9,6 @@ RSpec.describe Action, type: :model do
   describe 'Validation' do
     let(:action){build_stubbed(:action)}
 
-    describe 'is_draft' do
-      it_behaves_like "is_draftのバリデーション" do
-        let(:model){ action }
-      end
-    end
-
     describe 'progress_status' do
       example 'nullは許可されない' do
         should validate_presence_of(:progress_status)
@@ -22,21 +16,21 @@ RSpec.describe Action, type: :model do
     end
 
     describe 'due_date' do
-      it_behaves_like "ドラフトアブルな型" do
-        let(:model_name){ :action }
-        let(:check_column_name){ :due_date }
+      example 'nullは許可されない' do
+        should validate_presence_of(:due_date)
       end
     end
 
-    describe 'description' do
-      it_behaves_like "ドラフトアブルな型" do
-        let(:model_name){ :action }
-        let(:check_column_name){ :description }
+    describe 'evaluation_method' do
+      example 'nullは許可されない' do
+        should validate_presence_of(:evaluation_method)
       end
     end
 
-    it_behaves_like 'log_dateのバリデーション' do
-      let(:model){action}
+    describe 'execution_method' do
+      example 'nullは許可されない' do
+        should validate_presence_of(:execution_method)
+      end
     end
 
   end

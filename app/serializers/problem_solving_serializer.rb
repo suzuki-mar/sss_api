@@ -6,6 +6,8 @@ class ProblemSolvingSerializer < ActiveModel::Serializer
   attributes :id, :log_date, :is_draft_text, :problem_recognition, :example_problem, :cause
   attributes :phenomenon, :neglect_phenomenon, :progress_status_text
 
+  has_many :actions
+
   def progress_status_text
 
     values = {

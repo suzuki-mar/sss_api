@@ -48,24 +48,6 @@ module Swagger::ProblemSolvingSchema
         key :example, 'エンジニアとして仕事をしていくのが難しくなってしまう'
       end
 
-      property :solution do
-        key :type, :string
-        key :description, '解決策'
-        key :example, 'モチベーションが下がってしまっても勉強できる方法をみつける'
-      end
-
-      property :execution_method do
-        key :type, :string
-        key :description, '解決策'
-        key :example, '10分でもいいから手を動かす'
-      end
-
-      property :evaluation_method do
-        key :type, :string
-        key :description, ''
-        key :example, '毎日GitHubに草が生えている'
-      end
-
     end
 
     swagger_schema :ProblemSolvingOutput do
@@ -76,7 +58,7 @@ module Swagger::ProblemSolvingSchema
         end
         schema do
           key :required, [
-              :is_draft_text, :progress_status_text, :tags
+              :is_draft_text, :progress_status_text, :tags, :actions
           ]
 
           property :is_draft_text do
@@ -101,6 +83,13 @@ module Swagger::ProblemSolvingSchema
               key :'$ref', :TagOutput
             end
           end
+
+          property :actions do
+            key :type, :array
+            items do
+              key :'$ref', :ActionOutput
+            end
+          end
         end
       end
 
@@ -115,7 +104,7 @@ module Swagger::ProblemSolvingSchema
 
         schema do
           key :required, [
-              :progress_status, :tag_text
+              :progress_status, :tag_text, :actions
           ]
 
           property :progress_status do
@@ -127,6 +116,12 @@ module Swagger::ProblemSolvingSchema
             key :'$ref', :TagInput
           end
 
+          property :actions do
+            key :type, :array
+            items do
+              key :'$ref', :ActionInput
+            end
+          end
         end
       end
     end
