@@ -4,6 +4,7 @@ RSpec.describe ProblemSolving, type: :model do
 
   describe 'Table Relation' do
     it { should have_many(:tag_associations).dependent(:nullify) }
+    it { should have_many(:actions).dependent(:nullify) }
   end
 
   describe 'Validation' do
@@ -48,27 +49,6 @@ RSpec.describe ProblemSolving, type: :model do
       end
     end
 
-    describe 'solution' do
-      it_behaves_like "ドラフトアブルな型" do
-        let(:model_name){ :problem_solving }
-        let(:check_column_name){ :solution }
-      end
-    end
-
-    describe 'execution_method' do
-      it_behaves_like "ドラフトアブルな型" do
-        let(:model_name){ :problem_solving }
-        let(:check_column_name){ :execution_method }
-      end
-    end
-
-    describe 'evaluation_method' do
-      it_behaves_like "ドラフトアブルな型" do
-        let(:model_name){ :problem_solving }
-        let(:check_column_name){ :evaluation_method }
-      end
-    end
-
     describe 'is_draft' do
       it_behaves_like "is_draftのバリデーション" do
         let(:model){ problem_solving }
@@ -84,7 +64,6 @@ RSpec.describe ProblemSolving, type: :model do
     describe 'Enum' do
       it {should define_enum_for(:progress_status).with_values({not_started: 1, doing: 2, done: 3})}
     end
-
 
   end
 end

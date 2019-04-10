@@ -38,6 +38,9 @@ shared_examples 'log_dateのバリデーション:initializable' do
   end
 
   it '初期化状態の場合はバリデーションを確認しない' do
+
+    raise NotImplementedError.new('HasLogDateModelを実装してください') unless model.class.include?(HasLogDateModel)
+
     model.send(:execute_initailize_mode)
 
     model.log_date = Date.tomorrow

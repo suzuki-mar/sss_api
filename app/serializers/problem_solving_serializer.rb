@@ -4,7 +4,7 @@ class ProblemSolvingSerializer < ActiveModel::Serializer
   include Common::HasTagSerializer
 
   attributes :id, :log_date, :is_draft_text, :problem_recognition, :example_problem, :cause
-  attributes :phenomenon, :neglect_phenomenon, :solution, :execution_method, :evaluation_method, :progress_status_text
+  attributes :phenomenon, :neglect_phenomenon, :progress_status_text
 
   def progress_status_text
 

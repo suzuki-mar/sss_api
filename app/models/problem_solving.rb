@@ -8,6 +8,7 @@ class ProblemSolving < ApplicationRecord
   include DocumentElementModel
 
   has_many :tag_associations, dependent: :nullify
+  has_many :actions, dependent: :nullify
 
   after_initialize :sef_default_values
 
@@ -17,9 +18,6 @@ class ProblemSolving < ApplicationRecord
   validates :cause, presence: true, on: :completed
   validates :phenomenon, presence: true, on: :completed
   validates :neglect_phenomenon, presence: true, on: :completed
-  validates :solution, presence: true, on: :completed
-  validates :execution_method, presence: true, on: :completed
-  validates :evaluation_method, presence: true, on: :completed
   validates :is_draft, inclusion: {in: [true, false]}
   validates :progress_status, presence: true
 

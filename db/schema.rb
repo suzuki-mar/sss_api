@@ -10,10 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_09_060714) do
+ActiveRecord::Schema.define(version: 2019_04_10_060714) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "actions", force: :cascade do |t|
+    t.integer "progress_status", null: false
+    t.text "description"
+    t.date "due_date"
+    t.date "log_date"
+    t.boolean "is_draft", null: false
+    t.bigint "problem_solving_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["problem_solving_id"], name: "index_actions_on_problem_solving_id"
+  end
 
   create_table "problem_solvings", force: :cascade do |t|
     t.date "log_date"
@@ -23,9 +35,6 @@ ActiveRecord::Schema.define(version: 2019_04_09_060714) do
     t.text "cause"
     t.text "phenomenon"
     t.text "neglect_phenomenon"
-    t.text "solution"
-    t.text "execution_method"
-    t.text "evaluation_method"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "progress_status", limit: 2, default: 1, null: false
@@ -83,6 +92,7 @@ ActiveRecord::Schema.define(version: 2019_04_09_060714) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "actions", "problem_solvings"
   add_foreign_key "self_cares", "self_care_classifications"
   add_foreign_key "tag_associations", "problem_solvings"
   add_foreign_key "tag_associations", "reframings"

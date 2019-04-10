@@ -7,9 +7,6 @@ FactoryBot.define do
     cause { "MyText" }
     phenomenon { "MyText" }
     neglect_phenomenon { "MyText" }
-    solution { "MyText" }
-    execution_method { "MyText" }
-    evaluation_method { "MyText" }
     progress_status {:doing}
 
     trait :has_tag do

@@ -8,7 +8,7 @@ describe ProblemSolvingSerializer, :type => :serializer do
     attributes = ProblemSolvingSerializer.new(model).attributes
 
     expected_keys = [:id, :log_date, :is_draft_text, :problem_recognition, :example_problem, :cause,
-                     :phenomenon, :neglect_phenomenon, :solution, :execution_method, :evaluation_method, :progress_status_text, :tags]
+                     :phenomenon, :neglect_phenomenon, :progress_status_text, :tags]
     expect(attributes.keys).to match_array(expected_keys)
   end
 
