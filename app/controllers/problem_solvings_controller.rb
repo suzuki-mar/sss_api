@@ -18,18 +18,7 @@ class ProblemSolvingsController < ApiControllerBase
 
   def create_save_params
     save_params = problem_solving_params.to_hash
-
-    action_param_keys = [:progress_status, :evaluation_method, :execution_method, :due_date, :id]
-    action_params = params.require(:problem_solving).require(:actions).map do |action_params|
-      action_params.permit(action_param_keys).to_hash
-    end
-
-    action_params.each do |action_param|
-      progress_status_number = action_param["progress_status"].to_i
-      action_param['progress_status'] = Action.progress_statuses.invert[progress_status_number]
-    end
-    save_params['actions'] = action_params
-
+    save_params['actions'] = SaveActionsActionHelper.create_actions_from_params(params, param_top_key)
     save_params
   end
 
