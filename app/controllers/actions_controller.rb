@@ -16,4 +16,10 @@ class ActionsController < ApiControllerBase
     render_success_with_list(list)
   end
 
+  def done
+    list = Action.only_done.with_related_document
+    render_success_with_list(list)
+  end
+
+
 end

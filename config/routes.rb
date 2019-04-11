@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
 
   get 'actions/doing'
+  get 'actions/done'
+
   get 'documents/tags'
   resources :tags
   resources :problem_solvings do

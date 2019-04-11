@@ -11,6 +11,8 @@ class Action < ApplicationRecord
   enum progress_status:{not_started: 1, doing: 2, done: 3}
 
   scope :only_doing, -> { where(progress_status: :doing) }
+  scope :only_done, -> { where(progress_status: :done) }
+
   scope :with_related_document, -> do
     eager_load({self_care: [:self_care_classification, {tag_associations: :tag}]})
     .eager_load({reframing: {tag_associations: :tag}})
