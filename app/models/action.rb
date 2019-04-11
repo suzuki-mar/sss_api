@@ -10,6 +10,14 @@ class Action < ApplicationRecord
 
   enum progress_status:{not_started: 1, doing: 2, done: 3}
 
+  scope :only_doing, -> { where(progress_status: :doing) }
+  scope :with_related_document, -> do
+    eager_load({self_care: [:self_care_classification, {tag_associations: :tag}]})
+    .eager_load({reframing: {tag_associations: :tag}})
+    .eager_load({problem_solving: {tag_associations: :tag}})
+  end
+
+
   belongs_to :problem_solving, optional: true
   belongs_to :self_care, optional: true
   belongs_to :reframing, optional: true
@@ -37,8 +45,12 @@ class Action < ApplicationRecord
 
   end
 
-  def set_document_element(document_element)
-    self[document_element.foreign_key_column] = document_element.id
+  def set_document(document)
+    self[document.foreign_key_column] = document.id
+  end
+  
+  def document
+    self.self_care || self.reframing || self.problem_solving
   end
 
 end

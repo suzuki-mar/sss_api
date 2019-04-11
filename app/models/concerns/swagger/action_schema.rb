@@ -52,6 +52,27 @@ module Swagger::ActionSchema
       end
     end
 
+    swagger_schema :ActionWithDocumentOutput do
+
+      allOf do
+        schema do
+          key :'$ref', 'ActionOutput'
+        end
+        schema do
+          key :required, [
+              :parent
+          ]
+
+          property :document do
+            key :type, :object
+            key :description, 'SelfCareなどのDocument'
+          end
+
+        end
+      end
+    end
+
+
     swagger_schema :ActionInput do
 
       allOf do

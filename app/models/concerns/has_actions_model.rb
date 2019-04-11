@@ -48,7 +48,7 @@ module HasActionsModel
       next if params['id'].present?
 
       action = Action.new
-      action.set_document_element(self)
+      action.set_document(self)
       action.assign_attributes(params)
       action.save!
     end
