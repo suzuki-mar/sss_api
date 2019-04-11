@@ -6,6 +6,10 @@ FactoryBot.define do
     reason {"reasonreason"}
     self_care_classification
 
+    after(:create) do |self_care|
+      create_list(:action, 1, self_care: self_care)
+    end
+
     trait :has_tag do
 
       transient do

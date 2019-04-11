@@ -2,6 +2,8 @@ class ReframingSerializer < ActiveModel::Serializer
   include Common::DraftSerializer
   include Common::HasTagSerializer
 
+  has_many :actions
+
   attributes :id, :log_date, :problem_reason, :objective_facts, :feeling, :before_point,
              :distortion_group_text, :reframing, :action_plan, :after_point, :is_draft_text, :tags
 

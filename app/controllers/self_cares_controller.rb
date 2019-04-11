@@ -17,12 +17,12 @@ class SelfCaresController < ApiControllerBase
   end
 
   def update
-    save_action_enable_db_transaction(self_care_params)
+    save_action_enable_db_transaction
   end
 
   def create
     @self_care = SelfCare.new
-    save_action_enable_db_transaction(self_care_params)
+    save_action_enable_db_transaction
   end
 
   def recent
@@ -35,14 +35,11 @@ class SelfCaresController < ApiControllerBase
 
   def current_create
     @self_care = SelfCare.new
-
-    save_parms = self_care_params.to_h
-    save_parms.merge!(SelfCare.create_save_params_of_date(DateTime.now))
-    save_action_enable_db_transaction(save_parms)
+    save_action_enable_db_transaction
   end
 
   private
-  def save_action_enable_db_transaction(save_params)
+  def save_action_enable_db_transaction
     ActiveRecord::Base.transaction do
       error_messages = create_error_messages_of_save_params
       if error_messages.present?
@@ -51,7 +48,8 @@ class SelfCaresController < ApiControllerBase
         return
       end
 
-      @self_care.save_with_params(save_params.to_h)
+      save_params = create_save_params
+      @self_care.save_with_related_items(save_params)
       render_success_with(@self_care)
     end
   rescue ErrorResponseException => e
@@ -85,6 +83,18 @@ class SelfCaresController < ApiControllerBase
 
   def self_care_params
     params.require(:self_care).permit(:log_date, :am_pm, :point, :reason, :self_care_classification_id, :tag_names_text)
+  end
+
+  def create_save_params
+
+    save_params = self_care_params.to_h
+    if params['action'] == 'current_create'
+      save_params.merge!(SelfCare.create_save_params_of_date(DateTime.now))
+    end
+
+    save_params['actions'] = SaveActionsActionHelper.create_actions_from_params(params, :self_care)
+
+    save_params
   end
 
 end

@@ -25,6 +25,9 @@ class ReframingsController < ApiControllerBase
     save_params["distortion_group"] = distortion_group
     #値があると保存に失敗する
     save_params.delete("distortion_group_number")
+
+    save_params['actions'] = SaveActionsActionHelper.create_actions_from_params(params, param_top_key)
+
     save_params
   end
 

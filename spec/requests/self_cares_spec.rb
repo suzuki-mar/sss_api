@@ -52,10 +52,16 @@ describe "SelfCares", type: :request do
     end
 
     subject do
-      params = {self_care: save_params}
-      params[:self_care].merge!(option_params)
+      save_params.merge!(option_params)
+      save_params[:actions] = actions
+      put "/self_cares/#{id}", params: {self_care: save_params}
+    end
 
-      put "/self_cares/#{id}", params: params
+    let(:actions) do
+      params = []
+      params << attributes_for(:action, evaluation_method:'保存するデータ')
+      params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: Action.first.id})
+      params
     end
 
     context 'オブジェクトが存在する場合' do
@@ -76,6 +82,7 @@ describe "SelfCares", type: :request do
           json = JSON.parse(response.body)
           expect(json['self_care']['reason']).to eq(change_text)
           expect(json['self_care']['classification_name']).to eq("悪化:#{classification_name}")
+          expect(json['self_care']['actions'].count).to eq(2)
         end
 
         it 'DBの値が更新されていること' do
@@ -83,6 +90,9 @@ describe "SelfCares", type: :request do
           self_care = SelfCare.find(id)
           expect(self_care.reason).to eq(change_text)
           expect(self_care.self_care_classification.name).to eq(classification_name)
+
+          action_count = self_care.actions.where(evaluation_method: "保存するデータ").count
+          expect(action_count).to eq(2)
         end
 
         it 'タグが生成されていること' do
@@ -128,6 +138,44 @@ describe "SelfCares", type: :request do
       end
       let(:resource_name){'SelfCare'}
     end
+
+    context '保存エラーの場合' do
+      let(:id){1}
+      let(:self_care_classification_id){1}
+      let(:option_params) do
+        {tag_names_text: 'タグA,タグB'}
+      end
+
+      context 'タグ保存で失敗した場合' do
+        it 'トランザクション処理のロールバックがかかっていること' do
+          allow_any_instance_of(SelfCare).to receive(:save_tags!).and_raise(StandardError)
+          subject
+          self_care = SelfCare.find(id)
+          expect(self_care.reason).not_to eq(change_text)
+        end
+      end
+
+      context 'アクション保存に失敗した場合' do
+        let(:actions) do
+          problem_solving = create(:problem_solving)
+          another_action = Action.where(problem_solving_id: problem_solving.id).first
+
+          # self_careを生成するときに1件される
+          params = []
+          params << attributes_for(:action, evaluation_method:'保存するデータ')
+          params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: Action.first.id})
+          params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: another_action.id})
+          params
+        end
+
+        it 'トランザクション処理のロールバックがかかっていること' do
+          subject
+          self_care = SelfCare.find(id)
+          expect(self_care.reason).not_to eq(change_text)
+        end
+      end
+
+    end
   end
 
   describe 'create' do
@@ -144,15 +192,21 @@ describe "SelfCares", type: :request do
       {}
     end
 
+    let(:actions) do
+      params = []
+      params << attributes_for(:action, evaluation_method:'保存するデータ')
+      params
+    end
+
     before :each do
       self_care_classification = create(:self_care_classification, name: classification_name)
       @self_care_classification_id = self_care_classification.id
     end
 
     subject do
-      params = {self_care: save_params}
-      params[:self_care].merge!(option_params)
-      post "/self_cares", params: params
+      save_params.merge!(option_params)
+      save_params[:actions] = actions
+      post "/self_cares", params: {self_care: save_params}
     end
 
     context '正常に更新できる場合' do
@@ -167,6 +221,7 @@ describe "SelfCares", type: :request do
         expect(json['self_care']['reason']).to eq(change_text)
         expect(json['self_care']['classification_name']).to eq("悪化:#{classification_name}")
         expect(json['self_care']['tags'].count).to eq(2)
+        expect(json['self_care']['actions'].count).to eq(1)
       end
 
       it 'DBの値が更新されていること' do
@@ -174,6 +229,10 @@ describe "SelfCares", type: :request do
         self_care = SelfCare.last
         expect(self_care.reason).to eq(change_text)
         expect(self_care.self_care_classification.name).to eq(classification_name)
+
+        action_count = self_care.actions.where(evaluation_method: "保存するデータ").count
+        expect(action_count).to eq(1)
+
       end
 
       it 'タグが生成されていること' do
@@ -220,6 +279,41 @@ describe "SelfCares", type: :request do
           let(:error_message){"tag_names_text:	tag_names_textが入力されていません\n\n"}
         end
       end
+    end
+
+    context '保存エラーの場合' do
+      let(:self_care_classification_id){1}
+      let(:option_params) do
+        {tag_names_text: 'タグA,タグB'}
+      end
+
+      context 'タグ保存で失敗した場合' do
+        it 'トランザクション処理のロールバックがかかっていること' do
+          allow_any_instance_of(SelfCare).to receive(:save_tags!).and_raise(StandardError)
+          subject
+          expect{ subject }.to change(SelfCare, :count).by(0)
+        end
+      end
+
+      context 'アクション保存に失敗した場合' do
+        let(:actions) do
+          problem_solving = create(:problem_solving)
+          another_action = Action.where(problem_solving_id: problem_solving.id).first
+
+          # self_careを生成するときに1件される
+          params = []
+          params << attributes_for(:action, evaluation_method:'保存するデータ')
+          params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: Action.first.id})
+          params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: another_action.id})
+          params
+        end
+
+        it 'トランザクション処理のロールバックがかかっていること' do
+          subject
+          expect{ subject }.to change(SelfCare, :count).by(0)
+        end
+      end
+
     end
 
   end
@@ -320,6 +414,12 @@ describe "SelfCares", type: :request do
       {}
     end
 
+    let(:actions) do
+      params = []
+      params << attributes_for(:action, evaluation_method:'保存するデータ')
+      params
+    end
+
     before :each do
       self_care_classification = create(:self_care_classification, name: classification_name)
       @self_care_classification_id = self_care_classification.id
@@ -331,6 +431,7 @@ describe "SelfCares", type: :request do
       params[:self_care].merge!(option_params)
       params[:self_care].delete(:am_pm)
       params[:self_care].delete(:log_date)
+      params[:self_care][:actions] = actions
       post "/self_cares/current", params: params
     end
 
@@ -346,6 +447,7 @@ describe "SelfCares", type: :request do
         expect(json['self_care']['reason']).to eq(change_text)
         expect(json['self_care']['classification_name']).to eq("悪化:#{classification_name}")
         expect(json['self_care']['tags'].count).to eq(2)
+        expect(json['self_care']['actions'].count).to eq(1)
       end
 
       it 'DBの値が更新されていること' do
@@ -354,6 +456,9 @@ describe "SelfCares", type: :request do
         expect(self_care.reason).to eq(change_text)
         expect(self_care.self_care_classification.name).to eq(classification_name)
         expect(self_care.log_date == Date.today).to be_truthy
+
+        action = self_care.actions.first
+        expect(action.evaluation_method).to eq("保存するデータ")
       end
 
     end
@@ -375,6 +480,41 @@ describe "SelfCares", type: :request do
       it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
         let(:error_message){"self_care_classification:\t存在しないIDを渡しました#{self_care_classification_id}\n" + "\n"}
       end
+    end
+
+    context '保存エラーの場合' do
+      let(:self_care_classification_id){1}
+      let(:option_params) do
+        {tag_names_text: 'タグA,タグB'}
+      end
+
+      context 'タグ保存で失敗した場合' do
+        it 'トランザクション処理のロールバックがかかっていること' do
+          allow_any_instance_of(SelfCare).to receive(:save_tags!).and_raise(StandardError)
+          subject
+          expect{ subject }.to change(SelfCare, :count).by(0)
+        end
+      end
+
+      context 'アクション保存に失敗した場合' do
+        let(:actions) do
+          problem_solving = create(:problem_solving)
+          another_action = Action.where(problem_solving_id: problem_solving.id).first
+
+          # self_careを生成するときに1件される
+          params = []
+          params << attributes_for(:action, evaluation_method:'保存するデータ')
+          params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: Action.first.id})
+          params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: another_action.id})
+          params
+        end
+
+        it 'トランザクション処理のロールバックがかかっていること' do
+          subject
+          expect{ subject }.to change(SelfCare, :count).by(0)
+        end
+      end
+
     end
   end
 end

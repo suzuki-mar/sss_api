@@ -4,6 +4,7 @@ RSpec.describe Reframing, type: :model do
 
   describe 'Table Relation' do
     it { should have_many(:tag_associations).dependent(:nullify) }
+    it { should have_many(:actions).dependent(:nullify) }
   end
 
 

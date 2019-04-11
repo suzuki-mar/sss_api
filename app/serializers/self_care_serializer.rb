@@ -3,6 +3,8 @@ class SelfCareSerializer < ActiveModel::Serializer
 
   attributes :id, :am_pm, :log_date, :point, :reason, :status_group, :classification_name
 
+  has_many :actions
+
   def initialize(object, options = {})
     super
 

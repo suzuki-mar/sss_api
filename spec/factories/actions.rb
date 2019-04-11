@@ -4,6 +4,5 @@ FactoryBot.define do
     evaluation_method { '評価方法' }
     execution_method { '実行方法' }
     due_date { "2019-04-10" }
-    problem_solving
   end
 end

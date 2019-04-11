@@ -7,8 +7,10 @@ class Reframing < ApplicationRecord
   include DraftableModel
   include HasTagModel
   include DocumentElementModel
+  include HasActionsModel
 
   has_many :tag_associations, dependent: :nullify
+  has_many :actions, dependent: :nullify
 
   validates :problem_reason, presence: true, on: :completed
   validates :objective_facts, presence: true, on: :completed
@@ -51,11 +53,17 @@ class Reframing < ApplicationRecord
   def draftable_save_of_draft!(params)
     save_draft!(params)
     save_tags!(params)
+    save_actions!(params)
+
+    self.reload
   end
 
   def draftable_save_of_complete!(params)
     save_complete!(params)
     save_tags!(params)
+    save_actions!(params)
+
+    self.reload
   end
 
   protected

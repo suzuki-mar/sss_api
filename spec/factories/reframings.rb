@@ -12,6 +12,10 @@ FactoryBot.define do
     after_point { 1 }
     is_draft { false }
 
+    after(:create) do |reframing|
+      create_list(:action, 1, reframing: reframing)
+    end
+
     trait :has_tag do
 
       transient do

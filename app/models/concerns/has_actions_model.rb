@@ -48,8 +48,7 @@ module HasActionsModel
       next if params['id'].present?
 
       action = Action.new
-      action.problem_solving = self
-
+      action.set_document_element(self)
       action.assign_attributes(params)
       action.save!
     end

@@ -32,14 +32,24 @@ RSpec.describe "Reframings", type: :request do
 
   describe 'update' do
     before :each do
-      create(:reframing, is_draft: !change_draft)
+      reframing = create(:reframing, is_draft: !change_draft)
+      create(:action, reframing:reframing)
+      create(:action, reframing:reframing)
     end
 
     subject do
       params = reframing_params
       params[:is_draft] = change_draft
       params[:tag_names_text] = 'タグA,タグB'
+      params[:actions] = actions
       put "/reframings/#{id}", params: {reframing: params}
+    end
+
+    let(:actions) do
+      params = []
+      params << attributes_for(:action, evaluation_method:'保存するデータ')
+      params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: Action.first.id})
+      params
     end
 
     context 'オブジェクトが存在する場合' do
@@ -65,6 +75,7 @@ RSpec.describe "Reframings", type: :request do
             json = JSON.parse(response.body)
             expect(json['reframing']['feeling']).to eq(change_text)
             expect(json['reframing']['tags'].count).to eq(2)
+            expect(json['reframing']['actions'].count).to eq(2)
           end
 
           it 'DBの値が更新されていること' do
@@ -73,6 +84,9 @@ RSpec.describe "Reframings", type: :request do
             expect(reframing.feeling).to eq(change_text)
             expect(reframing.is_draft).to eq(false)
             expect(reframing.distortion_group).to eq('too_general')
+
+            action_count = reframing.actions.where(evaluation_method: "保存するデータ").count
+            expect(action_count).to eq(2)
           end
 
           it 'タグが生成されていること' do
@@ -113,6 +127,7 @@ RSpec.describe "Reframings", type: :request do
             subject
             json = JSON.parse(response.body)
             expect(json['reframing']['feeling']).to eq(change_text)
+            expect(json['reframing']['actions'].count).to eq(2)
           end
 
           it 'DBの値が更新されていること' do
@@ -120,6 +135,9 @@ RSpec.describe "Reframings", type: :request do
             reframing = Reframing.find(id)
             expect(reframing.feeling).to eq(change_text)
             expect(reframing.is_draft).to eq(true)
+
+            action_count = reframing.actions.where(evaluation_method: "保存するデータ").count
+            expect(action_count).to eq(2)
           end
 
         end
@@ -144,13 +162,36 @@ RSpec.describe "Reframings", type: :request do
           attributes_for(:reframing, feeling: change_text, distortion_group_number: 2)
         end
 
-        it 'トランザクション処理のロールバックがかかっていること' do
-          allow_any_instance_of(Reframing).to receive(:save_tags!).and_raise(StandardError)
+        context 'タグ保存で失敗した場合' do
+          it 'トランザクション処理のロールバックがかかっていること' do
+            allow_any_instance_of(Reframing).to receive(:save_tags!).and_raise(StandardError)
 
-          subject
-          reframing = Reframing.find(id)
-          expect(reframing.feeling).not_to eq(change_text)
+            subject
+            reframing = Reframing.find(id)
+            expect(reframing.feeling).not_to eq(change_text)
+          end
         end
+
+        context 'アクション保存に失敗した場合' do
+          let(:actions) do
+            problem_solving = create(:problem_solving)
+            another_action = Action.where(problem_solving_id: problem_solving.id).first
+
+            # problem_solvingを生成するときに1件される
+            params = []
+            params << attributes_for(:action, evaluation_method:'保存するデータ')
+            params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: Action.first.id})
+            params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: another_action.id})
+            params
+          end
+
+          it 'トランザクション処理のロールバックがかかっていること' do
+            subject
+            reframing = Reframing.find(id)
+            expect(reframing.feeling).not_to eq(change_text)
+          end
+        end
+
       end
     end
 
@@ -198,7 +239,14 @@ RSpec.describe "Reframings", type: :request do
       params = reframing_params
       params[:is_draft] = change_draft
       params[:tag_names_text] = tag_names_text
+      params[:actions] = actions
       post "/reframings/", params: {reframing: params}
+    end
+
+    let(:actions) do
+      params = []
+      params << attributes_for(:action, evaluation_method:'保存するデータ')
+      params
     end
 
     context 'オブジェクトが存在する場合' do
@@ -223,6 +271,7 @@ RSpec.describe "Reframings", type: :request do
             subject
             json = JSON.parse(response.body)
             expect(json['reframing']['feeling']).to eq(change_text)
+            expect(json['reframing']['actions'].count).to eq(1)
           end
 
           it 'DBの値が更新されていること' do
@@ -230,27 +279,15 @@ RSpec.describe "Reframings", type: :request do
             reframing = Reframing.last
             expect(reframing.feeling).to eq(change_text)
             expect(reframing.is_draft).to eq(false)
+
+            action = reframing.actions.first
+            expect(action.evaluation_method).to eq("保存するデータ")
           end
 
           it 'レコードが生成されていること' do
             expect{ subject }.to change(Reframing, :count).from(0).to(1)
           end
 
-        end
-
-        context '保存途中でエラーになった場合' do
-          let(:change_draft) {false}
-          let(:tag_names_text){'タグA,タグB'}
-          let(:change_text){"調子がいい#{rand}"}
-          let(:reframing_params) do
-            attributes_for(:reframing, feeling: change_text, distortion_group_number: 2)
-          end
-
-          it 'トランザクション処理のロールバックがかかっていること' do
-            allow_any_instance_of(Reframing).to receive(:save_tags!).and_raise(ArgumentError)
-
-            expect{subject}.not_to change{Reframing.count}
-          end
         end
 
         context 'バリデーションエラーの場合' do
@@ -288,6 +325,7 @@ RSpec.describe "Reframings", type: :request do
             subject
             json = JSON.parse(response.body)
             expect(json['reframing']['feeling']).to eq(change_text)
+            expect(json['reframing']['actions'].count).to eq(1)
           end
 
           it 'DBの値が更新されていること' do
@@ -318,6 +356,68 @@ RSpec.describe "Reframings", type: :request do
         end
 
       end
+    end
+
+    context '保存途中でエラーになった場合' do
+      let(:change_draft) {false}
+      let(:tag_names_text){'タグA,タグB'}
+      let(:change_text){"調子がいい#{rand}"}
+      let(:reframing_params) do
+        attributes_for(:reframing, feeling: change_text, distortion_group_number: 2)
+      end
+
+      context 'タグの保存に失敗した場合' do
+        it 'トランザクション処理のロールバックがかかっていること' do
+          allow_any_instance_of(Reframing).to receive(:save_tags!).and_raise(ArgumentError)
+
+          expect{subject}.not_to change{Reframing.count}
+        end
+      end
+
+      context 'アクション保存に失敗した場合' do
+        let(:actions) do
+          problem_solving = create(:problem_solving)
+          another_action = Action.where(problem_solving_id: problem_solving.id).first
+
+          # problem_solvingを生成するときに1件される
+          params = []
+          params << attributes_for(:action, evaluation_method:'保存するデータ')
+          params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: Action.first.id})
+          params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: another_action.id})
+          params
+        end
+
+        it 'トランザクション処理のロールバックがかかっていること' do
+          expect{subject}.not_to change{Reframing.count}
+        end
+      end
+
+    end
+
+    context 'バリデーションエラーの場合' do
+      context '基本的なパラメーターにnilのパラメーターがある' do
+        let(:reframing_params) do
+          attributes_for(:reframing, feeling: nil, log_date: nil, distortion_group_number: 2)
+        end
+
+        let(:actions) do
+          params = []
+          params << attributes_for(:action, evaluation_method:'保存するデータ')
+          params
+        end
+
+        let(:change_draft) {false}
+        let(:tag_names_text){'タグA,タグB'}
+
+        it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
+          let(:error_message){"reframing:\tValidation failed: Feeling can't be blank, Log date 日付の選択は必須です\n\n"}
+        end
+
+        it '新しくレコードが作成されない' do
+          expect{ subject }.to change(Reframing, :count).by(0)
+        end
+      end
+
     end
 
     context 'パラメーターがおかしい場合' do
@@ -462,7 +562,17 @@ RSpec.describe "Reframings", type: :request do
 
       params = reframing_params
       params[:tag_names_text] = 'タグA,タグB'
+      params[:actions] = actions
       put "/reframings/auto_save/#{id}", params: {reframing: params}
+    end
+
+    let(:actions) do
+
+      # problem_solvingを生成するときに1件される
+      params = []
+      params << attributes_for(:action, evaluation_method:'保存するデータ')
+      params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: Action.first.id})
+      params
     end
 
     context 'オブジェクトが存在する場合' do
@@ -483,6 +593,7 @@ RSpec.describe "Reframings", type: :request do
           subject
           json = JSON.parse(response.body)
           expect(json['reframing']['feeling']).to eq(change_text)
+          expect(json['reframing']['actions'].count).to eq(2)
         end
 
         it 'DBの値が更新されていること' do
@@ -491,6 +602,9 @@ RSpec.describe "Reframings", type: :request do
           expect(reframing.feeling).to eq(change_text)
           expect(reframing.is_draft).to eq(true)
           expect(reframing.distortion_group).to eq('too_general')
+
+          update_count = Action.where(evaluation_method: "保存するデータ").count
+          expect(update_count).to eq(2)
         end
 
       end
@@ -532,13 +646,37 @@ RSpec.describe "Reframings", type: :request do
         attributes_for(:reframing, feeling: '変更するテキスト', distortion_group_number: 2)
       end
 
-      it 'トランザクション処理のロールバックがかかっていること' do
-        allow_any_instance_of(Reframing).to receive(:save_tags!).and_raise(StandardError)
+      context 'タグの保存に失敗した場合' do
+        it 'トランザクション処理のロールバックがかかっていること' do
+          allow_any_instance_of(Reframing).to receive(:save_tags!).and_raise(StandardError)
 
-        subject
-        reframing = Reframing.find(id)
-        expect(reframing.feeling).not_to eq('変更するテキスト')
+          subject
+          reframing = Reframing.find(id)
+          expect(reframing.feeling).not_to eq('変更するテキスト')
+        end
       end
+
+      context 'アクションの保存に失敗した場合' do
+        let(:actions) do
+          problem_solving = create(:problem_solving)
+          another_action = Action.where(problem_solving_id: problem_solving.id).first
+
+          # problem_solvingを生成するときに1件される
+          params = []
+          params << attributes_for(:action, evaluation_method:'保存するデータ')
+          params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: Action.first.id})
+          params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: another_action.id})
+          params
+        end
+
+        it 'トランザクション処理のロールバックがかかっていること' do
+          subject
+          reframing = Reframing.find(id)
+          expect(reframing.feeling).not_to eq('変更するテキスト')
+        end
+
+      end
+
     end
 
     it_behaves_like 'オブジェクトが存在しない場合' do

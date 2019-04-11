@@ -5,9 +5,11 @@ class SelfCare < ApplicationRecord
   include HasLogDateModel
   include HasTagModel
   include DocumentElementModel
+  include HasActionsModel
 
   belongs_to :self_care_classification
   has_many :tag_associations, dependent: :nullify
+  has_many :actions, dependent: :nullify
 
   validates :reason, presence: true
   validates :am_pm, presence: true, uniqueness: { scope: :log_date }
@@ -35,13 +37,18 @@ class SelfCare < ApplicationRecord
     params
   end
 
-  def save_with_params(params)
+  def save_with_related_items(params)
     base_params = params.deep_dup
     base_params.delete('tag_names_text')
+    base_params.delete('actions')
 
     self.assign_attributes(base_params)
     self.save!
+
     self.save_tags!(params)
+    self.save_actions!(params)
+
+    self.reload
   end
 
   def log_date_time
