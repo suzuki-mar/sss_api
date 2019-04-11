@@ -50,7 +50,18 @@ class Action < ApplicationRecord
   end
   
   def document
-    self.self_care || self.reframing || self.problem_solving
+    # 下のだとN+1になってしまうケースがある
+    # self.problem_solving || self.self_care || self.reframing
+
+    document_id_column = self.class.document_id_keys.find do |key|
+      self[key].present?
+    end
+
+    model_name = document_id_column.gsub('_id', '')
+    self.send(model_name)
+
+
+
   end
 
 end
