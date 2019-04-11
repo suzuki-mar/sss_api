@@ -65,37 +65,66 @@ class ProblemSolving < ApplicationRecord
 
   private
   def save_actions!(params)
-
-    exist_action_ids = params['actions'].map do |param|
-      param['id']
-    end.compact
+    edit_action_ids = create_edit_action_ids(params['actions'])
 
     # N+1を避けるためIDが存在するものは取得する
-    exist_actions = Action.where(id: exist_action_ids).where(problem_solving_id: self.id)
+    exist_actions = Action.where(problem_solving_id: self.id).includes(:problem_solving)
 
     #関係ないIDが渡されたら不具合として例外を出す
-    invalid_parameter = (exist_action_ids.count - exist_actions.count) >= 1
-    raise RuntimeError.new("関係ないActionのIDが渡されました") if invalid_parameter
+    exist_ids = exist_actions.pluck(:id)
+    edit_action_ids.each do |id|
+      raise RuntimeError.new("関係ないActionのIDが渡されました") unless exist_ids.include?(id)
+    end
 
-    exist_actions.each do |action|
+    update_action_by_target_and_params(exist_actions, params['actions'])
+    creates_by_params(params['actions'])
 
-      update_param = params['actions'].find do |param|
+    delete_target_ids = exist_ids - edit_action_ids
+    Action.where(id: delete_target_ids).destroy_all
+  end
+
+  def update_action_by_target_and_params(targets, params)
+    edit_action_ids = create_edit_action_ids(params)
+
+    edit_actions = targets.select do |action|
+      edit_action_ids.include?(action.id)
+    end
+    edit_actions.each do |action|
+
+      update_params = params.find do |param|
         next if param['id'].blank?
         param['id'].to_i == action.id
       end
 
-      action.update_attributes(update_param)
+      action.assign_attributes(update_params)
+      action.save!
     end
 
-    params['actions'].each do |params|
+    true
+  end
+
+  def creates_by_params(params)
+    params.each do |params|
       next if params['id'].present?
 
-     action = Action.new
-     action.problem_solving = self
+      action = Action.new
+      action.problem_solving = self
 
       action.assign_attributes(params)
       action.save!
     end
 
+  end
+
+  def create_edit_action_ids(params)
+    edit_action_ids = params.map do |param|
+      param['id']
+    end.compact
+
+    edit_action_ids = edit_action_ids.map do |id|
+      id.to_i
+    end
+
+    edit_action_ids
   end
 end

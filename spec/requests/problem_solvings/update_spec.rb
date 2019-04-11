@@ -7,7 +7,9 @@ RSpec.describe "ProblemSolvings/update", type: :request do
   end
 
   before :each do
-    create(:problem_solving, is_draft: !change_draft)
+    problem_solving = create(:problem_solving, is_draft: !change_draft)
+    create(:action, problem_solving:problem_solving)
+    create(:action, problem_solving:problem_solving)
   end
 
   subject do
@@ -25,7 +27,6 @@ RSpec.describe "ProblemSolvings/update", type: :request do
 
     let(:actions) do
 
-      # problem_solvingを生成するときに1件される
       params = []
       params << attributes_for(:action, evaluation_method:'保存するデータ')
       params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: Action.first.id})
@@ -67,7 +68,9 @@ RSpec.describe "ProblemSolvings/update", type: :request do
         end
 
         it 'アクションが生成されていること' do
-          expect{ subject }.to change(Action, :count).from(1).to(2)
+          subject
+          update_count = Action.where(evaluation_method: "保存するデータ").count
+          expect(update_count).to eq(2)
         end
 
       end
@@ -110,7 +113,9 @@ RSpec.describe "ProblemSolvings/update", type: :request do
         end
 
         it 'アクションが生成されていること' do
-          expect{ subject }.to change(Action, :count).from(1).to(2)
+          subject
+          update_count = Action.where(evaluation_method: "保存するデータ").count
+          expect(update_count).to eq(2)
         end
 
       end
@@ -177,12 +182,14 @@ RSpec.describe "ProblemSolvings/update", type: :request do
       end
 
       let(:actions) do
-        create(:problem_solving)
+        problem_solving = create(:problem_solving)
+        another_action = Action.where(problem_solving_id: problem_solving.id).first
+
         # problem_solvingを生成するときに1件される
         params = []
         params << attributes_for(:action, evaluation_method:'保存するデータ')
         params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: Action.first.id})
-        params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: Action.last.id})
+        params << attributes_for(:action, evaluation_method:'保存するデータ').merge({id: another_action.id})
         params
       end
 
