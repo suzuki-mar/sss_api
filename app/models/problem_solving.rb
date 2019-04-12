@@ -7,11 +7,16 @@ class ProblemSolving < ApplicationRecord
   include HasTagModel
   include DocumentElementModel
   include HasActionsModel
+  include SearchCop
 
   has_many :tag_associations, dependent: :nullify
   has_many :actions, dependent: :nullify
 
   after_initialize :sef_default_values
+
+  search_scope :search do
+    attributes :problem_recognition, :example_problem, :cause, :phenomenon, :neglect_phenomenon
+  end
 
   validates :log_date, log_date_type: {initailizeable_model: true }
   validates :problem_recognition, presence: true, on: :completed

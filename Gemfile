@@ -26,6 +26,8 @@ gem 'rack-cors', require: 'rack/cors'
 
 gem 'swagger-blocks'
 
+gem 'search_cop'
+
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 

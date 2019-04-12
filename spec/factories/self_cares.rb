@@ -6,8 +6,14 @@ FactoryBot.define do
     reason {"reasonreason"}
     self_care_classification
 
-    after(:create) do |self_care|
-      create_list(:action, 1, self_care: self_care)
+    trait :has_action do
+      transient do
+        action_text {Faker::Quote.matz}
+      end
+
+      after(:create) do |self_care, evaluator|
+        create_list(:action, 1, self_care: self_care, evaluation_method:evaluator.action_text, execution_method:evaluator.action_text)
+      end
     end
 
     trait :has_tag do

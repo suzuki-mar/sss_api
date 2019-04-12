@@ -8,6 +8,7 @@ class Reframing < ApplicationRecord
   include HasTagModel
   include DocumentElementModel
   include HasActionsModel
+  include SearchCop
 
   has_many :tag_associations, dependent: :nullify
   has_many :actions, dependent: :nullify
@@ -22,6 +23,10 @@ class Reframing < ApplicationRecord
   validates :before_point, point_type: {initailizeable_model: true }
   validates :after_point, point_type: {initailizeable_model: true }
   validates :is_draft, inclusion: {in: [true, false]}
+
+  search_scope :search do
+    attributes :problem_reason, :objective_facts, :feeling, :reframing, :action_plan
+  end
 
   # 日本語：英語対応表
   #   '白黒思考',  black_and_white_thinking

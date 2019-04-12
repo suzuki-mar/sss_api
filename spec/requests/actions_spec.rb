@@ -9,16 +9,16 @@ RSpec.describe "Actions", type: :request do
   describe 'doing' do
     before :each do
       # 全種別を対象に作成する
-      create(:problem_solving, :has_tag, tag_count: 3)
-      create(:reframing, :has_tag, tag_count: 3)
-      create(:self_care, :has_tag, tag_count: 3)
+      create(:problem_solving, :has_action, :has_tag, tag_count: 3)
+      create(:reframing, :has_action, :has_tag, tag_count: 3)
+      create(:self_care, :has_action, :has_tag, tag_count: 3)
 
       Action.update_all({progress_status: :doing})
 
       # 進行状態が違うのは取得しないようにする
-      problem_solving = create(:problem_solving, :has_tag, tag_count: 3)
+      problem_solving = create(:problem_solving, :has_action, :has_tag, tag_count: 3)
       problem_solving.actions.update_all(progress_status: :done)
-      problem_solving = create(:problem_solving, :has_tag, tag_count: 3)
+      problem_solving = create(:problem_solving, :has_action, :has_tag, tag_count: 3)
       problem_solving.actions.update_all(progress_status: :not_started)
     end
 
@@ -45,16 +45,16 @@ RSpec.describe "Actions", type: :request do
   describe 'done' do
     before :each do
       # 全種別を対象に作成する
-      create(:problem_solving, :has_tag, tag_count: 3)
-      create(:reframing, :has_tag, tag_count: 3)
-      create(:self_care, :has_tag, tag_count: 3)
+      create(:problem_solving, :has_action, :has_tag, tag_count: 3)
+      create(:reframing, :has_action, :has_tag, tag_count: 3)
+      create(:self_care, :has_action, :has_tag, tag_count: 3)
 
       Action.update_all({progress_status: :done})
 
       # 進行状態が違うのは取得しないようにする
-      problem_solving = create(:problem_solving, :has_tag, tag_count: 3)
+      problem_solving = create(:problem_solving, :has_action, :has_tag, tag_count: 3)
       problem_solving.actions.update_all(progress_status: :doing)
-      problem_solving = create(:problem_solving, :has_tag, tag_count: 3)
+      problem_solving = create(:problem_solving, :has_action, :has_tag, tag_count: 3)
       problem_solving.actions.update_all(progress_status: :not_started)
     end
 

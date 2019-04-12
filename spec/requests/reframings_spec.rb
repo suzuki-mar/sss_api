@@ -7,7 +7,7 @@ RSpec.describe "Reframings", type: :request do
 
   describe 'show' do
     before :each do
-      create(:reframing, :has_tag, tag_count:3)
+      create(:reframing, :has_action, :has_tag, tag_count:3)
     end
 
     subject do
@@ -174,7 +174,7 @@ RSpec.describe "Reframings", type: :request do
 
         context 'アクション保存に失敗した場合' do
           let(:actions) do
-            problem_solving = create(:problem_solving)
+            problem_solving = create(:problem_solving, :has_action)
             another_action = Action.where(problem_solving_id: problem_solving.id).first
 
             # problem_solvingを生成するときに1件される
@@ -376,7 +376,7 @@ RSpec.describe "Reframings", type: :request do
 
       context 'アクション保存に失敗した場合' do
         let(:actions) do
-          problem_solving = create(:problem_solving)
+          problem_solving = create(:problem_solving, :has_action)
           another_action = Action.where(problem_solving_id: problem_solving.id).first
 
           # problem_solvingを生成するときに1件される
@@ -555,7 +555,7 @@ RSpec.describe "Reframings", type: :request do
 
   describe 'auto_save' do
     before :each do
-      create(:reframing, :draft)
+      create(:reframing, :draft, :has_action)
     end
 
     subject do
@@ -658,7 +658,7 @@ RSpec.describe "Reframings", type: :request do
 
       context 'アクションの保存に失敗した場合' do
         let(:actions) do
-          problem_solving = create(:problem_solving)
+          problem_solving = create(:problem_solving, :has_action)
           another_action = Action.where(problem_solving_id: problem_solving.id).first
 
           # problem_solvingを生成するときに1件される

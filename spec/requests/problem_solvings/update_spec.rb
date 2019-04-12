@@ -7,8 +7,7 @@ RSpec.describe "ProblemSolvings/update", type: :request do
   end
 
   before :each do
-    problem_solving = create(:problem_solving, is_draft: !change_draft)
-    create(:action, problem_solving:problem_solving)
+    problem_solving = create(:problem_solving, :has_action, is_draft: !change_draft)
     create(:action, problem_solving:problem_solving)
   end
 
@@ -182,7 +181,7 @@ RSpec.describe "ProblemSolvings/update", type: :request do
       end
 
       let(:actions) do
-        problem_solving = create(:problem_solving)
+        problem_solving = create(:problem_solving, :has_action)
         another_action = Action.where(problem_solving_id: problem_solving.id).first
 
         # problem_solvingを生成するときに1件される

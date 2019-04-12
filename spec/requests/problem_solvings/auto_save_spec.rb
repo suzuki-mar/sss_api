@@ -8,7 +8,7 @@ RSpec.describe "ProblemSolvings", type: :request do
 
   describe 'auto_save' do
     before :each do
-      create(:problem_solving, :draft)
+      create(:problem_solving, :draft, :has_action)
     end
 
     subject do

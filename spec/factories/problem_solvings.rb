@@ -9,8 +9,14 @@ FactoryBot.define do
     neglect_phenomenon { "MyText" }
     progress_status {:doing}
 
-    after(:create) do |problem_solving|
-      create_list(:action, 1, problem_solving: problem_solving)
+    trait :has_action do
+      transient do
+        action_text {Faker::Quote.matz}
+      end
+
+      after(:create) do |problem_solving, evaluator|
+        create_list(:action, 1, problem_solving: problem_solving, evaluation_method:evaluator.action_text, execution_method:evaluator.action_text)
+      end
     end
 
     trait :has_tag do

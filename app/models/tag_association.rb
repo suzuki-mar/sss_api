@@ -9,6 +9,10 @@ class TagAssociation < ApplicationRecord
 
   class << self
 
+    def find_grouped_document_ids_by_tag_name_and_id_keys(tag_name, id_keys)
+      find_grouped_document_ids_by_tag_name_and_document_id_keys(tag_name, id_keys)
+    end
+
     def find_grouped_document_ids_by_tag_name_and_target_type(tag_name, target_type)
 
       document_id_key = "#{target_type}_id"

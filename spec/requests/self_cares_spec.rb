@@ -46,7 +46,7 @@ describe "SelfCares", type: :request do
     end
 
     before :each do
-      create(:self_care)
+      create(:self_care, :has_action)
       self_care_classification = create(:self_care_classification, name: classification_name)
       @self_care_classification_id = self_care_classification.id
     end
@@ -157,7 +157,7 @@ describe "SelfCares", type: :request do
 
       context 'アクション保存に失敗した場合' do
         let(:actions) do
-          problem_solving = create(:problem_solving)
+          problem_solving = create(:problem_solving, :has_action)
           another_action = Action.where(problem_solving_id: problem_solving.id).first
 
           # self_careを生成するときに1件される
@@ -297,7 +297,7 @@ describe "SelfCares", type: :request do
 
       context 'アクション保存に失敗した場合' do
         let(:actions) do
-          problem_solving = create(:problem_solving)
+          problem_solving = create(:problem_solving, :has_action)
           another_action = Action.where(problem_solving_id: problem_solving.id).first
 
           # self_careを生成するときに1件される
@@ -498,7 +498,7 @@ describe "SelfCares", type: :request do
 
       context 'アクション保存に失敗した場合' do
         let(:actions) do
-          problem_solving = create(:problem_solving)
+          problem_solving = create(:problem_solving, :has_action)
           another_action = Action.where(problem_solving_id: problem_solving.id).first
 
           # self_careを生成するときに1件される
