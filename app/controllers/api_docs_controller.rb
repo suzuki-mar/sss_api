@@ -16,7 +16,8 @@ class ApiDocsController < ApplicationController
                ReframingsController,
                SelfCaresController,
                SelfCareClassificationsController,
-               DocumentsController
+               DocumentsController,
+               ActionsController,
     ].freeze
     render json: Swagger::Blocks.build_root_json(classes)
 
