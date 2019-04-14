@@ -1,10 +1,10 @@
-module Swagger::SelfCareClassificationApi
+module Swagger::Api::SelfCareClassificationApi
 
   extend ActiveSupport::Concern
   include Swagger::Blocks
 
   included do
-    include Swagger::ErrorSchema
+    include Swagger::Schemas::ErrorSchema
 
     swagger_path '/self_care_classifications' do
 

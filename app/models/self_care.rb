@@ -1,6 +1,5 @@
 class SelfCare < ApplicationRecord
 
-  include Swagger::SelfCareSchema
   include ActiveModel::Validations
   include HasLogDateModel
   include HasTagModel

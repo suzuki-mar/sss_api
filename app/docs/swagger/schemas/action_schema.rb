@@ -1,4 +1,4 @@
-module Swagger::ActionSchema
+module Swagger::Schemas::ActionSchema
 
   extend ActiveSupport::Concern
   include Swagger::Blocks

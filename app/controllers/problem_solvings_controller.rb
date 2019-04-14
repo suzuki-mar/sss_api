@@ -1,5 +1,5 @@
 class ProblemSolvingsController < ApiControllerBase
-  include Swagger::ProblemSolvingApi
+
   include DraftableAction
   include AutoSaveableAction
   include ShowListFromLogDateAction

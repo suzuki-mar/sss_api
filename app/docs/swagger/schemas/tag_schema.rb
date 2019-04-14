@@ -1,4 +1,4 @@
-module Swagger::TagSchema
+module Swagger::Schemas::TagSchema
 
   extend ActiveSupport::Concern
   include Swagger::Blocks

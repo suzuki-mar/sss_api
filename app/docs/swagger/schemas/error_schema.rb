@@ -1,4 +1,4 @@
-module Swagger::ErrorSchema
+module Swagger::Schemas::ErrorSchema
   extend ActiveSupport::Concern
 
   include Swagger::Blocks

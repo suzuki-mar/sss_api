@@ -1,4 +1,4 @@
-module Swagger::ProblemSolvingApi
+module Swagger::Api::ProblemSolvingApi
 
   extend ActiveSupport::Concern
   include Swagger::Blocks

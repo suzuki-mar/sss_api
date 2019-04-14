@@ -1,4 +1,4 @@
-module Swagger::DocumentsApi
+module Swagger::Api::DocumentsApi
 
   extend ActiveSupport::Concern
   include Swagger::Blocks

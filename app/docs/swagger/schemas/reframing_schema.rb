@@ -1,4 +1,4 @@
-module Swagger::ReframingSchema
+module Swagger::Schemas::ReframingSchema
 
   extend ActiveSupport::Concern
   include Swagger::Blocks

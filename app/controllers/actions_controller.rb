@@ -1,7 +1,5 @@
 class ActionsController < ApiControllerBase
 
-  include Swagger::ActionApi
-
   protected
   # 親クラスで必要となるメソッド
   def target_model_name

@@ -1,6 +1,4 @@
 class ApplicationRecord < ActiveRecord::Base
-  include Swagger::GeneralValueObjectSchema
-
   scope :by_ids, -> (ids) { where(id: ids) }
 
   self.abstract_class = true

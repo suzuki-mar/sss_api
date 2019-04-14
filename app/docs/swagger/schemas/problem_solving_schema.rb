@@ -1,4 +1,4 @@
-module Swagger::ProblemSolvingSchema
+module Swagger::Schemas::ProblemSolvingSchema
 
   extend ActiveSupport::Concern
   include Swagger::Blocks

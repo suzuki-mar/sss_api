@@ -1,10 +1,10 @@
-module Swagger::SelfCaresApi
+module Swagger::Api::SelfCaresApi
 
   extend ActiveSupport::Concern
   include Swagger::Blocks
 
   included do
-    include Swagger::ErrorSchema
+    include Swagger::Schemas::ErrorSchema
 
     swagger_path '/self_cares/{id}' do
 

@@ -1,6 +1,5 @@
 class SelfCaresController < ApiControllerBase
 
-  include Swagger::SelfCaresApi
   include ShowListFromLogDateAction
 
   before_action :set_self_care, only: [:show, :update]

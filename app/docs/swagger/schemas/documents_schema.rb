@@ -1,4 +1,4 @@
-module Swagger::DocumentsSchema
+module Swagger::Schemas::DocumentsSchema
 
   extend ActiveSupport::Concern
   include Swagger::Blocks

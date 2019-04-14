@@ -1,6 +1,5 @@
 class ProblemSolving < ApplicationRecord
 
-  include Swagger::ProblemSolvingSchema
   include InitailzeableModel
   include HasLogDateModel
   include DraftableModel

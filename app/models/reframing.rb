@@ -1,6 +1,5 @@
 class Reframing < ApplicationRecord
 
-  include Swagger::ReframingSchema
   include InitailzeableModel
   include HasLogDateModel
   include ActiveModel::Validations

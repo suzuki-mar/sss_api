@@ -1,4 +1,4 @@
-module Swagger::SelfCareSchema
+module Swagger::Schemas::SelfCareSchema
 
   extend ActiveSupport::Concern
   include Swagger::Blocks

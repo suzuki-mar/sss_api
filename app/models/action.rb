@@ -1,6 +1,5 @@
 class Action < ApplicationRecord
 
-  include Swagger::ActionSchema
   include SearchFromAllTextColumnModel
 
   validates :progress_status, presence: true

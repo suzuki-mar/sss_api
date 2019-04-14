@@ -1,4 +1,4 @@
-module Swagger::GeneralValueObjectSchema
+module Swagger::Schemas::GeneralValueObjectSchema
 
   extend ActiveSupport::Concern
   include Swagger::Blocks

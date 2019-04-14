@@ -1,4 +1,4 @@
-module Swagger::ReframingApi
+module Swagger::Api::ReframingApi
 
   extend ActiveSupport::Concern
   include Swagger::Blocks

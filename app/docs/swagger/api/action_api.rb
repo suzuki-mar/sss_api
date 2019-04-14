@@ -1,4 +1,4 @@
-module Swagger::ActionApi
+module Swagger::Api::ActionApi
 
   extend ActiveSupport::Concern
   include Swagger::Blocks

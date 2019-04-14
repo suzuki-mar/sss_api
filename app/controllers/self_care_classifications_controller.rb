@@ -1,7 +1,5 @@
 class SelfCareClassificationsController < ApiControllerBase
 
-  include Swagger::SelfCareClassificationApi
-
   before_action :set_self_care_classification, only: [:update]
 
   protected

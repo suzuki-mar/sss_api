@@ -1,4 +1,4 @@
-class Swagger::ErrorResponseHelper
+  class Swagger::ErrorResponseHelper
 
   include Swagger::Blocks
 

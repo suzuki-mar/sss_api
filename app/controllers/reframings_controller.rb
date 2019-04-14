@@ -1,6 +1,5 @@
 class ReframingsController < ApiControllerBase
 
-  include Swagger::ReframingApi
   include DraftableAction
   include AutoSaveableAction
   include ShowListFromLogDateAction
