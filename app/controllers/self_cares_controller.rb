@@ -37,6 +37,12 @@ class SelfCaresController < ApiControllerBase
     save_action_enable_db_transaction
   end
 
+  def recored_now
+    response = {}
+    response[:is_recorded_now] = SelfCare.recorded_of_specified_time?(DateTime.now)
+    render_success_with(response)
+  end
+
   private
   def save_action_enable_db_transaction
     ActiveRecord::Base.transaction do

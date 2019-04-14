@@ -28,13 +28,24 @@ class SelfCare < ApplicationRecord
 
   # DocumentElementModel用の実装終わり
 
+
+  def self.create_am_pm_by_date_time(date_time)
+    (date_time.hour < 13)? :am : :pm
+  end
+
   def self.create_save_params_of_date(date_time)
 
     params = {}
     params[:log_date] = Date.new(date_time.year, date_time.month, date_time.day)
-    params[:am_pm] = (date_time.hour < 13)? :am : :pm
+    params[:am_pm] = self.create_am_pm_by_date_time(date_time)
 
     params
+  end
+
+  def self.recorded_of_specified_time?(date_time)
+
+    am_pm = self.create_am_pm_by_date_time(date_time)
+    SelfCare.where(log_date: date_time).where(am_pm: am_pm).exists?
   end
 
   def save_with_related_items(params)
@@ -55,6 +66,8 @@ class SelfCare < ApplicationRecord
     hours = am? ? 0 : 13
     Time.zone.local(log_date.year, log_date.month, log_date.day, hours, 0, 0)
   end
+
+
 
 end
 

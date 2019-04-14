@@ -399,6 +399,40 @@ describe "SelfCares", type: :request do
 
   end
 
+  describe 'recored_now' do
+    let(:compare_date){Date.today - 1.month}
+
+    subject do
+      get "/self_cares/recored_now"
+    end
+
+    context '現時刻のデータを記録してある場合' do
+      before :each do
+        create(:self_care, :current_log)
+      end
+
+      it 'trueがかえること' do
+        subject
+        json = JSON.parse(response.body)
+        expect(json['is_recorded_now']).to be_truthy
+      end
+
+      it_behaves_like 'スキーマ通りのオブジェクトを取得できてレスポンスが正しいことること' do
+        let(:expected_response_keys){'is_recorded_now'}
+      end
+    end
+
+    context '現時刻のデータを記録していない場合' do
+      it 'falseがかえること' do
+        subject
+        json = JSON.parse(response.body)
+        expect(json['is_recorded_now']).to be_falsey
+      end
+
+    end
+
+  end
+
   describe 'current_create' do
     let(:classification_name){"新しく作成した分類名"}
     let(:save_params) do

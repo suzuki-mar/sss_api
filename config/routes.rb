@@ -37,6 +37,7 @@ Rails.application.routes.draw do
       post 'current' => 'self_cares#current_create'
       get 'log_date_line_graph/:year/:month' => 'self_care_charts#log_date_line_graph'
       get 'point_pie_chart/:year/:month' => 'self_care_charts#point_pie_chart'
+      get :recored_now
     end
   end
 

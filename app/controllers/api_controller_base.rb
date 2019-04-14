@@ -8,8 +8,8 @@ class ApiControllerBase < ActionController::API
   end
 
   protected
-  def render_success_with(model)
-    render json: model, status: 200
+  def render_success_with(target)
+    render json: target, status: 200
   end
 
   def render_success_with_list_and_date_range(models, date_range)

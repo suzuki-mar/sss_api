@@ -16,6 +16,35 @@ describe SelfCare, :type => :model do
       expect(self_care.log_date_time).to eq(expected_date_time)
     end
 
+  end
+
+  describe 'create_am_pm_by_date' do
+
+    it "11時までならamが帰ること" do
+      date_time = DateTime.now.change(hour: 12)
+      expect(SelfCare.create_am_pm_by_date_time(date_time)).to eq(:am)
+    end
+
+    it "23時までならpmが帰ること" do
+      date_time = DateTime.now.change(hour: 23)
+      expect(SelfCare.create_am_pm_by_date_time(date_time)).to eq(:pm)
+    end
+
+  end
+
+  describe 'recorded_of_specified_time?' do
+
+    before :each do
+      create(:self_care, :current_log)
+    end
+
+    it '指定した時間の記録が存在するならtrue' do
+      expect(SelfCare.recorded_of_specified_time?(DateTime.now)).to be_truthy
+    end
+
+    it '指定した時間の記録が存在しないならfalse' do
+      expect(SelfCare.recorded_of_specified_time?(DateTime.now - 1.day)).to be_falsey
+    end
 
   end
 

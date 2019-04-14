@@ -16,6 +16,13 @@ FactoryBot.define do
       end
     end
 
+    trait :current_log do
+
+      log_date {Date.today}
+      am_pm {SelfCare.create_am_pm_by_date_time(DateTime.now)}
+
+    end
+
     trait :has_tag do
 
       transient do

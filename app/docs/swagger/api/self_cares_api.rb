@@ -263,6 +263,34 @@ module Swagger::Api::SelfCaresApi
 
     end
 
+    swagger_path '/self_cares/recorded_now' do
+
+      operation :get do
+        key :description, '現時刻のを記録しているかを確認する'
+        key :operationId, :is_recorded_now
+
+        key :tags, [
+            'reframing',
+            'ver3'
+        ]
+
+        response 200 do
+          key :description, '現時刻の記録をしてあるか?'
+          schema do
+            key :required, [:is_recorded_now]
+
+            property :is_recorded_now do
+              key :type, :boolean
+              key :description, '記録をしてあるか'
+            end
+
+          end
+        end
+
+        Swagger::ErrorResponseHelper.define_validation_failure_response(self, 'Reframing')
+      end
+
+    end
 
     swagger_path '/self_cares/month' do
 
