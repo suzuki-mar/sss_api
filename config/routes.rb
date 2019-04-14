@@ -1,7 +1,10 @@
 Rails.application.routes.draw do
 
-  get 'actions/doing'
-  get 'actions/done'
+  namespace :actions do
+    get :doing
+    get :done
+    get :search
+  end
 
   get 'documents/tags'
   resources :tags

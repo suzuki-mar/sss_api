@@ -1,6 +1,7 @@
 class Action < ApplicationRecord
 
   include Swagger::ActionSchema
+  include SearchFromAllTextColumnModel
 
   validates :progress_status, presence: true
   validates :due_date, presence: true
@@ -15,8 +16,8 @@ class Action < ApplicationRecord
 
   scope :with_related_document, -> do
     eager_load({self_care: [:self_care_classification, {tag_associations: :tag}]})
-    .eager_load({reframing: {tag_associations: :tag}})
-    .eager_load({problem_solving: {tag_associations: :tag}})
+        .eager_load({reframing: {tag_associations: :tag}})
+        .eager_load({problem_solving: {tag_associations: :tag}})
   end
 
 
@@ -85,10 +86,14 @@ class Action < ApplicationRecord
     self.document_id_keys.each do |document_id_key|
       table_name = document_id_key.gsub('_id', '')
       model_class = table_name.camelize.constantize
-      grouped_parent_ids[table_name] = model_class.search(search_target_text).pluck(:id)
+      grouped_parent_ids[table_name] = model_class.search_from_all_text_column(search_target_text).pluck(:id)
     end
 
     self.find_ids_by_grouped_parent_ids(grouped_parent_ids)
+  end
+
+  def self.find_ids_by_text(search_target_text)
+    self.search_from_all_text_column(search_target_text).pluck(:id)
   end
 
   private

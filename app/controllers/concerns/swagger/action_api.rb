@@ -87,9 +87,9 @@ module Swagger::ActionApi
               key :type, :array
               items do
                 key :type, :string
-                key :description, '検索するタイプ'
+                key :description, 'tagはタグ名での検索、parent_textはParentのテキスト検索,textはActionのテキストからの検索'
                 key :enum, [
-                    'tag', 'text'
+                    'tag', 'parent_text', 'text'
                 ]
               end
             end
@@ -102,7 +102,7 @@ module Swagger::ActionApi
 
             property :text do
               key :type, :string
-              key :description, 'search_typesがtextの場合に必須'
+              key :description, 'search_typesがtextかparent_textの場合に必須'
               key :example, 'タグA'
             end
 

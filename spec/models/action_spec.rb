@@ -61,8 +61,8 @@ RSpec.describe Action, type: :model do
 
   describe 'find_ids_by_tag_name' do
     let(:search_tag){create(:tag, name:'検索するタグ')}
-    let(:problem_solving){create(:problem_solving, :set_tag, :has_action,  target_tag: search_tag, action_text:'検索するテキスト')}
-    let(:reframing){create(:reframing, :set_tag, :has_action, target_tag: search_tag, action_text:'検索するテキスト')}
+    let!(:problem_solving){create(:problem_solving, :set_tag, :has_action,  target_tag: search_tag, action_text:'検索するテキスト')}
+    let!(:reframing){create(:reframing, :set_tag, :has_action, target_tag: search_tag, action_text:'検索するテキスト')}
 
     before :each do
       another_tag = create(:tag, name:'検索しないタグ')
@@ -78,11 +78,11 @@ RSpec.describe Action, type: :model do
 
   end
 
-  describe 'find_ids_by_text' do
+  describe 'find_ids_by_parent_text' do
     let(:search_target_text){"検索ターゲット#{rand}"}
 
-    let(:problem_solving){create(:problem_solving, :has_action,  action_text:'検索するテキスト', problem_recognition:search_target_text)}
-    let(:self_care){create(:self_care, :has_action, action_text:'検索するテキスト', reason:search_target_text)}
+    let!(:problem_solving){create(:problem_solving, :has_action,  action_text:'検索するテキスト', problem_recognition:search_target_text)}
+    let!(:self_care){create(:self_care, :has_action, action_text:'検索するテキスト', reason:search_target_text)}
 
     before :each do
       create(:reframing, :has_action, action_text:'検索しないテキスト')
@@ -94,4 +94,25 @@ RSpec.describe Action, type: :model do
     end
 
   end
+
+  describe 'find_ids_by_text' do
+    let(:search_target_text){"検索ターゲット#{rand}"}
+
+    let!(:problem_solving){create(:problem_solving)}
+
+    before :each do
+      create(:reframing, :has_action, action_text:'検索しないテキスト')
+    end
+
+    it '指定したタグ名を持っているドキュメントに属しているアクションIDのリストを取得できる' do
+      create(:action, evaluation_method: search_target_text, problem_solving:problem_solving)
+      create(:action, execution_method: search_target_text, problem_solving:problem_solving)
+      expected = (problem_solving.actions.pluck(:id))
+      expect(Action.find_ids_by_text(search_target_text)).to match_array(expected)
+    end
+
+
+
+  end
+
 end

@@ -6,7 +6,7 @@ class SelfCare < ApplicationRecord
   include HasTagModel
   include DocumentElementModel
   include HasActionsModel
-  include SearchCop
+  include SearchFromAllTextColumnModel
 
   belongs_to :self_care_classification
   has_many :tag_associations, dependent: :nullify
@@ -19,10 +19,6 @@ class SelfCare < ApplicationRecord
   validates :am_pm, uniqueness: { scope: :log_date, message: "同じ日付と時期の組み合わせは登録できません" }
 
   scope :with_classification, -> { includes(:self_care_classification) }
-
-  search_scope :search do
-    attributes :reason
-  end
 
   enum am_pm:{am: 1, pm:2}
 

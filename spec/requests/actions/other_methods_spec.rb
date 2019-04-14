@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe "Actions", type: :request do
 
   before :all do
-    @expected_response_keys = ['action']
+    @expected_response_keys = ['actions']
   end
 
   describe 'doing' do

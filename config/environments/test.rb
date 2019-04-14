@@ -51,5 +51,8 @@ Rails.application.configure do
     Bullet.raise = true
     Bullet.stacktrace_excludes = []
     Bullet.stacktrace_includes = []
+
+    # Action/saearch等で動的に設定することができないので
+    Bullet.add_whitelist :type => :unused_eager_loading, :class_name => "TagAssociation", :association => :tag
   end
 end
