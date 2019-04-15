@@ -7,7 +7,9 @@ Rails.application.routes.draw do
   end
 
   get 'documents/tags'
-  resources :tags
+
+  get 'tags' => 'tags#index'
+
   resources :problem_solvings do
     collection do
       get :recent
