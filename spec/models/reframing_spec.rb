@@ -101,7 +101,7 @@ RSpec.describe Reframing, type: :model do
         context 'バリデーションエラー' do
           let(:params) do
             params = []
-            params << {"description" =>"MyText", "distortion_group" =>"black_and_white_thinking"}
+            params << {"description" =>"MyText"}
             params[0]["description"] = nil
             params
           end
@@ -116,7 +116,7 @@ RSpec.describe Reframing, type: :model do
 
             another_ids = CognitiveDistortion.where.not(reframing_id: @reframing.id).pluck(:id)
             params = []
-            params << {"id" => another_ids.first, "description" =>"MyText", "distortion_group" =>"black_and_white_thinking"}
+            params << {"id" => another_ids.first, "description" =>"MyText"}
             params
           end
 
@@ -136,13 +136,12 @@ RSpec.describe Reframing, type: :model do
       context 'パラメーターが欠けている場合' do
         let(:params) do
           params = []
-          params << {"description" => nil, "distortion_group" =>"black_and_white_thinking"}
-          params << {"id" => @saved_cognitive.id, "description" => nil, "distortion_group" =>"mislead_others_thoughts"}
+          params << {"description" => nil}
           params
         end
 
         it '保存をできていること' do
-          expect{ subject }.to change(CognitiveDistortion, :count).by(0)
+          expect{ subject }.to change(CognitiveDistortion, :count).by(-1)
         end
       end
 
