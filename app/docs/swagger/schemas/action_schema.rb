@@ -8,17 +8,16 @@ module Swagger::Schemas::ActionSchema
     swagger_schema :Action do
       key :required, [:due_date, :evaluation_method, :execution_method]
 
-      property :reason do
+      property :evaluation_method do
         key :type, :string
-        key :description, '体調の理由'
-        key :example, 'ゲームの配信が決まってモチベーションが上がっている'
+        key :description, '評価方法'
+        key :example, '毎日本を10分読む週間を身についている'
       end
 
-      property :point do
-        key :type, :integer
-        key :description, '体調のポイント 数が多いほど良好'
-        key :minimum, 1
-        key :maximum, 12
+      property :execution_method do
+        key :type, :string
+        key :description, '実行方法'
+        key :example, '出社時に電車乗っている時間に本を読む'
       end
 
       property :due_date do
