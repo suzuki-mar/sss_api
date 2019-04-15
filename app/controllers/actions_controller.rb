@@ -12,12 +12,12 @@ class ActionsController < ApiControllerBase
 
   public
   def doing
-    list = Action.only_doing.with_related_document
+    list = Action.only_doing.with_related_document.sort_default
     render_success_with_list(list)
   end
 
   def done
-    list = Action.only_done.with_related_document
+    list = Action.only_done.with_related_document.sort_default
     render_success_with_list(list)
   end
 

@@ -27,10 +27,14 @@ class ProblemSolving < ApplicationRecord
 
   # DocumentElementModel用の実装
   def self.includes_related_items
-    with_tags
+    includes(self.related_column_keys)
   end
 
   # DocumentElementModel用の実装終わり
+
+  def self.related_column_keys
+    [{tag_associations: :tag}]
+  end
 
   def done!
     self.progress_status = :done

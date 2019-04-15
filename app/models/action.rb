@@ -12,11 +12,12 @@ class Action < ApplicationRecord
 
   scope :only_doing, -> { where(progress_status: :doing) }
   scope :only_done, -> { where(progress_status: :done) }
+  scope :sort_default, -> { order(:id) }
 
   scope :with_related_document, -> do
-    eager_load({self_care: [:self_care_classification, {tag_associations: :tag}]})
-        .eager_load({reframing: {tag_associations: :tag}})
-        .eager_load({problem_solving: {tag_associations: :tag}})
+    eager_load({self_care: SelfCare.related_column_keys})
+        .eager_load({reframing: Reframing.related_column_keys})
+        .eager_load({problem_solving: ProblemSolving.related_column_keys})
   end
 
 

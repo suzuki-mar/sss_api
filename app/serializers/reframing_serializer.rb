@@ -5,27 +5,12 @@ class ReframingSerializer < ActiveModel::Serializer
   has_many :actions
 
   attributes :id, :log_date, :problem_reason, :objective_facts, :feeling, :before_point,
-             :distortion_group_text, :reframing, :action_plan, :after_point, :is_draft_text, :tags
+             :action_plan, :after_point, :is_draft_text, :tags, :cognitive_distortions
 
-  def distortion_group_text
-    return nil if object.distortion_group.nil?
-
-    values = {
-      black_and_white_thinking: '白黒思考',
-      too_general: '一般化のしすぎ',
-      heart_filter: '心のフィルター',
-      negative_thinking: 'マイナス思考',
-      mislead_others_thoughts: '他人の考えを邪推する',
-      extended_interpretation: '拡大解釈',
-      underestimate: '過小評価',
-      emotional_decision: '感情的決めつけ',
-      perfectionism: '完璧主義',
-      labeling: 'ラベリング',
-      shift_responsibility: '責任転嫁',
-      pessimistic: '悲観的'
-    }
-
-    values[object.distortion_group.to_sym]
+  def cognitive_distortions
+    object.cognitive_distortions.map do |cognitive|
+      CognitiveDistortionSerializer.new(cognitive).attributes
+    end
   end
 
 end

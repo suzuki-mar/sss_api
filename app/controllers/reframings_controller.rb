@@ -17,28 +17,14 @@ class ReframingsController < ApiControllerBase
   end
 
   def create_save_params
-    distortion_group_number = reframing_params["distortion_group_number"].to_i
-    distortion_group = Reframing.distortion_groups.invert[distortion_group_number]
     save_params = reframing_params.to_hash
-
-    save_params["distortion_group"] = distortion_group
-    #値があると保存に失敗する
-    save_params.delete("distortion_group_number")
-
+    save_params['cognitive_distortions'] = create_cognitive_distortion_params
     save_params['actions'] = SaveActionsActionHelper.create_actions_from_params(params, param_top_key)
-
     save_params
   end
 
   def create_error_response_of_params_if_needed
-    distortion_group_number = reframing_params["distortion_group_number"].to_i
-    distortion_group = Reframing.distortion_groups.invert[distortion_group_number]
-
     error_messages = []
-    if distortion_group.nil?
-      error_messages << "存在しないdistortion_group_numberを指定しました:#{distortion_group_number}"
-    end
-
     if reframing_params['tag_names_text'].nil?
       error_messages << "tag_names_textが入力されていません"
     end
@@ -52,6 +38,17 @@ class ReframingsController < ApiControllerBase
 
   def draft_save?(model)
     auto_save_action? ? model.is_draft : is_draft_param == 'true'
+  end
+
+  private
+  def create_cognitive_distortion_params
+    param_keys = [:description, :distortion_group, :id]
+
+    save_params = params.require(param_top_key).require(:cognitive_distortions).map do |action_params|
+      action_params.permit(param_keys).to_hash
+    end
+
+    save_params
   end
 
   public
@@ -103,8 +100,8 @@ class ReframingsController < ApiControllerBase
     # Only allow a trusted parameter "white list" through.
     def reframing_params
       params.require(:reframing).permit(
-          :log_date, :problem_reason, :objective_facts, :feeling, :before_point, :distortion_group_number,
-          :reframing, :action_plan, :after_point, :tag_names_text)
+          :log_date, :problem_reason, :objective_facts, :feeling, :before_point,
+          :action_plan, :after_point, :tag_names_text)
     end
 
 end

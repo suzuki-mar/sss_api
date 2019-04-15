@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_11_060714) do
+ActiveRecord::Schema.define(version: 2019_04_15_022641) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,13 @@ ActiveRecord::Schema.define(version: 2019_04_11_060714) do
     t.index ["problem_solving_id"], name: "index_actions_on_problem_solving_id"
     t.index ["reframing_id"], name: "index_actions_on_reframing_id"
     t.index ["self_care_id"], name: "index_actions_on_self_care_id"
+  end
+
+  create_table "cognitive_distortions", force: :cascade do |t|
+    t.text "description"
+    t.integer "distortion_group", limit: 2
+    t.bigint "reframing_id"
+    t.index ["reframing_id"], name: "index_cognitive_distortions_on_reframing_id"
   end
 
   create_table "problem_solvings", force: :cascade do |t|
@@ -49,8 +56,6 @@ ActiveRecord::Schema.define(version: 2019_04_11_060714) do
     t.text "objective_facts"
     t.string "feeling"
     t.integer "before_point", limit: 2
-    t.integer "distortion_group", limit: 2
-    t.text "reframing"
     t.text "action_plan"
     t.integer "after_point", limit: 2
     t.boolean "is_draft", null: false
@@ -98,6 +103,7 @@ ActiveRecord::Schema.define(version: 2019_04_11_060714) do
   add_foreign_key "actions", "problem_solvings"
   add_foreign_key "actions", "reframings"
   add_foreign_key "actions", "self_cares"
+  add_foreign_key "cognitive_distortions", "reframings"
   add_foreign_key "self_cares", "self_care_classifications"
   add_foreign_key "tag_associations", "problem_solvings"
   add_foreign_key "tag_associations", "reframings"

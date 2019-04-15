@@ -31,7 +31,6 @@ RSpec.describe "Actions", type: :request do
       it '正しいレスポンスが帰っていること' do
         subject
         json = JSON.parse(response.body)['actions']
-
         expect(json.count).to eq(3)
         # タグを取得したときにN+1になっていないか なっていたらBulletで気づける
         expect(json[0]['document']['tags'].count).to eq(3)
