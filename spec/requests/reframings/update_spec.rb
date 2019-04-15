@@ -6,9 +6,9 @@ RSpec.describe "Reframings/update", type: :request do
   end
 
   before :each do
-    reframing = create(:reframing, is_draft: !change_draft)
-    create(:action, reframing:reframing)
-    create(:action, reframing:reframing)
+    @reframing = create(:reframing, is_draft: !change_draft)
+    create(:action, reframing:@reframing)
+    create(:action, reframing:@reframing)
   end
 
   subject do
@@ -35,6 +35,9 @@ RSpec.describe "Reframings/update", type: :request do
     let(:cognitive_distortions) do
       params = []
       params << attributes_for(:cognitive_distortion, :with_not_parent, description:change_text)
+      # かぶらないようにしないといけない
+      distortion_group_keys = CognitiveDistortion.unregistered_distortion_group_key_by_reframing_id(@reframing.id)
+      params[0][:distortion_group] = distortion_group_keys.first
       params[0].delete(:reframing)
       params
     end

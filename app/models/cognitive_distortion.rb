@@ -3,7 +3,9 @@ class CognitiveDistortion < ApplicationRecord
   belongs_to :reframing
 
   validates :description, presence: true, on: :completed
-  validates :distortion_group, presence: true, on: :completed
+  validates :distortion_group,  presence: true, on: :completed
+  # ドラフト時も不具合のデータをうまないためにバリデーションチェックかける
+  validates :distortion_group, uniqueness: { scope: :reframing_id }
 
   # 日本語：英語対応表
   #   '白黒思考',  black_and_white_thinking
@@ -24,5 +26,11 @@ class CognitiveDistortion < ApplicationRecord
       underestimate: 7, emotional_decision: 8, perfectionism: 9, labeling: 10,
       shift_responsibility: 11, pessimistic: 12
   }
+
+  def self.unregistered_distortion_group_key_by_reframing_id(reframing_id)
+
+    exists_keys = self.where(reframing_id: reframing_id).pluck(:distortion_group)
+    distortion_groups.keys - exists_keys
+  end
 
 end

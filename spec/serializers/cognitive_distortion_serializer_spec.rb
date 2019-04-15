@@ -31,8 +31,8 @@ describe CognitiveDistortionSerializer, :type => :serializer do
 
     variables.each do |key, text|
       it "#{key.to_s}なら#{text}となること" do
-        reframing = create(:cognitive_distortion, distortion_group: key)
-        expect(CognitiveDistortionSerializer.new(reframing).distortion_group_text).to eq text
+        cognitive = build(:cognitive_distortion, :with_not_parent, distortion_group: key)
+        expect(CognitiveDistortionSerializer.new(cognitive).distortion_group_text).to eq text
       end
     end
   end

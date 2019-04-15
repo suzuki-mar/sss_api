@@ -82,7 +82,7 @@ RSpec.describe Reframing, type: :model do
         let(:params) do
           params = []
           params << {"description" => change_text, "distortion_group" =>"black_and_white_thinking"}
-          params << {"id" => @saved_cognitive.id, "description" => change_text, "distortion_group" =>"black_and_white_thinking"}
+          params << {"id" => @saved_cognitive.id, "description" => change_text, "distortion_group" =>"mislead_others_thoughts"}
           params
         end
 
@@ -137,7 +137,7 @@ RSpec.describe Reframing, type: :model do
         let(:params) do
           params = []
           params << {"description" => nil, "distortion_group" =>"black_and_white_thinking"}
-          params << {"id" => @saved_cognitive.id, "description" => nil, "distortion_group" =>"black_and_white_thinking"}
+          params << {"id" => @saved_cognitive.id, "description" => nil, "distortion_group" =>"mislead_others_thoughts"}
           params
         end
 

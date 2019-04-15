@@ -24,7 +24,7 @@ class Reframing < ApplicationRecord
 
   # DocumentElementModel用の実装
   def self.includes_related_items
-    includes(self.related_column_keys)
+        includes(self.related_column_keys)
   end
 
   # DocumentElementModel用の実装終わり

@@ -5,11 +5,6 @@ RSpec.describe "Reframings", type: :request do
     @expected_response_keys = ['reframing']
   end
 
-
-  before :each do
-    create(:reframing, :draft, :has_action)
-  end
-
   subject do
 
     params = reframing_params
@@ -18,6 +13,8 @@ RSpec.describe "Reframings", type: :request do
     params[:cognitive_distortions] = cognitive_distortions
     put "/reframings/auto_save/#{id}", params: {reframing: params}
   end
+
+  let!(:reframing){create(:reframing, :draft, :has_action)}
 
   let(:actions) do
 
@@ -37,6 +34,8 @@ RSpec.describe "Reframings", type: :request do
       params = []
       params << attributes_for(:cognitive_distortion, :with_not_parent, description:change_text)
       params[0].delete(:reframing)
+      distortion_group_keys = CognitiveDistortion.unregistered_distortion_group_key_by_reframing_id(reframing.id)
+      params[0][:distortion_group] = distortion_group_keys.first
       params
     end
 
