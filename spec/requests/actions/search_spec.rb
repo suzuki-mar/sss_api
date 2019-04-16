@@ -28,6 +28,10 @@ RSpec.describe "Actions/search", type: :request do
       create(:self_care, :has_tag, :set_tag, :has_action, target_tag: another_tag,  tag_count: 3, action_text:'検索しないテキスト')
       # 関連しているものすべてを取得できているか確認するため
       create(:action, problem_solving: problem_solving)
+
+      source_action = problem_solving.actions.first
+      target_action = reframing.actions.first
+      source_action.add_related_action!(target_action)
     end
 
     context 'タグが存在する場合' do
@@ -37,6 +41,12 @@ RSpec.describe "Actions/search", type: :request do
 
         expected = (problem_solving.actions.pluck(:id) + reframing.actions.pluck(:id))
         expect(json['actions'].pluck("id")).to match_array(expected)
+      end
+
+      it '関連したアクションが設定されている' do
+        subject
+        json = JSON.parse(response.body)
+        expect(json['actions'][0]['related_actions'].count).to eq(1)
       end
 
       it_behaves_like 'スキーマ通りのオブジェクトを取得できてレスポンスが正しいことること' do

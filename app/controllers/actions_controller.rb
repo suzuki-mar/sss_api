@@ -13,11 +13,13 @@ class ActionsController < ApiControllerBase
   public
   def doing
     list = Action.only_doing.with_related_document.sort_default
+    Action.set_related_actions_from_loaded_for_targets(list)
     render_success_with_list(list)
   end
 
   def done
     list = Action.only_done.with_related_document.sort_default
+    Action.set_related_actions_from_loaded_for_targets(list)
     render_success_with_list(list)
   end
 
@@ -32,6 +34,7 @@ class ActionsController < ApiControllerBase
 
     action_ids = ActionIdsFinder.find_by_action_search_parameter(parameter)
     list = Action.by_ids(action_ids).with_related_document
+    Action.set_related_actions_from_loaded_for_targets(list)
     render_success_with_list(list)
   end
 

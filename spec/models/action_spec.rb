@@ -111,8 +111,37 @@ RSpec.describe Action, type: :model do
       expect(Action.find_ids_by_text(search_target_text)).to match_array(expected)
     end
 
+  end
 
+  describe 'add_related_action!' do
+    let(:source_action){create(:action, :with_parent)}
+    let(:target_action){create(:action, :with_parent)}
 
+    subject {source_action.add_related_action!(target_action)}
+
+    it '関連付けを設定することができる' do
+      expect{ subject }.to change(ActionRelatedAction, :count).from(0).to(1)
+    end
+
+    it 'すでに関連付けしている場合は関連付けに変化はない' do
+      subject
+      expect{ target_action.add_related_action!(source_action) }.to change(ActionRelatedAction, :count).by(0)
+    end
+
+  end
+
+  describe 'set_related_actions_from_loaded_for_targets' do
+    let!(:first_action){create(:action, :with_parent)}
+    let!(:second_action){create(:action, :with_parent)}
+
+    before :each do
+      first_action.add_related_action!(second_action)
+    end
+
+    it '読み込んだrelated_actionを設定する' do
+      actions = Action.set_related_actions_from_loaded_for_targets(Action.all)
+      expect(actions.second.related_actions).to eq([first_action])
+    end
   end
 
 end

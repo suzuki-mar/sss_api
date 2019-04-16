@@ -2,6 +2,8 @@ class ActionSerializer < ActiveModel::Serializer
   attributes :id, :progress_status_text, :evaluation_method, :execution_method, :due_date
   attributes :document
 
+  attribute :related_actions, if: -> { object.related_actions.present? }
+
   def progress_status_text
 
     values = {
@@ -20,6 +22,12 @@ class ActionSerializer < ActiveModel::Serializer
     attributes = serailzer.attributes
     attributes['type'] = object.document.table_name.singularize
     attributes
+  end
+
+  def related_actions
+    object.related_actions.map do |action|
+      ActionSummarySerializer.new(action).attributes
+    end
   end
 
 end

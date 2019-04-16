@@ -25,6 +25,8 @@ class Action < ApplicationRecord
   belongs_to :self_care, optional: true
   belongs_to :reframing, optional: true
 
+  attr_accessor :related_actions
+
   def self.document_id_keys
     instance = self.new
     keys = instance.attributes.keys
@@ -94,6 +96,33 @@ class Action < ApplicationRecord
 
   def self.find_ids_by_text(search_target_text)
     self.search_from_all_text_column(search_target_text).pluck(:id)
+  end
+  
+  def self.set_related_actions_from_loaded_for_targets(targets)
+    
+    action_ids = targets.pluck(:id)
+    grouped_related_actions = GroupedRelatedActionsFinder.find_by_action_ids(action_ids)
+
+    targets.each do |target|
+      grouped_related_actions.each do |action_id, related_actions|
+        next unless target.id == action_id
+        target.related_actions = related_actions
+      end
+    end
+
+    targets
+  end
+
+  public
+
+  def add_related_action!(target_action)
+
+    return if ActionRelatedAction.has_already_relation_registered(self, target_action)
+
+    related = ActionRelatedAction.new
+    related.source = self
+    related.target = target_action
+    related.save!
   end
 
   private

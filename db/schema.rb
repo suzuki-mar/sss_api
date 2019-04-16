@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_15_022641) do
+ActiveRecord::Schema.define(version: 2019_04_16_005004) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "action_related_actions", force: :cascade do |t|
+    t.bigint "source_id"
+    t.bigint "target_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["source_id"], name: "index_action_related_actions_on_source_id"
+    t.index ["target_id"], name: "index_action_related_actions_on_target_id"
+  end
 
   create_table "actions", force: :cascade do |t|
     t.integer "progress_status", null: false
@@ -100,6 +109,8 @@ ActiveRecord::Schema.define(version: 2019_04_15_022641) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "action_related_actions", "actions", column: "source_id"
+  add_foreign_key "action_related_actions", "actions", column: "target_id"
   add_foreign_key "actions", "problem_solvings"
   add_foreign_key "actions", "reframings"
   add_foreign_key "actions", "self_cares"

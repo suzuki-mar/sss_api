@@ -24,7 +24,7 @@ module Swagger::Api::ActionApi
             property :actions do
               key :type, :array
               items do
-                key :'$ref', :ActionWithDocumentOutput
+                key :'$ref', :DetailActionOutput
               end
             end
 
@@ -54,7 +54,7 @@ module Swagger::Api::ActionApi
             property :actions do
               key :type, :array
               items do
-                key :'$ref', :ActionWithDocumentOutput
+                key :'$ref', :DetailActionOutput
               end
             end
 
@@ -118,13 +118,119 @@ module Swagger::Api::ActionApi
             property :actions do
               key :type, :array
               items do
-                key :'$ref', :ActionWithDocumentOutput
+                key :'$ref', :DetailActionOutput
               end
             end
 
           end
         end
 
+      end
+
+    end
+
+    swagger_path '/actions/related/{id}' do
+
+      operation :put do
+        key :description, 'アクション同士の関連づける'
+        key :operationId, :create_action_relateds_by_id
+
+        key :tags, [
+            'action',
+            'ver4'
+        ]
+
+        parameter name: :id do
+          key :in, :path
+          key :description, '関連付けするアクションID'
+          key :required, true
+          key :type, :integer
+          key :format, :int64
+        end
+
+        parameter name: :update_params do
+          key :in, :body
+          key :required, true
+
+          schema do
+            key :required, [:related_action_ids]
+
+            property :related_action_ids do
+              key :type, :array
+              items do
+                key :type, :integer
+                key :description, '関連付けるアクションIDのリスト'
+              end
+            end
+
+          end
+
+        end
+
+        response 200 do
+          key :description, '関連したづけしたアクション'
+          schema do
+            key :required, [:action]
+
+            property :action do
+              key :'$ref', :DetailActionOutput
+            end
+
+          end
+        end
+
+        Swagger::ErrorResponseHelper.define_not_found_response(self, 'id', 'Action')
+      end
+
+      operation :delete do
+        key :description, 'アクション同士の関連づけを削除する'
+        key :operationId, :delete_action_relateds_by_id
+
+        key :tags, [
+            'action',
+            'ver4'
+        ]
+
+        parameter name: :id do
+          key :in, :path
+          key :description, '関連付けするアクションID'
+          key :required, true
+          key :type, :integer
+          key :format, :int64
+        end
+
+        parameter name: :delete_params do
+          key :in, :body
+          key :required, true
+
+          schema do
+            key :required, [:related_action_ids]
+
+            property :related_action_ids do
+              key :type, :array
+              items do
+                key :type, :integer
+                key :description, '関連付けを解除するアクションIDのリスト'
+              end
+            end
+
+          end
+
+        end
+
+        response 200 do
+          key :description, '関連したづけしたアクション'
+          schema do
+            key :required, [:action]
+
+            property :action do
+              key :'$ref', :DetailActionOutput
+            end
+
+          end
+        end
+
+        Swagger::ErrorResponseHelper.define_not_found_response(self, 'id', 'Action')
       end
 
     end

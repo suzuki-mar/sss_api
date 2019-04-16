@@ -21,8 +21,6 @@ class ApiDocsController < ApplicationController
     self.class.create_document_modules.each do |doc_module|
       next unless doc_module.class == Module
 
-      pp doc_module
-
       self.class.include doc_module
     end
 

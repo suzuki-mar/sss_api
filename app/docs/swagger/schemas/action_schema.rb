@@ -5,8 +5,8 @@ module Swagger::Schemas::ActionSchema
 
   included do
 
-    swagger_schema :Action do
-      key :required, [:due_date, :evaluation_method, :execution_method]
+    swagger_schema :ActionSummary do
+      key :required, [:evaluation_method, :execution_method]
 
       property :evaluation_method do
         key :type, :string
@@ -19,13 +19,30 @@ module Swagger::Schemas::ActionSchema
         key :description, '実行方法'
         key :example, '出社時に電車乗っている時間に本を読む'
       end
+    end
 
-      property :due_date do
-        key :type, :string
-        key :format, :date
-        key :description, '締切日'
-        key :example, '2019-03-03'
+    swagger_schema :Action do
+      key :required, [:due_date, :evaluation_method, :execution_method]
+
+      allOf do
+        schema do
+          key :'$ref', 'ActionSummary'
+        end
+        schema do
+          key :required, [
+              :progress_status_text
+          ]
+
+          property :due_date do
+            key :type, :string
+            key :format, :date
+            key :description, '締切日'
+            key :example, '2019-03-03'
+          end
+
+        end
       end
+
     end
 
     swagger_schema :ActionOutput do
@@ -51,7 +68,7 @@ module Swagger::Schemas::ActionSchema
       end
     end
 
-    swagger_schema :ActionWithDocumentOutput do
+    swagger_schema :DetailActionOutput do
 
       allOf do
         schema do
@@ -65,6 +82,14 @@ module Swagger::Schemas::ActionSchema
           property :document do
             key :type, :object
             key :description, 'SelfCareなどのDocument'
+          end
+
+          property :related_actions do
+            key :type, :array
+            key :description, '関連しているアクション'
+            items do
+              key :'$ref', :ActionSummary
+            end
           end
 
         end
