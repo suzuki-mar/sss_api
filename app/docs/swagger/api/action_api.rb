@@ -129,11 +129,11 @@ module Swagger::Api::ActionApi
 
     end
 
-    swagger_path '/actions/related/{id}' do
+    swagger_path '/actions/related/{action_id}' do
 
       operation :put do
         key :description, 'アクション同士の関連づける'
-        key :operationId, :create_action_relateds_by_id
+        key :operationId, :link_relateds_by_id
 
         key :tags, [
             'action',
@@ -148,7 +148,7 @@ module Swagger::Api::ActionApi
           key :format, :int64
         end
 
-        parameter name: :update_params do
+        parameter name: :related_params do
           key :in, :body
           key :required, true
 
@@ -184,7 +184,7 @@ module Swagger::Api::ActionApi
 
       operation :delete do
         key :description, 'アクション同士の関連づけを削除する'
-        key :operationId, :delete_action_relateds_by_id
+        key :operationId, :unlink_relateds_by_id
 
         key :tags, [
             'action',

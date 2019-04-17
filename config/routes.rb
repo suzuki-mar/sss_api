@@ -4,6 +4,11 @@ Rails.application.routes.draw do
     get :doing
     get :done
     get :search
+
+    namespace :relateds do
+      put ':action_id' => '/actions/relateds#link'
+    end
+
   end
 
   get 'documents/tags'

@@ -38,6 +38,13 @@ class ActionsController < ApiControllerBase
     render_success_with_list(list)
   end
 
+  def add_related
+
+    pp "fuga"
+
+
+  end
+
   private
   def search_params
     params["search_params"]
