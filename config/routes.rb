@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
     namespace :relateds do
       put ':action_id' => '/actions/relateds#link'
+      delete ':action_id' => '/actions/relateds#unlink'
     end
 
   end

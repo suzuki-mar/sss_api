@@ -17,6 +17,11 @@ class ActionRelatedAction < ApplicationRecord
     end
   end
 
+  def self.find_by_source_and_target(source, target)
+    or_relation = self.where(source: target).where(target: source)
+    self.where(source: source).where(target: target).or(or_relation).first
+  end
+
   private
   def validate_relation
     if ActionRelatedAction.has_already_relation_registered(self.source, self.target, self)

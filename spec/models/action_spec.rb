@@ -130,6 +130,23 @@ RSpec.describe Action, type: :model do
 
   end
 
+  describe 'remove_related_action!' do
+    let(:source_action){create(:action, :with_parent)}
+    let(:target_action){create(:action, :with_parent)}
+
+    subject {source_action.remove_related_action!(target_action)}
+
+    it '関連付けを設定することができる' do
+      source_action.add_related_action!(target_action)
+      expect{ subject }.to change(ActionRelatedAction, :count).from(1).to(0)
+    end
+
+    it '関連づいていないものを削除しようとしたらエラーが発生する' do
+      expect { subject }.to raise_error(ArgumentError)
+    end
+
+  end
+
   describe 'set_related_actions_from_loaded_for_targets' do
     let!(:first_action){create(:action, :with_parent)}
     let!(:second_action){create(:action, :with_parent)}

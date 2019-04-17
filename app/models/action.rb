@@ -125,6 +125,16 @@ class Action < ApplicationRecord
     related.save!
   end
 
+  def remove_related_action!(target_action)
+    related = ActionRelatedAction.find_by_source_and_target(self, target_action)
+    if related.nil?
+      message = "関連づいていないアクション同士の関連を削除しようとしました srouce_id#{self.id}:target_id#{target_action.id}"
+      raise ArgumentError.new(message)
+    end
+
+    related.delete
+  end
+
   private
   def self.find_ids_by_grouped_parent_ids(grouped_parent_ids)
     # TODO SQLをチューニングする

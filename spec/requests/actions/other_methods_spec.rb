@@ -89,39 +89,4 @@ RSpec.describe "Actions", type: :request do
 
   end
 
-  describe 'related#PUT' do
-    let(:source_action){create(:action, :with_parent)}
-    let(:target_ids) do
-      create(:action, :with_parent)
-      ids = Action.ids
-      ids.delete(source_action.id)
-      ids
-    end
-
-    subject do
-      update_params = {}
-      update_params[:related_action_ids] = target_ids
-
-      put "/actions/relateds/#{id}", params: {update_params: update_params}
-    end
-
-    context 'ターゲットが存在する場合' do
-      let(:id){source_action.id}
-
-
-      it '関連つけたアクションのレスポンスも含めて取得できている' do
-        subject
-        json = JSON.parse(response.body)['action']
-        expect(json['related_actions'].count).to eq(1)
-      end
-
-      it 'アクションの関連付けが更新されている' do
-        expect{ subject }.to change(ActionRelatedAction, :count).from(0).to(1)
-      end
-
-    end
-
-
-  end
-
 end

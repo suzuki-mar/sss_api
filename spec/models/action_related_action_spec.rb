@@ -58,6 +58,30 @@ RSpec.describe ActionRelatedAction, type: :model do
 
   end
 
+  describe 'find_by_source_and_target' do
+
+    it 'sourceとtargetからrelatedを取得する' do
+      related = create(:action_related_action)
+      source = related.source
+      target = related.target
+
+      actual = ActionRelatedAction.find_by_source_and_target(source, target)
+      expect(actual).to eq(related)
+    end
+
+    it 'sourceとtargetが逆でもrelatedを取得する' do
+      related = create(:action_related_action)
+      source = related.source
+      target = related.target
+
+      actual = ActionRelatedAction.find_by_source_and_target(target, source)
+      expect(actual).to eq(related)
+    end
+
+
+  end
+
+
   describe 'has_already_relation_registered?' do
     let!(:source_action){create(:action, :with_parent)}
     let!(:target_action){create(:action, :with_parent)}

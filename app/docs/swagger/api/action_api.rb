@@ -148,7 +148,7 @@ module Swagger::Api::ActionApi
           key :format, :int64
         end
 
-        parameter name: :related_params do
+        parameter name: :params do
           key :in, :body
           key :required, true
 
@@ -199,7 +199,7 @@ module Swagger::Api::ActionApi
           key :format, :int64
         end
 
-        parameter name: :delete_params do
+        parameter name: :params do
           key :in, :body
           key :required, true
 
