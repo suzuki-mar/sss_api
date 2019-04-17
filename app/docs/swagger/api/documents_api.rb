@@ -5,6 +5,49 @@ module Swagger::Api::DocumentsApi
 
   included do
 
+    swagger_path '/documents/{date}/{type}' do
+
+      operation :get do
+        key :description, '検索条件にマッチしたドキュメントを取得する'
+        key :operationId, :find_document_by_id_and_type
+        key :tags, [
+            'document',
+            'ver4'
+        ]
+
+        parameter name: :date do
+          key :in, :path
+          key :description, '検索する日付'
+          key :required, true
+          key :type, :string
+          key :format, :date
+        end
+
+        parameter name: :type do
+          key :in, :path
+          key :description, '検索するタイプ'
+          key :required, true
+          key :type, :string
+          key :enum, ['problem_resolving', 'reframing', 'self_care', 'all']
+        end
+
+        response 200 do
+          key :description, '検索条件にマッチしたドキュメントをみる'
+          schema do
+            key :required, [:problem_solving]
+
+            property :problem_solving do
+              key :'$ref', :Documents
+            end
+
+          end
+        end
+
+        Swagger::ErrorResponseHelper.define_not_found_response(self, 'id', 'Document')
+      end
+
+    end
+
     swagger_path '/documents/search' do
 
       operation :get do
