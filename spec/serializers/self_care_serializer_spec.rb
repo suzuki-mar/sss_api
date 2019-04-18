@@ -2,13 +2,31 @@ require 'rails_helper'
 
 describe SelfCareSerializer, :type => :serializer do
 
-  it "必要な要素が定義されていること" do
+  describe 'attributes' do
 
-    self_care = create(:self_care)
-    attributes = SelfCareSerializer.new(self_care).attributes
+    context 'feedbackがない場合' do
+      it "必要な要素が定義されていること" do
 
-    expected_keys = [:id, :log_date, :am_pm, :point, :reason, :status_group, :classification_name, :tags]
-    expect(attributes.keys).to match_array(expected_keys)
+        self_care = create(:self_care)
+        attributes = SelfCareSerializer.new(self_care).attributes
+
+        expected_keys = [:id, :log_date, :am_pm, :point, :reason, :status_group, :classification_name, :tags]
+        expect(attributes.keys).to match_array(expected_keys)
+      end
+    end
+
+    context 'feedbackがある場合' do
+      it "基本のパラメーターにfeedback用のパラメーターがついていること" do
+
+        self_care = create(:self_care)
+        self_care.set_up_feedback
+
+        attributes = SelfCareSerializer.new(self_care).attributes
+        expected_keys = [:id, :log_date, :am_pm, :point, :reason, :status_group, :classification_name, :tags, :feedback]
+        expect(attributes.keys).to match_array(expected_keys)
+      end
+    end
+
   end
 
   describe 'status_group' do

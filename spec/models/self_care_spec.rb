@@ -131,4 +131,90 @@ describe SelfCare, :type => :model do
 
   end
 
+  describe 'prev_logs' do
+
+    context '２個前の記録が存在する場合' do
+      let!(:target){create(:self_care, log_date:Date.today, am_pm: :am)}
+      let!(:prev2_log){create(:self_care, log_date:Date.today - 2.days, am_pm: :pm)}
+      let!(:prev1_log){create(:self_care, log_date:Date.yesterday, am_pm: :am)}
+
+      before :each do
+        create(:self_care, log_date:Date.today, am_pm: :pm)
+      end
+
+      it '２個前の記録を取得する' do
+        expect(target.prev_logs).to eq([prev1_log, prev2_log])
+      end
+
+    end
+
+    context '1個前しか記録が存在しない場合' do
+      let!(:target){create(:self_care, log_date:Date.today, am_pm: :am)}
+      let!(:prev1_log){create(:self_care, log_date:Date.yesterday, am_pm: :am)}
+
+      it '1個前だけの記録を取得する' do
+        expect(target.prev_logs).to eq([prev1_log])
+      end
+
+    end
+
+    context '前の記録が存在しない場合' do
+      let!(:target){create(:self_care, log_date:Date.today, am_pm: :am)}
+
+      it 'からの配列を取得する' do
+        expect(target.prev_logs).to eq([])
+      end
+
+    end
+
+  end
+
+  describe "than_newer?" do
+
+    it '新しければtrue' do
+      self_care = create(:self_care, log_date: Date.today, am_pm: :pm)
+      compare = create(:self_care, log_date: Date.today, am_pm: :am)
+
+      expect(self_care.than_newer?(compare)).to be_truthy
+    end
+
+    it '古ければfalse' do
+      self_care = create(:self_care, log_date: Date.today, am_pm: :am)
+      compare = create(:self_care, log_date: Date.today, am_pm: :pm)
+
+      expect(self_care.than_newer?(compare)).to be_falsey
+    end
+
+  end
+
+  describe 'create_feedback' do
+
+    context 'pointが6以下の場合' do
+      it 'ケアが必要' do
+        self_care = create(:self_care, log_date: Date.today, am_pm: :pm, point:6)
+        self_care.set_up_feedback
+        expect(self_care.feedback.is_need_take_care).to be_truthy
+      end
+    end
+
+    context 'pointが7で直近２回も7以下の場合' do
+      it 'ケアが必要' do
+        self_care = create(:self_care, log_date: Date.today, am_pm: :pm, point:7)
+        create(:self_care, log_date: Date.today, am_pm: :am, point:7)
+        create(:self_care, log_date: Date.yesterday, am_pm: :am, point:7)
+
+        self_care.set_up_feedback
+        expect(self_care.feedback.is_need_take_care).to be_truthy
+      end
+    end
+
+    context 'pointが8以上の場合' do
+      it 'ケアは不要' do
+        self_care = create(:self_care, log_date: Date.today, am_pm: :pm, point:8)
+        self_care.set_up_feedback
+        expect(self_care.feedback.is_need_take_care).to be_falsey
+      end
+    end
+  end
+
 end

@@ -180,6 +180,36 @@ module Swagger::Schemas::SelfCareSchema
       end
     end
 
+    swagger_schema :SelfCareWithFeedbackOutput do
+      allOf do
+        schema do
+          key :required, [
+              :feed_back
+          ]
+
+          property :is_need_take_care do
+            key :'$ref', 'SelfCareFeedback'
+          end
+
+        end
+
+        schema do
+          key :'$ref', 'SelfCareOutput'
+        end
+      end
+    end
+
+    swagger_schema :SelfCareFeedback do
+      key :required, [
+          :is_need_take_care
+      ]
+
+      property :is_need_take_care do
+        key :type, :boolean
+        key :description, '対応策を実行する必要があるか'
+      end
+    end
+
     swagger_schema :SelfCareClassificationOutPut do
       key :required, [:status_group, :classification_name]
       property :status_group do

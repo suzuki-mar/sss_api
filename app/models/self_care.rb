@@ -18,8 +18,11 @@ class SelfCare < ApplicationRecord
   validates :am_pm, uniqueness: { scope: :log_date, message: "同じ日付と時期の組み合わせは登録できません" }
 
   scope :with_classification, -> { includes(:self_care_classification) }
+  scope :order_recent, -> { order('log_date DESC').order('am_pm DESC') }
 
   enum am_pm:{am: 1, pm:2}
+
+  attr_reader :feedback
 
   # DocumentElementModel用の実装
   def self.includes_related_items
@@ -71,7 +74,24 @@ class SelfCare < ApplicationRecord
     Time.zone.local(log_date.year, log_date.month, log_date.day, hours, 0, 0)
   end
 
+  def prev_logs
+    self_cares = SelfCare.where("log_date <= ?", self.log_date).order_recent
 
+    old_log = self_cares.select do |self_care|
+      self.than_newer?(self_care)
+    end
+
+    old_log.to(1)
+  end
+
+  def than_newer?(compare)
+    self.log_date_time > compare.log_date_time
+  end
+
+  def set_up_feedback
+    feedback = Feedback.load_by_self_care(self)
+    @feedback = feedback
+  end
 
 end
 

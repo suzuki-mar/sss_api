@@ -56,7 +56,7 @@ describe "SelfCares", type: :request do
   describe 'update' do
     let(:classification_name){"新しく作成した分類名"}
     let(:save_params) do
-      params = attributes_for(:self_care, reason: change_text, self_care_classification_id: self_care_classification_id)
+      params = attributes_for(:self_care, point: 5, reason: change_text, self_care_classification_id: self_care_classification_id)
       params.merge!(option_params)
       params
     end
@@ -101,10 +101,12 @@ describe "SelfCares", type: :request do
 
         it '更新したオブジェクトをレスポンとして返されること' do
           subject
-          json = JSON.parse(response.body)
-          expect(json['self_care']['reason']).to eq(change_text)
-          expect(json['self_care']['classification_name']).to eq("悪化:#{classification_name}")
-          expect(json['self_care']['actions'].count).to eq(2)
+          json = JSON.parse(response.body)['self_care']
+          expect(json['reason']).to eq(change_text)
+          expect(json['classification_name']).to eq("悪化:#{classification_name}")
+          expect(json['actions'].count).to eq(2)
+          expect(json['feedback'].present?).to be_truthy
+
         end
 
         it 'DBの値が更新されていること' do

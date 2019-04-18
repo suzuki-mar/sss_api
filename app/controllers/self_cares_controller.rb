@@ -64,6 +64,7 @@ class SelfCaresController < ApiControllerBase
 
       save_params = create_save_params
       @self_care.save_with_related_items(save_params)
+      @self_care.set_up_feedback
       render_success_with(@self_care)
     end
   rescue ErrorResponseException => e

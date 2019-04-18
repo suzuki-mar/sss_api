@@ -2,6 +2,7 @@ class SelfCareSerializer < ActiveModel::Serializer
   include Common::HasTagSerializer
 
   attributes :id, :am_pm, :log_date, :point, :reason, :status_group, :classification_name
+  attribute :feedback, if: -> { object.feedback.present? }
 
   has_many :actions
 
@@ -19,6 +20,10 @@ class SelfCareSerializer < ActiveModel::Serializer
     @classification_serializer.attributes[:status_group]
   end
 
+  def feedback
+    SelfCare::FeedbackSerializer.new(object.feedback).attributes
+  end
+
   def am_pm
 
     case object.am_pm
@@ -28,5 +33,4 @@ class SelfCareSerializer < ActiveModel::Serializer
       "午後"
     end
   end
-
 end

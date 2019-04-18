@@ -72,7 +72,7 @@ module Swagger::Api::SelfCaresApi
             key :required, [:self_care]
 
             property :self_care do
-              key :'$ref', :SelfCareOutput
+              key :'$ref', :SelfCareWithFeedbackOutput
             end
 
           end
@@ -111,7 +111,7 @@ module Swagger::Api::SelfCaresApi
             key :required, [:self_care]
 
             property :self_care do
-              key :'$ref', :SelfCareOutput
+              key :'$ref', :SelfCareWithFeedbackOutput
             end
 
           end
