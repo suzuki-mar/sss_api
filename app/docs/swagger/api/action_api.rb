@@ -35,6 +35,36 @@ module Swagger::Api::ActionApi
 
     end
 
+    swagger_path '/actions/overdue' do
+
+      operation :get do
+        key :description, '実行予定日が過ぎたが完了していないアクションを取得する'
+        key :operationId, :find_doing_actions
+
+        key :tags, [
+            'action',
+            'ver3'
+        ]
+
+        response 200 do
+          key :description, '実行予定日が過ぎたが完了していないアクション一覧'
+          schema do
+            key :required, [:actions]
+
+            property :actions do
+              key :type, :array
+              items do
+                key :'$ref', :DetailActionOutput
+              end
+            end
+
+          end
+        end
+
+      end
+
+    end
+
     swagger_path '/actions/done' do
 
       operation :get do

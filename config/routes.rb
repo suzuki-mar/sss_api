@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     get :doing
     get :done
     get :search
+    get :overdue
 
     namespace :relateds do
       put ':action_id' => '/actions/relateds#link'

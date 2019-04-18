@@ -12,6 +12,7 @@ class Action < ApplicationRecord
 
   scope :only_doing, -> { where(progress_status: :doing) }
   scope :only_done, -> { where(progress_status: :done) }
+  scope :overdue, -> { where("due_date < ?", Date.today).where.not(progress_status: :done) }
   scope :sort_default, -> { order(:id) }
 
   scope :with_related_document, -> do

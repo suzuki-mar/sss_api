@@ -23,6 +23,12 @@ class ActionsController < ApiControllerBase
     render_success_with_list(list)
   end
 
+  def overdue
+    list = Action.overdue.with_related_document.sort_default
+    Action.set_related_actions_from_loaded_for_targets(list)
+    render_success_with_list(list)
+  end
+
   def search
 
     parameter = ActionSearchParameter.new(search_params)
