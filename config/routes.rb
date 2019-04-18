@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   end
 
   get 'documents/tags'
+  get 'documents/:log_date/:type' => 'documents#show'
 
   get 'tags' => 'tags#index'
 

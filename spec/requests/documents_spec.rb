@@ -6,6 +6,48 @@ RSpec.describe "Documents", type: :request do
     @expected_response_keys = ['documents_list']
   end
 
+  describe 'show' do
+    before :each do
+      create(:self_care, :has_action, :has_tag, log_date: Date.today)
+      create(:reframing, :has_action, :has_tag, log_date: Date.today)
+    end
+
+    subject do
+      get "/documents/#{log_date}/#{type}"
+    end
+
+    context 'オブジェクトが存在する場合' do
+      let(:log_date){Date.today}
+      let(:type){:all}
+
+      it '指定したtypeのDocumentが入っているDocumentsを取得する' do
+        subject
+        json = JSON.parse(response.body)['documents']
+        expect(json['reframings'].present?).to be_truthy
+        expect(json['self_cares'].present?).to be_truthy
+        expect(json['problem_solvings'].present?).to be_falsey
+      end
+
+    end
+
+    context 'オブジェクトが存在する場合' do
+      let(:log_date){Date.today}
+      let(:type){:invalid}
+
+      it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
+        let(:error_message){"type:\t不正なタイプが指定されました:invalid\n\n"}
+      end
+
+    end
+
+    it_behaves_like 'オブジェクトが存在しない場合' do
+      let(:log_date){Date.tomorrow}
+      let(:type){:all}
+      let(:resource_name){'Documents'}
+      let(:request_method_type){:get}
+    end
+  end
+
   describe 'search' do
 
     subject do
