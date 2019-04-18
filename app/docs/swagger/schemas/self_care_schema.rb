@@ -5,6 +5,23 @@ module Swagger::Schemas::SelfCareSchema
 
   included do
 
+    swagger_schema :SelfCareLogDatePeriod do
+      key :required, [:log_date, :am_pm]
+
+      property :log_date do
+        key :type, :string
+        key :format, :date
+        key :description, '記録をした日付'
+        key :example, '2019-03-03'
+      end
+
+      property :am_pm do
+        key :type, :string
+        key :description, '午前か午後か'
+        key :enum, ['午前', '午後']
+      end
+    end
+
     swagger_schema :SelfCareCurrentInput do
       allOf do
 
@@ -134,6 +151,7 @@ module Swagger::Schemas::SelfCareSchema
             key :description, '体調の理由'
             key :example, 'ゲームの配信が決まってモチベーションが上がっている'
           end
+
           property :log_date do
             key :type, :string
             key :format, :date
@@ -141,17 +159,17 @@ module Swagger::Schemas::SelfCareSchema
             key :example, '2019-03-03'
           end
 
+          property :am_pm_text do
+            key :type, :string
+            key :description, '午前か午後か'
+            key :enum, ['午前', '午後']
+          end
+
           property :point do
             key :type, :integer
             key :description, '体調のポイント 数が多いほど良好'
             key :minimum, 1
             key :maximum, 12
-          end
-
-          property :am_pm_text do
-            key :type, :string
-            key :description, '午前か午後か'
-            key :enum, ['午前', '午後']
           end
 
         end

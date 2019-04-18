@@ -129,7 +129,6 @@ describe SelfCare, :type => :model do
       expect(params[:am_pm]).to eq(:pm)
     end
 
-
   end
 
 end

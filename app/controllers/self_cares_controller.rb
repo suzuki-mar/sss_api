@@ -43,6 +43,15 @@ class SelfCaresController < ApiControllerBase
     render_success_with(response)
   end
 
+  def recently_forgot_period
+
+    start_date = Date.today - 2.days
+    end_date = Date.today
+    range_date = start_date..end_date
+    periods = SelfCarePeriod.find_forgot_periods_by_confirm_range_date(range_date)
+    render_success_with_list(periods)
+  end
+
   private
   def save_action_enable_db_transaction
     ActiveRecord::Base.transaction do

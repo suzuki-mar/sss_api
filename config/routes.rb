@@ -47,6 +47,7 @@ Rails.application.routes.draw do
       get 'log_date_line_graph/:year/:month' => 'self_care_charts#log_date_line_graph'
       get 'point_pie_chart/:year/:month' => 'self_care_charts#point_pie_chart'
       get :recored_now
+      get :recently_forgot_period
     end
   end
 

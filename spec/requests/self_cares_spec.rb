@@ -31,6 +31,28 @@ describe "SelfCares", type: :request do
     end
   end
 
+  describe 'recently_forgot_period' do
+    before :each do
+      create(:self_care, log_date: Date.yesterday, am_pm: :am)
+      create(:self_care, log_date: Date.yesterday, am_pm: :pm)
+    end
+
+    subject do
+      get '/self_cares/recently_forgot_period'
+    end
+
+    context '2日以内で記録をつけていない日数を取得する' do
+      it 'レスポンスを取得できている' do
+        subject
+        json = JSON.parse(response.body)['self_care_periods']
+
+        # 時刻によって個数が違う
+        expect(json.count).to be > 3
+      end
+    end
+
+  end
+
   describe 'update' do
     let(:classification_name){"新しく作成した分類名"}
     let(:save_params) do

@@ -159,6 +159,34 @@ module Swagger::Api::SelfCaresApi
 
     end
 
+    swagger_path '/self_cares/recently_forgot_period' do
+
+      operation :get do
+        key :description, '直近で書き忘れた時期を取得する'
+        key :operationId, :find_recently_forgot_day
+
+        key :tags, [
+            'self_care',
+            'ver4'
+        ]
+
+        response 200 do
+          key :description, '直近で書き忘れた時刻'
+          schema do
+            key :required, [:periods]
+
+            property :periods do
+              key :type, :array
+              items do
+                key :'$ref', :SelfCareLogDatePeriod
+              end
+            end
+          end
+        end
+
+      end
+    end
+
     swagger_path '/self_cares/log_date_line_graph' do
 
       operation :get do
