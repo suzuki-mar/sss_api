@@ -18,12 +18,9 @@ class SelfCareChartsController < ApiControllerBase
     end
 
     list = SelfCare.by_month_date(month_date)
-    items = list.map do |model|
-      DateValueLineGraphItem.new(model.log_date_time, model.point)
-    end
+    graph_view_model = SelfCare::PeriodAndPointLineGraphViewModel.new(list, month_date)
 
-    items.sort_by!{|item| item.date}
-    render_success_with_list_and_date_range(items, month_date)
+    render_success_with(graph_view_model)
   end
 
   def point_pie_chart

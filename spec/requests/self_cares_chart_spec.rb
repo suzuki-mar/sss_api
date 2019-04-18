@@ -27,6 +27,8 @@ describe "SelfCareCahrts", type: :request do
         date = Date.new(@start_date.year, @start_date.month, day)
         points << rand(10)
 
+        next if day % 5 == 0
+
         create(:self_care, log_date: date, point:points.last, self_care_classification:self_care_classification, am_pm: :am)
         create(:self_care, log_date: date, point:points.last, self_care_classification:self_care_classification, am_pm: :pm)
       end
@@ -45,15 +47,16 @@ describe "SelfCareCahrts", type: :request do
 
       it '生成されている期間をデータで表示している' do
         subject
-        json = JSON.parse(response.body)
-        expect(json['date_value_line_graph_items'].count).to eq(@end_date.day * 2)
+        json = JSON.parse(response.body)["self_care/period_and_point_line_graph_view_model"]
 
-        actual_date = Date.parse(json['date_value_line_graph_items'][0]['date'])
-        expect(actual_date).to eq(@start_date)
+        expect(json['line_graph_items'].count).to be > 20
+        expect(json['forgot_periods'].count).to be > 5
+        expect(json['start_date']).to eq(@start_date.to_s(:db))
+        expect(json['end_date']).to eq(@end_date.to_s(:db))
       end
 
       it_behaves_like 'スキーマ通りのオブジェクトを取得できてレスポンスが正しいことること' do
-        let(:expected_response_keys){["date_value_line_graph_items", "end_date", "start_date"]}
+        let(:expected_response_keys){['self_care/period_and_point_line_graph_view_model']}
       end
     end
 
