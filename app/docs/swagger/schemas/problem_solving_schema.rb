@@ -9,7 +9,6 @@ module Swagger::Schemas::ProblemSolvingSchema
 
       key :required, [
           :log_date, :problem_recognition, :example_problem, :cause, :phenomenon, :neglect_phenomenon,
-          :solution, :execution_method, :evaluation_method
       ]
       property :log_date do
         key :type, :string
