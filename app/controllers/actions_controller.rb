@@ -4,7 +4,7 @@ class ActionsController < ApiControllerBase
   # 親クラスで必要となるメソッド
   def target_model_name
     'Action'
-  end
+    end
 
   def param_top_key
     :action
@@ -42,13 +42,6 @@ class ActionsController < ApiControllerBase
     list = Action.by_ids(action_ids).with_related_document
     Action.set_related_actions_from_loaded_for_targets(list)
     render_success_with_list(list)
-  end
-
-  def add_related
-
-    pp "fuga"
-
-
   end
 
   private
