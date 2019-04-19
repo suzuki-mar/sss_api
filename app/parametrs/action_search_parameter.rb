@@ -50,5 +50,4 @@ class ActionSearchParameter
     @search_types.include?(type.to_s)
   end
 
-
 end

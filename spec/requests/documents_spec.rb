@@ -56,7 +56,7 @@ RSpec.describe "Documents", type: :request do
 
     context 'タグで検索する場合' do
       let(:params) do
-        {tag_name: tag_name, search_type: :tag}
+        {tag_name: tag_name, search_types: [:tag]}
       end
 
       before :each do
@@ -73,7 +73,7 @@ RSpec.describe "Documents", type: :request do
 
       end
 
-      context 'タグが存在する場合' do
+      context '全対象でタグが存在する場合' do
         let(:tag_name) {@search_tag.name}
 
         it '指定したタグ名を検索で取得する取得する' do
@@ -107,6 +107,56 @@ RSpec.describe "Documents", type: :request do
 
     end
 
+    context '全対象でテキストで検索する場合' do
+      let(:params) do
+        {text: search_target, search_types: [:text]}
+      end
+
+      let(:search_target) {"検索ターゲット"}
+      before :each do
+        create(:problem_solving, log_date: Date.yesterday, problem_recognition:search_target)
+        create(:reframing, log_date: Date.yesterday, problem_reason:search_target)
+        create(:self_care, log_date: Date.yesterday, reason:search_target)
+
+        create(:self_care, log_date: Date.today, reason:"hoge")
+      end
+
+      it '指定したタグ名を検索で取得する取得する' do
+        subject
+        json = JSON.parse(response.body)['documents_list']
+
+        elements_json = json['elements']
+
+        expect(elements_json[0].keys).to eq(["log_date", "problem_solvings", "reframings", "self_cares"])
+        expect(elements_json.count).to eq(1)
+      end
+
+    end
+
+    context '対象絞ってテキストとタグ名で検索する場合' do
+      let(:params) do
+
+        {tag_name: @search_tag.name, text: search_target, search_types: [:text, :tag]}
+      end
+
+      let(:search_target) {"検索ターゲット"}
+      before :each do
+        create(:problem_solving, :has_tag, tag_count: 3, log_date: Date.yesterday, problem_recognition:search_target)
+        @search_tag = Tag.first
+        create(:reframing, :set_tag, target_tag: @search_tag, log_date: Date.yesterday, problem_reason:search_target)
+        create(:problem_solving, log_date: Date.today, problem_recognition:search_target)
+      end
+
+      it '指定したタグ名を検索で取得する取得する' do
+        subject
+        json = JSON.parse(response.body)['documents_list']
+        elements_json = json['elements']
+        expect(elements_json[0]['problem_solvings'].count).to eq(1)
+        expect(elements_json[0]['reframings'].count).to eq(1)
+      end
+
+    end
+
     context 'タグで一つのタイプを検索する場合' do
 
       before :each do
@@ -117,7 +167,7 @@ RSpec.describe "Documents", type: :request do
       end
 
       let(:params) do
-        {tag_name: @search_tag.name, search_type: :tag, target_type: target_type}
+        {tag_name: @search_tag.name, search_types: [:tag], target_type: target_type}
       end
 
       context '問題解決をターゲットにする場合' do
@@ -159,9 +209,56 @@ RSpec.describe "Documents", type: :request do
 
     end
 
+    context '対象絞ってテキストで検索する場合' do
+      let(:params) do
+        {text: search_target, search_types: [:text], target_type: :self_care}
+      end
+
+      let(:search_target) {"検索ターゲット"}
+      before :each do
+        create(:problem_solving, log_date: Date.yesterday, problem_recognition:search_target)
+        create(:reframing, log_date: Date.yesterday, problem_reason:search_target)
+        create(:self_care, log_date: Date.yesterday, reason:search_target)
+      end
+
+      it '指定したタグ名を検索で取得する取得する' do
+        subject
+        json = JSON.parse(response.body)['documents_list']
+        elements_json = json['elements']
+        expect(elements_json[0]['self_cares'].count).to eq(1)
+        expect(elements_json[0]['problem_solvings'].count).to eq(0)
+        expect(elements_json[0].keys).to eq(["log_date", "problem_solvings", "reframings", "self_cares"])
+      end
+
+    end
+
+    context '対象絞ってテキストとタグ名で検索する場合' do
+      let(:params) do
+
+        {tag_name: @search_tag.name, text: search_target, search_types: [:text, :tag], target_type: :problem_solving}
+      end
+
+      let(:search_target) {"検索ターゲット"}
+      before :each do
+        create(:problem_solving, :has_tag, tag_count: 3, log_date: Date.yesterday, problem_recognition:search_target)
+        create(:problem_solving, log_date: Date.yesterday, problem_recognition:search_target)
+        @search_tag = Tag.first
+        create(:problem_solving, log_date: Date.today, problem_recognition:search_target)
+      end
+
+      it '指定したタグ名を検索で取得する取得する' do
+        subject
+        json = JSON.parse(response.body)['documents_list']
+        elements_json = json['elements']
+        expect(elements_json[0]['problem_solvings'].count).to eq(1)
+        expect(elements_json[0]['reframings'].count).to eq(0)
+      end
+
+    end
+
     context 'パラメーターが間違っている場合' do
 
-      context 'search_typeの指定がない' do
+      context 'tag_nameがあるがsearch_typeの指定がない' do
         let(:params) do
           {tag_name: 'hoge'}
         end
@@ -169,12 +266,11 @@ RSpec.describe "Documents", type: :request do
         it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
           let(:error_message){"search_type:\tsearch_typeは必須です\n\n"}
         end
-
       end
 
       context 'search_typeが定義されていないものの場合' do
         let(:params) do
-          {search_type: 'invalid'}
+          {search_types: ['invalid']}
         end
 
         it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do
@@ -185,7 +281,7 @@ RSpec.describe "Documents", type: :request do
 
       context 'target_typeが定義されていないものの場合' do
         let(:params) do
-          {search_type: 'tag', target_type: 'invalid'}
+          {search_types: ['tag'], target_type: 'invalid', tag_name: 'hoge'}
         end
 
         it_behaves_like 'バリデーションパラメーターのエラー制御ができる' do

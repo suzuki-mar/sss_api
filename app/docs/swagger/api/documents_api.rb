@@ -65,17 +65,26 @@ module Swagger::Api::DocumentsApi
           schema do
             key :required, [:search_type]
 
-            property :search_type do
-              key :type, :string
-              key :description, '検索するタイプ'
-              key :enum, [
-                  'tag'
-              ]
+            property :search_types do
+              key :type, :array
+              items do
+                key :type, :string
+                key :description, 'tagはタグ名での検索、parent_textはParentのテキスト検索,textはActionのテキストからの検索'
+                key :enum, [
+                    'tag', 'parent_text', 'text'
+                ]
+              end
             end
 
             property :tag_name do
               key :type, :string
               key :description, 'search_typeがtagの場合に必須'
+              key :example, 'タグA'
+            end
+
+            property :text do
+              key :type, :string
+              key :description, 'search_typesがtextかparent_textの場合に必須'
               key :example, 'タグA'
             end
 

@@ -44,6 +44,30 @@ class Documents
       type == :all || DOCUMENT_TYPES.include?(type)
     end
 
+    def find_group_document_ids_by_text_and_type(text, type)
+      find_group_document_ids_by_text_and_types(text, [type])
+    end
+
+    def find_group_document_ids_by_text(text)
+      find_group_document_ids_by_text_and_types(text, DOCUMENT_TYPES)
+    end
+
+    private
+    def find_group_document_ids_by_text_and_types(text, types)
+      group_document_ids = {}
+
+      types.each do |type|
+
+        model_class = type.to_s.camelize.constantize
+
+        ids = model_class.search_from_all_text_column(text).pluck(:id)
+        key = model_class.foreign_key_column
+
+        group_document_ids[key] = ids
+      end
+
+      group_document_ids
+    end
   end
 
   def has_type?(type)
